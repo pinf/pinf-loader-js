@@ -85,11 +85,10 @@ var sourcemint = null;
 			/*DEBUG*/ if (typeof descriptor.main !== "string") {
 			/*DEBUG*/ 	throw new Error("No 'main' property declared in '/package.json' in sandbox '" + sandbox.id + "'!");
 			/*DEBUG*/ }
-			var main = sandbox.require(descriptor.main);
-			/*DEBUG*/ if (typeof descriptor.main !== "string") {
+			/*DEBUG*/ if (typeof sandbox.require(descriptor.main).exports.main !== "function") {
 			/*DEBUG*/ 	throw new Error("Main module '" + descriptor.main + "' does not export 'main()' in sandbox '" + sandbox.id + "'!");
 			/*DEBUG*/ }
-			return main.exports.main(options);
+			return sandbox.require(descriptor.main).exports.main(options);
 		};		
 		
 		sourcemint.load(programIdentifier);
