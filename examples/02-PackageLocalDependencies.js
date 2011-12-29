@@ -1,49 +1,54 @@
 
-require.memoize("/package.json", {
-	main: "/main.js"
-});
-
-require.memoize("/main.js", function(require, exports, module)
+require.bundle("046D212E-221C-4055-875B-85169DCEB94F", function(require)
 {
-	// One-way dependency.
-	var GREETINGS = require("./greetings");
 
-	exports.main = function(options)
+	require.memoize("/package.json", {
+		main: "/boot.js"
+	});
+
+	require.memoize("/boot.js", function(require, exports, module)
 	{
-		console.log(GREETINGS.getGreeting());
-	}
-});
+		// One-way dependency.
+		var GREETINGS = require("./greetings");
 
-// Flat.
-require.memoize("/greetings.js", function(require, exports, module)
-{
-	// Circular dependency.
-	var HELLO = require("./words/hello");
+		exports.main = function(options)
+		{
+			console.log(GREETINGS.getGreeting());
+		}
+	});
 
-	exports.getGreeting = function()
+	// Flat.
+	require.memoize("/greetings.js", function(require, exports, module)
 	{
-		return HELLO.getWord() + " from " + HELLO.getName() + "!";
-	}
+		// Circular dependency.
+		var HELLO = require("./words/hello");
+
+		exports.getGreeting = function()
+		{
+			return HELLO.getWord() + " from " + HELLO.getName() + "!";
+		}
 	
-	exports.getName = function()
-	{
-		return "02-PackageLocalDependencies";
-	}
-});
+		exports.getName = function()
+		{
+			return "02-PackageLocalDependencies";
+		}
+	});
 
-// Sub path.
-require.memoize("/words/hello.js", function(require, exports, module)
-{
-	// Circular dependency.
-	var GREETINGS = require("../greetings");
-	
-	exports.getWord = function()
+	// Sub path.
+	require.memoize("/words/hello.js", function(require, exports, module)
 	{
-		return "Hello";
-	}
+		// Circular dependency.
+		var GREETINGS = require("../greetings");
 	
-	exports.getName = function()
-	{
-		return GREETINGS.getName();
-	}
+		exports.getWord = function()
+		{
+			return "Hello";
+		}
+	
+		exports.getName = function()
+		{
+			return GREETINGS.getName();
+		}
+	});
+
 });

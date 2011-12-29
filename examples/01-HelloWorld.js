@@ -1,12 +1,12 @@
 
-require.memoize("/package.json", {
-	main: "/main.js"
-});
-
-require.memoize("/main.js", function(require, exports, module)
+require.bundle("4699E5FC-46F1-4B35-B073-B6395E19F921", function(require)
 {
-	exports.main = function(options)
+	require.memoize("/main.js", function(require, exports, module)
 	{
-		console.log("Hello from 01-HelloWorld!");
-	}
+		exports.main = function(options)
+		{
+			console.log("Hello from 01-HelloWorld!");
+		}
+	});
+
 });

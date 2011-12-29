@@ -30,12 +30,13 @@ exports.main = function(options)
 	                }).responder(null)
 	            ),
 
-	            "/loader.source.js": function(req, res)
+	            "/loader.js": function(req, res)
 				{
+					res.setHeader("Content-Type", "text/javascript");
 					res.end(FILE.read(FILE.dirname(FILE.dirname(FILE.dirname(module.id))) + "/loader.js"));
 				},
 
-	            "/loader.source.min.js": function(req, res)
+	            "/loader.stripped.js": function(req, res)
 				{
 					var source = FILE.read(FILE.dirname(FILE.dirname(FILE.dirname(module.id))) + "/loader.js");
 					
@@ -44,6 +45,7 @@ exports.main = function(options)
 						return !(/\/\*DEBUG\*\//.test(line));
 					}).join("\n");
 					
+					res.setHeader("Content-Type", "text/plain");
 					res.end(source);
 				},
 
