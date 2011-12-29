@@ -1,0 +1,19 @@
+{
+	"extends": [
+		{
+    		"location": "https://raw.github.com/pinf/server-js/v0.1.22/package.declarations.json"
+		}
+	],
+    "main": "server.js",
+    "mappings": {
+    	"pinf": {
+        	"id": "pinf.org/loader/"
+    	},
+    	"modules": {
+        	"id": "github.com/pinf/modules-js/"
+    	},
+    	"connect-dispatch": {
+        	"id": "github.com/caolan/dispatch/"
+    	}
+    }
+}

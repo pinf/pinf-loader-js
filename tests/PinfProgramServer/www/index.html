@@ -1,0 +1,20 @@
+<html>
+    <head>
+        <title>Sourcemint Loader fed via PINF Program Server</title>
+        <script type="text/javascript" src="/loader.js"></script>
+        <script type="text/javascript">
+
+			var i;
+			for (i=1 ; i<=2 ; i++) {
+				require.sandbox("/examples/BundledHelloWorld/program" + i + ".js", function(program)
+				{
+					program.main();
+				});
+			}
+
+		</script>
+    </head>
+    <body>
+        <div id="content"></div>    
+    </body>
+</html>

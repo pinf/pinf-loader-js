@@ -1,0 +1,27 @@
+{
+	"extends": [
+    	{
+        	"location": "https://raw.github.com/pinf/server-js/v0.1.22/program.declarations.json"
+   		}
+	],
+    "boot": "server/",
+    "packages": {
+        "server/": {
+            "locator": {
+                "location": "./"
+            }
+        },
+        "github.com/caolan/dispatch/": {
+            "locator": {
+                "archive": "https://github.com/caolan/dispatch/zipball/0.0.1"
+            },
+            "descriptor": {
+                "native": true
+            }
+        }
+    },
+    "implements": {
+        "github.com/pinf/server-js/-meta/strawman/vhost/0.1": {
+        }
+    }
+}
