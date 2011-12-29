@@ -29,7 +29,24 @@ exports.main = function(options)
 	                    trackRoutes: true
 	                }).responder(null)
 	            ),
-	            
+
+	            "/loader.source.js": function(req, res)
+				{
+					res.end(FILE.read(FILE.dirname(FILE.dirname(FILE.dirname(module.id))) + "/loader.js"));
+				},
+
+	            "/loader.source.min.js": function(req, res)
+				{
+					var source = FILE.read(FILE.dirname(FILE.dirname(FILE.dirname(module.id))) + "/loader.js");
+					
+					source = source.split("\n").filter(function(line)
+					{
+						return !(/\/\*DEBUG\*\//.test(line));
+					}).join("\n");
+					
+					res.end(source);
+				},
+
 	            "/.*": CONNECT.static(FILE.dirname(module.id) + "/www", {
     	            maxAge: 0
     	        })  

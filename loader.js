@@ -13,7 +13,15 @@ var sourcemint = null;
 // Combat pollution if used via <script> tag.
 (function (global, document) {
 
-	var Module = function(sandbox, identifier, dependencies, initializer) {
+	var loadingSandboxIdentifiers = [],
+		// @see https://github.com/unscriptable/curl/blob/62caf808a8fd358ec782693399670be6806f1845/src/curl.js#L69
+		readyStates = { 'loaded': 1, 'interactive': 1, 'complete': 1 };
+
+	function normalizeSandboxIdentifier(id) {
+		return id.replace(/^[^:]*:\//, "").replace(/\.js$/, "");
+	}
+
+	var Module = function(sandbox, identifier, initializer) {
 
 		var identifierSegment = identifier.replace(/\/[^\/]*$/, "/").split("/"),
 			module = {
@@ -21,7 +29,9 @@ var sourcemint = null;
 				exports: {}
 			};
 		
+		// Statically link a module and its dependencies
 		module.require = function(moduleIdentifier) {
+			// Check for relative module path to module within same package
 			if (/^\./.test(moduleIdentifier)) {
 				var segments = moduleIdentifier.replace(/^\.\//, "").split("../");
 				moduleIdentifier = identifierSegment.slice(0, identifierSegment.length-segments.length-1) + "/" + segments[segments.length-1];
@@ -46,35 +56,26 @@ var sourcemint = null;
 
 
 	// A set of modules working together.
-	var Sandbox = function(programIdentifier, loadedCallback) {
+	var Sandbox = function(sandboxIdentifier, loadedCallback) {
 
 		var moduleInitializers = {},
 			initializedModules = {},
 			descriptor = {},
 			sandbox = {
-				id: programIdentifier
+				id: sandboxIdentifier
 			};
-		
-		sandbox.memoize = function(canonicalModuleIdentifier, moduleDependencies, moduleInitializer) {
-			moduleInitializers[canonicalModuleIdentifier] = [moduleDependencies, moduleInitializer];
+
+		sandbox.memoize = function(moduleIdentifier, moduleInitializer) {
+			moduleInitializers[moduleIdentifier] = moduleInitializer;
 		}
 
-		// All memoize() calls for a consistent set of modules have been made
-		sandbox.memoized = function(canonicalModuleIdentifier, moduleInitializer) {
-			/*DEBUG*/ if (!moduleInitializers["/package.json"]) {
-			/*DEBUG*/ 	throw new Error("'/package.json' not found in sandbox '" + sandbox.id + "'!");
-			/*DEBUG*/ }
-			descriptor = moduleInitializers["/package.json"][1];
-			loadedCallback(this);
-		}
-
-		// Get a module and initialize it if it is not already so
+		// Get a module and initialize it (statically link its dependencies) if it is not already so
 		sandbox.require = function(moduleIdentifier) {
 			if (!initializedModules[moduleIdentifier]) {
 				/*DEBUG*/ if (!moduleInitializers[moduleIdentifier]) {
 				/*DEBUG*/ 	throw new Error("Module '" + moduleIdentifier + "' not found in sandbox '" + sandbox.id + "'!");
 				/*DEBUG*/ }
-				initializedModules[moduleIdentifier] = Module(sandbox, moduleIdentifier, moduleInitializers[moduleIdentifier][0], moduleInitializers[moduleIdentifier][1]);
+				initializedModules[moduleIdentifier] = Module(sandbox, moduleIdentifier, moduleInitializers[moduleIdentifier]);
 				initializedModules[moduleIdentifier].load();
 			}
 			return initializedModules[moduleIdentifier];
@@ -90,8 +91,18 @@ var sourcemint = null;
 			/*DEBUG*/ }
 			return sandbox.require(descriptor.main).exports.main(options);
 		};		
-		
-		sourcemint.load(programIdentifier);
+
+		sandbox.scriptTag = sourcemint.load(sandboxIdentifier + ".js", function() {
+			// Assume a consistent statically linked set of modules has been memoized.
+			loadingSandboxIdentifiers.shift();
+			/*DEBUG*/ if (!moduleInitializers["/package.json"]) {
+			/*DEBUG*/ 	throw new Error("'/package.json' not found in sandbox '" + sandbox.id + "'!");
+			/*DEBUG*/ }
+			descriptor = moduleInitializers["/package.json"];
+			loadedCallback(sandbox);
+		});
+
+		loadingSandboxIdentifiers.push(sandboxIdentifier);
 
 		return sandbox;
 	};
@@ -103,27 +114,23 @@ var sourcemint = null;
 		var sandboxes = {},
 			lastMemoizeSandbox = null,
 			require = {
-			// TODO: @see URL_TO_SPEC
-			supports: "ucjs2-pinf-0"
-		};
+				// TODO: @see URL_TO_SPEC
+				supports: "ucjs2-pinf-0"
+			};
 
 		// Create a new environment to memoize modules to.
 		require.sandbox = function(programIdentifier, loadedCallback) {
-			return sandboxes[programIdentifier] = Sandbox(programIdentifier, loadedCallback);
+			var sandboxIdentifier = normalizeSandboxIdentifier(programIdentifier);
+			return sandboxes[sandboxIdentifier] = Sandbox(sandboxIdentifier, loadedCallback);
 		}
 
 		// Record module in sandbox
-		require.memoize = function(canonicalModuleIdentifier, moduleDependencies, moduleInitializer) {
-			/*DEBUG*/ if (!sandboxes[canonicalModuleIdentifier[0]]) {
-			/*DEBUG*/ 	throw new Error("Cannot memoize module as sandbox not found!", canonicalModuleIdentifier);
+		require.memoize = function(moduleIdentifier, moduleInitializer) {
+			/*DEBUG*/ if (!sandboxes[loadingSandboxIdentifiers[0]]) {
+			/*DEBUG*/ 	throw new Error("Cannot memoize module as sandbox not found!", loadingSandboxIdentifiers[0]);
 			/*DEBUG*/ }
-			lastMemoizeSandbox = sandboxes[canonicalModuleIdentifier[0]];
-			lastMemoizeSandbox.memoize(canonicalModuleIdentifier[1], moduleDependencies, moduleInitializer);
-		}
-
-		// Notify that a consistent set of modules has been memoized
-		require.memoized = function() {
-			lastMemoizeSandbox.memoized();
+			lastMemoizeSandbox = sandboxes[loadingSandboxIdentifiers[0]];
+			lastMemoizeSandbox.memoize(moduleIdentifier, moduleInitializer);
 		}
 
 		return require;
@@ -137,13 +144,20 @@ var sourcemint = null;
 	// Defaults to browser use.
 	// @credit https://github.com/unscriptable/curl/blob/62caf808a8fd358ec782693399670be6806f1845/src/curl.js#L319-360
 	var _head = null;
-	sourcemint.load = function(uri) {
+	sourcemint.load = function(uri, loadedCallback) {
 		if (_head === null) {
 			_head = document.getElementsByTagName("head")[0];
 		}
-		uri = document.location.protocol + "//" + document.location.host + uri;
+		uri = document.location.protocol + "/" + uri;
 		var element = document.createElement("script");
 		element.type = "text/javascript";
+		element.onload = element.onreadystatechange = function(ev) {
+			ev = ev || global.event;
+			if (ev.type === "load" || readyStates[this.readyState]) {
+				this.onload = this.onreadystatechange = this.onerror = null;
+				loadedCallback();
+			}
+		}
 		element.onerror = function(e) {
 			/*DEBUG*/ throw new Error("Syntax error or http error: " + uri);
 		}
@@ -151,6 +165,7 @@ var sourcemint = null;
 		element.async = true;
 		element.src = uri;
 		_head.insertBefore(element, _head.firstChild);
+		return element;
 	}
 
 
