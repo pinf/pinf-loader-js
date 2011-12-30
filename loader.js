@@ -97,8 +97,7 @@ var sourcemint = null;
 					/*DEBUG*/ if (!moduleInitializers[moduleIdentifier]) {
 					/*DEBUG*/ 	throw new Error("Module '" + moduleIdentifier + "' not found in sandbox '" + sandbox.id + "'!");
 					/*DEBUG*/ }
-					initializedModules[moduleIdentifier] = Module(moduleIdentifier);
-					initializedModules[moduleIdentifier].load();
+					(initializedModules[moduleIdentifier] = Module(moduleIdentifier)).load();
 				}
 				return initializedModules[moduleIdentifier];
 			}
