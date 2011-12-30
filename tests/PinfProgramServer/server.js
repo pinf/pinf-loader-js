@@ -76,12 +76,9 @@ exports.main = function(options)
 	            "/loader.min.js.gz-size": function(req, res)
 				{
 					res.setHeader("Content-Type", "text/plain");
-					getMinifiedSource(function()
+					FS.stat(ROOT_PATH + "/loader.min.js.gz", function(err, stat)
 					{
-						FS.stat(ROOT_PATH + "/loader.min.js.gz", function(err, stat)
-						{
-							res.end("" + stat.size);
-						});
+						res.end("" + stat.size);
 					});
 				},
 
