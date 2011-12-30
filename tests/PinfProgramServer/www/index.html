@@ -1,6 +1,7 @@
 <html>
     <head>
-        <title>Sourcemint Loader fed via PINF Program Server</title>
+        <title>Optimized PINF/CommonJS Loader for JavaScript</title>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
         <script type="text/javascript" src="/loader.js"></script>
         <script type="text/javascript">
 			[
@@ -8,7 +9,8 @@
 				"02-PackageLocalDependencies",
 				"03-CrossPackageDependencies",
 				"Avoid-NestedBundles",
-				"Avoid-SplitBundles"
+				"Avoid-SplitBundles",
+				"DevUI"
 			].forEach(function(program)
 			{
 				require.sandbox("/" + document.location.host + "/examples/" + program + ".js", function(program)
@@ -17,8 +19,34 @@
 				});
 			});
 		</script>
+		<style>
+		    #loader-min {
+				border: 1px solid #000000;
+				padding: 10px;
+				margin: 10px;
+				font-family: Monaco;
+				font-size: 11px;
+			}
+		    #report {
+				border: 1px solid #000000;
+				padding: 10px;
+				margin: 10px;
+			}
+		</style>
     </head>
     <body>
-        <div id="content"></div>    
+		<h1>Optimized PINF/CommonJS Loader for JavaScript</h1>
+		<p>
+			Author: <a href="http://christophdorn.com/">Christoph Dorn</a><br/>
+			Source: <a href="https://github.com/sourcemint/loader-js">github.com/sourcemint/loader-js</a><br/>
+			<a href="loader.js">loader.js</a> (raw source)<br/>
+			<a href="loader.stripped.js">loader.stripped.js</a> (source with <i>DEBUG</i> lines removed)<br/>
+			<a href="loader.min.js">loader.min.js</a> (optimized with GoogleClosure Compiler)<br/>
+			<a href="loader.min.js.gz">loader.min.js.gz</a><br/>
+		</p>
+		<h1>Minified Loader (<span id="loader-min-size"></span> bytes)</h1>
+        <div id="loader-min"></div>
+		<h1>Loaded Resources</h1>
+        <pre id="report"></pre>
     </body>
 </html>

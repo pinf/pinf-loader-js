@@ -11,10 +11,12 @@ require.bundle("", function(require)
 		// One-way dependency.
 		var GREETINGS = require("./greetings");
 
-		exports.main = function(options)
-		{
-			console.log(GREETINGS.getGreeting());
-		}
+		return {
+			main: function(options)
+			{
+				console.log(GREETINGS.getGreeting());
+			}
+		};
 	});
 
 	// Flat.

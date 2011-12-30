@@ -6,6 +6,9 @@
 	],
     "main": "server.js",
     "mappings": {
+    	"nodejs": {
+        	"id": "nodejs.org/"
+    	},
     	"pinf": {
         	"id": "pinf.org/loader/"
     	},
