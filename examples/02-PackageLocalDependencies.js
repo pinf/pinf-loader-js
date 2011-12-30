@@ -1,5 +1,5 @@
 
-require.bundle("046D212E-221C-4055-875B-85169DCEB94F", function(require)
+require.bundle("", function(require)
 {
 
 	require.memoize("/package.json", {
