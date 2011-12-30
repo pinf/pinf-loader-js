@@ -37,14 +37,14 @@ var sourcemint = null;
 			
 			var descriptor = moduleInitializers[packageIdentifier + "/package.json"] || {
 					main: "/main.js"
-				};
-
+				},
+				mappings = descriptor.mappings || {},
+				directories = descriptor.directories || {},
+				libPath = (typeof directories.lib !== "undefined")?directories.lib:"lib";
+			
 			var pkg = {
-					id: packageIdentifier,
-					descriptor: descriptor
-				};
-
-			var libPath = ((descriptor.directories && typeof descriptor.directories.lib !== "undefined")?descriptor.directories.lib:"lib");
+				main: descriptor.main
+			};
 
 			var Module = function(moduleIdentifier) {
 
@@ -65,13 +65,13 @@ var sourcemint = null;
 					// Check for mapped module path to module within mapped package
 					{
 						identifier = identifier.split("/");
-						/*DEBUG*/ if (!pkg.descriptor.mappings) {
+						/*DEBUG*/ if (!mappings) {
 						/*DEBUG*/ 	throw new Error("Descriptor for sandbox '" + sandbox.id + "' does not declare 'mappings' property needed to resolve module path '" + identifier.join("/") + "' in module '" + moduleIdentifier + "'!");
 						/*DEBUG*/ }
-						/*DEBUG*/ if (!pkg.descriptor.mappings[identifier[0]]) {
+						/*DEBUG*/ if (!mappings[identifier[0]]) {
 						/*DEBUG*/ 	throw new Error("Descriptor for sandbox '" + sandbox.id + "' does not declare 'mappings[\"" + identifier[0] + "\"]' property needed to resolve module path '" + identifier.join("/") + "' in module '" + moduleIdentifier + "'!");
 						/*DEBUG*/ }
-						return Package(pkg.descriptor.mappings[identifier[0]]).require(identifier.slice(1).join("/") + ".js").exports;
+						return Package(mappings[identifier[0]]).require(identifier.slice(1).join("/") + ".js").exports;
 					}
 				};
 
@@ -92,7 +92,7 @@ var sourcemint = null;
 				if (!/^\//.test(moduleIdentifier)) {
 					moduleIdentifier = "/" + ((libPath)?libPath+"/":"") + moduleIdentifier;
 				}
-				moduleIdentifier = pkg.id + moduleIdentifier;
+				moduleIdentifier = packageIdentifier + moduleIdentifier;
 				if (!initializedModules[moduleIdentifier]) {
 					/*DEBUG*/ if (!moduleInitializers[moduleIdentifier]) {
 					/*DEBUG*/ 	throw new Error("Module '" + moduleIdentifier + "' not found in sandbox '" + sandbox.id + "'!");
@@ -115,13 +115,13 @@ var sourcemint = null;
 
 		// Call the 'main' module of the program
 		sandbox.main = function(options) {
-			/*DEBUG*/ if (typeof Package("").descriptor.main !== "string") {
+			/*DEBUG*/ if (typeof Package("").main !== "string") {
 			/*DEBUG*/ 	throw new Error("No 'main' property declared in '/package.json' in sandbox '" + sandbox.id + "'!");
 			/*DEBUG*/ }
-			/*DEBUG*/ if (typeof sandbox.require(Package("").descriptor.main).exports.main !== "function") {
-			/*DEBUG*/ 	throw new Error("Main module '" + Package("").descriptor.main + "' does not export 'main()' in sandbox '" + sandbox.id + "'!");
+			/*DEBUG*/ if (typeof sandbox.require(Package("").main).exports.main !== "function") {
+			/*DEBUG*/ 	throw new Error("Main module '" + Package("").main + "' does not export 'main()' in sandbox '" + sandbox.id + "'!");
 			/*DEBUG*/ }
-			return sandbox.require(Package("").descriptor.main).exports.main(options);
+			return sandbox.require(Package("").main).exports.main(options);
 		};		
 
 		sandbox.scriptTag = sourcemint.load(sandboxIdentifier + ".js", function() {
