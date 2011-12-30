@@ -1,5 +1,5 @@
 /**
- * Copyright: Christoph Dorn <christoph@christophdorn.com>
+ * Copyright: 2011 Christoph Dorn <christoph@christophdorn.com>
  * License: MIT
  */
 
