@@ -62,15 +62,6 @@ exports.main = function(options)
 					});
 				},
 
-	            "/loader.min.js.gz-size": function(req, res)
-				{
-					res.setHeader("Content-Type", "text/plain");
-					FS.stat(ROOT_PATH + "/loader.min.js.gz", function(err, stat)
-					{
-						res.end("" + stat.size);
-					});
-				},
-
 	            "/": function(req, res)
 				{
 					res.writeHead(302, {
@@ -144,6 +135,7 @@ function getMinifiedSource(callback)
 					FILE.write(ROOT_PATH + "/README.md", readme);
 
 					FILE.write(ROOT_PATH + "/workspace/www/loader.stripped.js.md5", sourceHash);
+					FILE.write(ROOT_PATH + "/workspace/www/loader.min.js.gz-size", ""+result.length);
 
 					console.log("... OK");
 

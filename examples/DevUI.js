@@ -14,7 +14,7 @@ require.bundle("", function(require)
 				jQuery("#loader-min").html(data);
 			});
 
-			jQuery.get("../../loader.min.js.gz-size", function(data) {
+			jQuery.get("loader.min.js.gz-size", function(data) {
 				jQuery("#loader-min-size").html(data);
 			});
 		}
