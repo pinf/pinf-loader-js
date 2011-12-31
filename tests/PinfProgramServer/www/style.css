@@ -22,6 +22,9 @@ H1 {
 	font-family: Monaco;
 	font-size: 9px;
 }
+#output {
+	border: 5px solid green;
+}
 #output > DIV {
 	margin-bottom: 2px;
 }
