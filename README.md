@@ -12,7 +12,7 @@ The `Sourcemint JavaScript Loader` is an optimized *(intended for production use
 What
 ----
 
-The `Sourcemint JavaScript Loader` provides a **minimal CommonJS environment** that requests **optimized static JS code files** *(bundles containing modules)* from a server via **GET requests** and bootstraps these into sandboxes in the browser identified by the requested URL.
+The `Sourcemint JavaScript Loader` provides a **minimal CommonJS environment** that requests **optimized static JS code files** *(bundles containing modules)* from a server via **GET requests** and boots these into sandboxes in the browser identified by the requested URL.
 
 Demo: *TODO: Github Pages link*
 
