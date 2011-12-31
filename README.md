@@ -9,12 +9,12 @@ The `Sourcemint JavaScript Loader` is an optimized *(intended for production use
  * Sponsor: [Sourcemint](http://sourcemint.com/)
  * Mailing list: [groups.google.com/group/pinf-dev](http://groups.google.com/group/pinf-dev/)
 
+**Demo: [sourcemint.github.com/loader-js/workspace/www](http://sourcemint.github.com/loader-js/workspace/www/index.html)**
+
 What
 ----
 
 The `Sourcemint JavaScript Loader` provides a **minimal CommonJS environment** that requests **optimized static JS code files** *(bundles containing modules)* from a server via **GET requests** and boots these into sandboxes in the browser identified by the requested URL.
-
-Demo: [sourcemint.github.com/loader-js/workspace/www](http://sourcemint.github.com/loader-js/workspace/www/index.html)
 
 Supported features:
 
