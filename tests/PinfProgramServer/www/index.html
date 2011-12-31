@@ -5,18 +5,18 @@
         <script type="text/javascript" src="/q.min.js"></script>
         <script type="text/javascript" src="/loader.js"></script>
         <script type="text/javascript">
-			var done = Q.ref();
-			[
+		    Q.when(Q.all([
 				"01-HelloWorld",
 				"02-PackageLocalDependencies",
 				"03-CrossPackageDependencies",
 				"Avoid-NestedBundles",
 				"Avoid-SplitBundles"
-			].forEach(function(name)
-			{
+			].map(function(name) {
+				var result = Q.defer();
 				require.sandbox("/" + document.location.host + "/examples/" + name + ".js", function(program)
 				{
 					program.main();
+					result.resolve();
 				}, {
 					onInitModule: function(moduleInterface)
 					{
@@ -37,8 +37,8 @@
 						}
 					}
 				});
-			});
-			Q.when(done, function()
+				return result.promise;
+		    })), function()
 			{
 				require.sandbox("/" + document.location.host + "/examples/DevUI.js", function(program)
 				{
