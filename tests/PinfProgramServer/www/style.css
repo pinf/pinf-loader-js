@@ -1,12 +1,19 @@
-HTML, BODY, P {
+HTML, BODY {
 	font-family: Tahoma;
-	Font-size: 12px;
+	font-size: 14px;
 }
 BODY {
 	padding: 10px;
+	padding-left: 20px;
 }
 H1 {
 	font-size: 16px;
+}
+#forkme {
+    border: 0 none;
+    position: absolute;
+    right: 0;
+    top: 0;
 }
 #loader-min, #output, #report {
 	border: 1px solid #000000;
