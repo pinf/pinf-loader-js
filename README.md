@@ -1,5 +1,5 @@
-Optimized PINF/CommonJS Loader for JavaScript
-=============================================
+Optimized [PINF](http://pinf.org/)/[CommonJS](http://commonjs.org/) Loader for JavaScript
+=========================================================================================
 
 An optimized *(intended for production use)* **CommonJS package mappings** based **JavaScript module loader** for the browser in only **985 bytes** *(minified and zipped)*.
 
