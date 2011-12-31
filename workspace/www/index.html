@@ -5,7 +5,7 @@
         <script type="text/javascript" src="q.min.js"></script>
         <script type="text/javascript" src="../../loader.js"></script>
         <script type="text/javascript">
-			var ROOT_PATH = "/" + document.location.host + document.location.pathname + "../../";
+			var ROOT_PATH = "/" + document.location.host + document.location.pathname.replace(/\/[^\/]*$/, "/") + "../../";
 		    Q.when(Q.all([
 				"01-HelloWorld",
 				"02-PackageLocalDependencies",
