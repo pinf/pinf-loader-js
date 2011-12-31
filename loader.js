@@ -148,16 +148,8 @@ var sourcemint = null;
 			/*DEBUG*/ 	throw new Error("Main module '" + Package("").main + "' does not export 'main()' in sandbox '" + sandbox.id + "'!");
 			/*DEBUG*/ }
 			return sandbox.require(Package("").main).exports.main(options);
-		};		
+		};
 
-		sandbox.scriptTag = sourcemint.load(sandboxIdentifier + ".js", function() {
-			// Assume a consistent statically linked set of modules has been memoized.
-			bundleIdentifier = loadedBundles[0][0];
-			moduleInitializers = loadedBundles[0][1];
-			loadedBundles.shift();
-			loadedCallback(sandbox);
-		});
-		
 		/*DEBUG*/ sandbox.getReport = function() {
 		/*DEBUG*/ 	var report = {
 		/*DEBUG*/ 			packages: {},
@@ -174,6 +166,42 @@ var sourcemint = null;
 		/*DEBUG*/ 	}
 		/*DEBUG*/ 	return report;
 		/*DEBUG*/ }
+
+		// These may be overwritten by the environment of the loader.
+		// Defaults to browser use.
+		// @credit https://github.com/unscriptable/curl/blob/62caf808a8fd358ec782693399670be6806f1845/src/curl.js#L319-360
+		var _head = null;
+		function load(uri, loadedCallback) {
+			if (_head === null) {
+				_head = document.getElementsByTagName("head")[0];
+			}
+			uri = document.location.protocol + "/" + uri;
+			var element = document.createElement("script");
+			element.type = "text/javascript";
+			element.onload = element.onreadystatechange = function(ev) {
+				ev = ev || global.event;
+				if (ev.type === "load" || readyStates[this.readyState]) {
+					this.onload = this.onreadystatechange = this.onerror = null;
+					loadedCallback();
+				}
+			}
+			element.onerror = function(e) {
+				/*DEBUG*/ throw new Error("Syntax error or http error: " + uri);
+			}
+			element.charset = "utf-8";
+			element.async = true;
+			element.src = uri;
+			_head.insertBefore(element, _head.firstChild);
+			return element;
+		}		
+
+		sandbox.scriptTag = (sandboxOptions.load || load)(sandboxIdentifier + ".js", function() {
+			// Assume a consistent statically linked set of modules has been memoized.
+			bundleIdentifier = loadedBundles[0][0];
+			moduleInitializers = loadedBundles[0][1];
+			loadedBundles.shift();
+			loadedCallback(sandbox);
+		});
 
 		return sandbox;
 	};
@@ -235,35 +263,6 @@ var sourcemint = null;
 
 
 	sourcemint = Loader();
-
-
-	// These may be overwritten by the environment of the loader.
-	// Defaults to browser use.
-	// @credit https://github.com/unscriptable/curl/blob/62caf808a8fd358ec782693399670be6806f1845/src/curl.js#L319-360
-	var _head = null;
-	sourcemint.load = function(uri, loadedCallback) {
-		if (_head === null) {
-			_head = document.getElementsByTagName("head")[0];
-		}
-		uri = document.location.protocol + "/" + uri;
-		var element = document.createElement("script");
-		element.type = "text/javascript";
-		element.onload = element.onreadystatechange = function(ev) {
-			ev = ev || global.event;
-			if (ev.type === "load" || readyStates[this.readyState]) {
-				this.onload = this.onreadystatechange = this.onerror = null;
-				loadedCallback();
-			}
-		}
-		element.onerror = function(e) {
-			/*DEBUG*/ throw new Error("Syntax error or http error: " + uri);
-		}
-		element.charset = "utf-8";
-		element.async = true;
-		element.src = uri;
-		_head.insertBefore(element, _head.firstChild);
-		return element;
-	}
 
 
 	// Ignore `require` global if already exists.

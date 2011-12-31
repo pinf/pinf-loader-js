@@ -12,11 +12,12 @@ require.bundle("", function(require)
 	require.memoize("/main.js", function(require, exports, module)
 	{
 		// One-way dependency.
-		var GREETINGS = require("helpers/greetings");
+		var GREETINGS = require("helpers/greetings"),
+			LOGGER = require("helpers/logger");
 
 		exports.main = function(options)
 		{
-			module.log(GREETINGS.getGreeting());
+			LOGGER.log(GREETINGS.getGreeting());
 		}
 	});
 
@@ -41,6 +42,14 @@ require.bundle("", function(require)
 		exports.getName = function()
 		{
 			return "03-CrossPackageDependencies";
+		}
+	});
+
+	require.memoize("packageA/logger.js", function(require, exports, module)
+	{
+		exports.log = function(message)
+		{
+			module.log(message);
 		}
 	});
 
