@@ -9,7 +9,7 @@ var CONNECT_DISPATCH = require("connect-dispatch/dispatch"),
 	FS = require("nodejs/fs"),
 	ZLIB = require("nodejs/zlib");
 	
-const ROOT_PATH = FILE.dirname(FILE.dirname(FILE.dirname(module.id)));
+const ROOT_PATH = FILE.dirname(FILE.dirname(module.id));
 
 
 exports.main = function(options)
@@ -26,17 +26,6 @@ exports.main = function(options)
 
         CONNECT.createServer(
     		CONNECT_DISPATCH({
-              	
-              	"/ui.*": JSGI.jsgi(
-	                new PROGRAM_SERVER.JSGI({
-	                    map: {
-	                        "/ui.js": {
-	                            programPath: FILE.dirname(module.id) + "/ui/program.json"
-	                        }
-	                    },
-	                    trackRoutes: true
-	                }).responder(null)
-	            ),
 
 	            "/loader.js": function(req, res)
 				{
@@ -82,7 +71,15 @@ exports.main = function(options)
 					});
 				},
 
-	            "/.*": CONNECT.static(FILE.dirname(module.id) + "/www", {
+	            "/": function(req, res)
+				{
+					res.writeHead(302, {
+						"Location": "http://" + options.host + ":" + options.port + "/workspace/www/"
+					});
+					res.end();
+				},
+
+	            "/.*": CONNECT.static(ROOT_PATH, {
     	            maxAge: 0
     	        })  
         	})
@@ -122,9 +119,9 @@ function getMinifiedSource(callback)
 		callback(FILE.read(ROOT_PATH + "/loader.min.js"));		
 	}
 	
-	if (FILE.exists(ROOT_PATH + "/loader.stripped.js.md5"))
+	if (FILE.exists(ROOT_PATH + "/workspace/www/loader.stripped.js.md5"))
 	{
-		fileHash = FILE.read(ROOT_PATH + "/loader.stripped.js.md5");
+		fileHash = FILE.read(ROOT_PATH + "/workspace/www/loader.stripped.js.md5");
 	}
 	
 	if (sourceHash != fileHash)
@@ -135,16 +132,25 @@ function getMinifiedSource(callback)
 		{
 			FILE.write(ROOT_PATH + "/loader.min.js", compiledSource);
 			
-			var inp = FS.createReadStream(ROOT_PATH + "/loader.min.js");
-			var out = FS.createWriteStream(ROOT_PATH + "/loader.min.js.gz");
+			ZLIB.gzip(new Buffer(compiledSource), function(err, result)
+			{
+				FILE.write(ROOT_PATH + "/loader.min.js.gz", result.toString("binary"));
 
-			inp.pipe(ZLIB.createGzip()).pipe(out);
+				var out = FS.createWriteStream(ROOT_PATH + "/loader.min.js.gz");
+				out.on("close", function()
+				{
+					var readme = FILE.read(ROOT_PATH + "/README.md");
+					readme = readme.replace(/\*\*\d* bytes\*\* \*\(minified and zipped\)\*/, "**" + result.length + " bytes** *(minified and zipped)*");
+					FILE.write(ROOT_PATH + "/README.md", readme);
 
-			FILE.write(ROOT_PATH + "/loader.stripped.js.md5", sourceHash);
-			
-			console.log("... OK");
+					FILE.write(ROOT_PATH + "/workspace/www/loader.stripped.js.md5", sourceHash);
 
-			done();
+					console.log("... OK");
+
+					done();
+				});
+				out.end(result);
+			});
 		});
 	}
 	else

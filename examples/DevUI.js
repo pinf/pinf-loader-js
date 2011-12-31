@@ -10,11 +10,11 @@ require.bundle("", function(require)
 		{
 			jQuery("#report").html(JSDUMP.parse(sourcemint.getReport()));
 
-			jQuery.get("loader.min.js", function(data) {
+			jQuery.get("../../loader.min.js", function(data) {
 				jQuery("#loader-min").html(data);
 			});
 
-			jQuery.get("loader.min.js.gz-size", function(data) {
+			jQuery.get("../../loader.min.js.gz-size", function(data) {
 				jQuery("#loader-min-size").html(data);
 			});
 		}
