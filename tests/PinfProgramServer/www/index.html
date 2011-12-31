@@ -2,50 +2,69 @@
     <head>
         <title>Optimized PINF/CommonJS Loader for JavaScript</title>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+        <script type="text/javascript" src="/q.min.js"></script>
         <script type="text/javascript" src="/loader.js"></script>
         <script type="text/javascript">
+			var done = Q.ref();
 			[
 				"01-HelloWorld",
 				"02-PackageLocalDependencies",
 				"03-CrossPackageDependencies",
 				"Avoid-NestedBundles",
-				"Avoid-SplitBundles",
-				"DevUI"
-			].forEach(function(program)
+				"Avoid-SplitBundles"
+			].forEach(function(name)
 			{
-				require.sandbox("/" + document.location.host + "/examples/" + program + ".js", function(program)
+				require.sandbox("/" + document.location.host + "/examples/" + name + ".js", function(program)
+				{
+					program.main();
+				}, {
+					onInitModule: function(moduleInterface)
+					{
+						moduleInterface.log = function()
+						{
+							var args = [],
+								i;
+							for (i in arguments) {
+								args.push(arguments[i]);
+							}
+							jQuery("#output").append([
+								"<div><div class=\"from\">",
+								moduleInterface.id,
+								"</div><div class=\"message\">",
+								args.join(", "),
+								"</div></div>"
+							].join(""));
+						}
+					}
+				});
+			});
+			Q.when(done, function()
+			{
+				require.sandbox("/" + document.location.host + "/examples/DevUI.js", function(program)
 				{
 					program.main();
 				});
 			});
 		</script>
-		<style>
-		    #loader-min {
-				border: 1px solid #000000;
-				padding: 10px;
-				margin: 10px;
-				font-family: Monaco;
-				font-size: 11px;
-			}
-		    #report {
-				border: 1px solid #000000;
-				padding: 10px;
-				margin: 10px;
-			}
-		</style>
+		<link rel="stylesheet" href="style.css">
     </head>
     <body>
 		<h1>Optimized PINF/CommonJS Loader for JavaScript</h1>
-		<p>
+		<div style="padding-right: 10px; float: right;">
 			Author: <a href="http://christophdorn.com/">Christoph Dorn</a><br/>
-			Source: <a href="https://github.com/sourcemint/loader-js">github.com/sourcemint/loader-js</a><br/>
+			License: MIT<br/>
+			Source: <a href="https://github.com/sourcemint/loader-js">github.com/sourcemint/loader-js</a>
+		</div>
+		<div style="padding-left: 10px;">
 			<a href="loader.js">loader.js</a> (raw source)<br/>
 			<a href="loader.stripped.js">loader.stripped.js</a> (source with <i>DEBUG</i> lines removed)<br/>
 			<a href="loader.min.js">loader.min.js</a> (optimized with GoogleClosure Compiler)<br/>
 			<a href="loader.min.js.gz">loader.min.js.gz</a><br/>
-		</p>
+		</div>
 		<h1>Minified Loader (<span id="loader-min-size"></span> bytes)</h1>
         <div id="loader-min"></div>
+		<h1>Examples Output</h1>
+        <pre id="output"></pre>
 		<h1>Loaded Resources</h1>
         <pre id="report"></pre>
     </body>

@@ -9,7 +9,7 @@ require.bundle("25D74165-D3CE-4731-92A5-F7309C1DBF75", function(require)
 	{
 		exports.main = function(options)
 		{
-			console.log("Hello from Avoid-NestedBundles!");
+			module.log("Hello from Avoid-NestedBundles!");
 		}
 	});
 

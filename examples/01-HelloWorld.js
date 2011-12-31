@@ -5,7 +5,7 @@ require.bundle("4699E5FC-46F1-4B35-B073-B6395E19F921", function(require)
 	{
 		exports.main = function(options)
 		{
-			console.log("Hello from 01-HelloWorld!");
+			module.log("Hello from 01-HelloWorld!");
 		}
 	});
 

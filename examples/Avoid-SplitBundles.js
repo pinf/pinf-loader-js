@@ -10,7 +10,7 @@ require.bundle("27980559-C22C-4DDC-9340-248F4BF2A5E6", function(require)
 	{
 		exports.main = function(options)
 		{
-			console.log("Hello from Avoid-SplitBundles!");
+			module.log("Hello from Avoid-SplitBundles!");
 		}
 	});
 	

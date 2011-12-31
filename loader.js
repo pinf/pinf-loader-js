@@ -19,7 +19,7 @@ var sourcemint = null;
 
 
 	// A set of modules working together.
-	var Sandbox = function(sandboxIdentifier, loadedCallback) {
+	var Sandbox = function(sandboxIdentifier, loadedCallback, sandboxOptions) {
 
 		var bundleIdentifier,
 			moduleInitializers = {},
@@ -77,9 +77,16 @@ var sourcemint = null;
 
 				module.load = function() {
 					if (typeof moduleInitializers[moduleIdentifier] === "function") {
-						var exports = moduleInitializers[moduleIdentifier](module.require, module.exports, {
+						
+						var moduleInterface = {
 							id: module.id
-						});
+						}
+
+						if (sandboxOptions.onInitModule) {
+							sandboxOptions.onInitModule(moduleInterface, module, pkg, sandbox);
+						}
+
+						var exports = moduleInitializers[moduleIdentifier](module.require, module.exports, moduleInterface);
 						if (typeof exports !== "undefined") {
 							module.exports = exports;
 						}
@@ -87,6 +94,17 @@ var sourcemint = null;
 						module.exports = moduleInitializers[moduleIdentifier];
 					}
 				}
+
+				/*DEBUG*/ module.getReport = function() {
+				/*DEBUG*/ 	var exportsCount = 0,
+				/*DEBUG*/ 		key;
+				/*DEBUG*/ 	for (key in module.exports) {
+				/*DEBUG*/ 		exportsCount++;
+				/*DEBUG*/ 	}
+				/*DEBUG*/ 	return {
+				/*DEBUG*/ 		exports: exportsCount
+				/*DEBUG*/ 	};
+				/*DEBUG*/ }
 
 				return module;
 			};
@@ -104,6 +122,12 @@ var sourcemint = null;
 				}
 				return initializedModules[moduleIdentifier];
 			}
+			
+			/*DEBUG*/ pkg.getReport = function() {
+			/*DEBUG*/ 	return {
+			/*DEBUG*/ 		mappings: mappings
+			/*DEBUG*/ 	};
+			/*DEBUG*/ }
 			
 			packages[packageIdentifier] = pkg;
 
@@ -133,6 +157,23 @@ var sourcemint = null;
 			loadedBundles.shift();
 			loadedCallback(sandbox);
 		});
+		
+		/*DEBUG*/ sandbox.getReport = function() {
+		/*DEBUG*/ 	var report = {
+		/*DEBUG*/ 			packages: {},
+		/*DEBUG*/ 			modules: {}
+		/*DEBUG*/ 		},
+		/*DEBUG*/ 		key;
+		/*DEBUG*/ 	for (key in packages) {
+		/*DEBUG*/ 		report.packages[key] = packages[key].getReport();
+		/*DEBUG*/ 	}
+		/*DEBUG*/ 	for (key in moduleInitializers) {
+		/*DEBUG*/ 		if (initializedModules[key]) {
+		/*DEBUG*/ 			report.modules[key] = initializedModules[key].getReport();
+		/*DEBUG*/ 		}
+		/*DEBUG*/ 	}
+		/*DEBUG*/ 	return report;
+		/*DEBUG*/ }
 
 		return sandbox;
 	};
@@ -173,18 +214,18 @@ var sourcemint = null;
 		require.supports = "ucjs2-pinf-0";
 
 		// Create a new environment to memoize modules to.
-		require.sandbox = function(programIdentifier, loadedCallback) {
+		require.sandbox = function(programIdentifier, loadedCallback, options) {
 			var sandboxIdentifier = programIdentifier.replace(/^[^:]*:\//, "").replace(/\.js$/, "");
-			return sandboxes[sandboxIdentifier] = Sandbox(sandboxIdentifier, loadedCallback);
+			return sandboxes[sandboxIdentifier] = Sandbox(sandboxIdentifier, loadedCallback, options || {});
 		}
 		
 		/*DEBUG*/ require.getReport = function() {
 		/*DEBUG*/ 	var report = {
 		/*DEBUG*/ 			sandboxes: {}
 		/*DEBUG*/ 		},
-		/*DEBUG*/ 		sandboxIdentifier;
-		/*DEBUG*/ 	for (sandboxIdentifier in sandboxes) {
-		/*DEBUG*/ 		report.sandboxes[sandboxIdentifier] = true;
+		/*DEBUG*/ 		key;
+		/*DEBUG*/ 	for (key in sandboxes) {
+		/*DEBUG*/ 		report.sandboxes[key] = sandboxes[key].getReport();
 		/*DEBUG*/ 	}
 		/*DEBUG*/ 	return report;
 		/*DEBUG*/ }

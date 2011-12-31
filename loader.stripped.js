@@ -23,7 +23,7 @@ var sourcemint = null;
 
 
 	// A set of modules working together.
-	var Sandbox = function(sandboxIdentifier, loadedCallback) {
+	var Sandbox = function(sandboxIdentifier, loadedCallback, sandboxOptions) {
 
 		var bundleIdentifier,
 			moduleInitializers = {},
@@ -75,9 +75,16 @@ var sourcemint = null;
 
 				module.load = function() {
 					if (typeof moduleInitializers[moduleIdentifier] === "function") {
-						var exports = moduleInitializers[moduleIdentifier](module.require, module.exports, {
+						
+						var moduleInterface = {
 							id: module.id
-						});
+						}
+
+						if (sandboxOptions.onInitModule) {
+							sandboxOptions.onInitModule(moduleInterface, module, pkg, sandbox);
+						}
+
+						var exports = moduleInitializers[moduleIdentifier](module.require, module.exports, moduleInterface);
 						if (typeof exports !== "undefined") {
 							module.exports = exports;
 						}
@@ -85,6 +92,7 @@ var sourcemint = null;
 						module.exports = moduleInitializers[moduleIdentifier];
 					}
 				}
+
 
 				return module;
 			};
@@ -99,6 +107,7 @@ var sourcemint = null;
 				}
 				return initializedModules[moduleIdentifier];
 			}
+			
 			
 			packages[packageIdentifier] = pkg;
 
@@ -122,6 +131,7 @@ var sourcemint = null;
 			loadedBundles.shift();
 			loadedCallback(sandbox);
 		});
+		
 
 		return sandbox;
 	};
@@ -154,9 +164,9 @@ var sourcemint = null;
 		require.supports = "ucjs2-pinf-0";
 
 		// Create a new environment to memoize modules to.
-		require.sandbox = function(programIdentifier, loadedCallback) {
+		require.sandbox = function(programIdentifier, loadedCallback, options) {
 			var sandboxIdentifier = programIdentifier.replace(/^[^:]*:\//, "").replace(/\.js$/, "");
-			return sandboxes[sandboxIdentifier] = Sandbox(sandboxIdentifier, loadedCallback);
+			return sandboxes[sandboxIdentifier] = Sandbox(sandboxIdentifier, loadedCallback, options || {});
 		}
 		
 

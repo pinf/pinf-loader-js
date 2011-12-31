@@ -14,7 +14,7 @@ require.bundle("", function(require)
 		return {
 			main: function(options)
 			{
-				console.log(GREETINGS.getGreeting());
+				module.log(GREETINGS.getGreeting());
 			}
 		};
 	});
