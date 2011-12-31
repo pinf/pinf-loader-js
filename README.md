@@ -1,50 +1,57 @@
 Optimized PINF/CommonJS Loader for JavaScript
 =============================================
 
+An optimized *(intended for production use)* **CommonJS package mappings** based **JavaScript module loader** for the browser in only **985 bytes** *(minified and zipped)*.
+
+Copyright: 2011 [Christoph Dorn](http://www.christophdorn.com/)
+Code License: [MIT License](http://www.opensource.org/licenses/mit-license.php)
+Docs License: [Creative Commons Attribution-NonCommercial-ShareAlike 3.0](http://creativecommons.org/licenses/by-nc-sa/3.0/)
+Mailing list: [groups.google.com/group/pinf-dev](http://groups.google.com/group/pinf-dev/)
+
+What
+----
+
+The loader provides a **minimal CommonJS environment** that requests **optimized static JS code files** *(bundles containing modules)* from a server via **GET requests** and boots these into sandboxes in the browser based on the requested URL.
+
+Demo: *TODO: Github Pages link*
+
+Supported features:
+
+  * *TODO*
+
+Supported Browsers:
+
+  * *TODO*
+
+
+Why
+---
+
 *TODO*
 
 
-Support & Feedback
-==================
+Usage
+=====
 
-Mailing list: [http://groups.google.com/group/pinf-dev/](http://groups.google.com/group/pinf-dev/)
-
-
-Author
-======
-
-This project is maintained by [Christoph Dorn](http://www.christophdorn.com/).
+*TODO*
 
 
-Documentation License
-=====================
+Links
+=====
 
-[Creative Commons Attribution-NonCommercial-ShareAlike 3.0](http://creativecommons.org/licenses/by-nc-sa/3.0/)
+**Specifications**
 
-Copyright (c) 2011+ [Christoph Dorn](http://www.christophdorn.com/)
+  * [CommonJS/Modues/1.1.1 (approved)](http://wiki.commonjs.org/wiki/Modules/1.1.1)
+  * [CommonJS/Modues/2.0draft8 (draft)](http://www.page.ca/~wes/CommonJS/modules-2.0-draft8/) with changes that will become `CommonJS/Modues/2/B`
+  * [CommonJS/Packages/1.1 (draft)](http://wiki.commonjs.org/wiki/Packages/1.1) with changes that will become `CommonJS/Packages/1.2`
+  * [CommonJS/Packages/Mappings/C (proposal)](http://wiki.commonjs.org/wiki/Packages/Mappings/C) with changes that will become `Packages/Mappings/E`
 
+**Prior Art**
 
-Code License
-============
-
-[MIT License](http://www.opensource.org/licenses/mit-license.php)
-
-Copyright (c) 2011+ [Christoph Dorn](http://www.christophdorn.com/)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+  * https://github.com/unscriptable/curl
+  * https://github.com/jrburke/almond
+  * https://github.com/jrburke/requirejs
+  * http://code.google.com/p/bravojs/
+  * https://github.com/NobleJS/Noble-Modules
+  * https://github.com/pinf/loader-js
+  * https://github.com/kriszyp/nodules
