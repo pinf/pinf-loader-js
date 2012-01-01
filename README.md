@@ -42,13 +42,10 @@ There are two evolving standards that specify such conventions:
 
 When coding using these standards you need to keep in mind the two primary environments that the application will run in:
 
-  1) **Development**
+  1) **Development** - Needs a loader that will, on demand, locate in the source tree, assemble and transport module source 
+	 files to the browser for rapid development.
 
-     Needs a loader that will, on demand, locate in the source tree, assemble and transport module source files to the browser for rapid development.
-
-  2) **Production**
-
-	 Needs a build step that collects modules from the source tree and generates static optimized bundles that will be fetched
+  2) **Production** - Needs a build step that collects modules from the source tree and generates static optimized bundles that will be fetched
 	 by a loader optimized for production runtime performance.
 
 The `Sourcemint JavaScript Loader` is intended to run your application in **production**. To generate bundles for your application
