@@ -38,7 +38,7 @@ To achieve namespace isolation you need JavaScript libraries written in conventi
 There are two evolving standards that specify such conventions:
 
   * [CommonJS Modules (CJS)](http://wiki.commonjs.org/wiki/Modules/1.1)
-  * [Asynchronous Module Definition (AMD)](http://wiki.commonjs.org/wiki/Modules/AsynchronousDefinition)
+  * [Asynchronous Module Definition (AMD)](https://github.com/amdjs/amdjs-api/wiki/AMD)
 
 When coding using these standards you need to keep in mind the two primary environments that the application will run in:
 
