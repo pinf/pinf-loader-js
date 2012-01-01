@@ -63,10 +63,13 @@ Usage
 
 `http://localhost/index.html`
 
-	require.sandbox(/localhost/app.js", function(program)
-	{
-		program.main();
-	});
+	<script type="text/javascript" src="loader.js"></script>
+	<script type="text/javascript">
+		require.sandbox(/localhost/app.js", function(program)
+		{
+			program.main();
+		});
+	</script>
 
 `http://localhost/app.js`
 
@@ -89,7 +92,7 @@ Links
 
 **Specifications**
 
-The `Sourcemint JavaScript Loader` implements the following specifications.
+The `Sourcemint JavaScript Loader` implements the following specifications:
 
   * [CommonJS/Modues/1.1.1 (approved)](http://wiki.commonjs.org/wiki/Modules/1.1.1)
   * [CommonJS/Modues/2.0draft8 (draft)](http://www.page.ca/~wes/CommonJS/modules-2.0-draft8/) with changes that will become `CommonJS/Modues/2/B`
@@ -98,7 +101,7 @@ The `Sourcemint JavaScript Loader` implements the following specifications.
 
 **Prior Art**
 
-The `Sourcemint JavaScript Loader` takes the best from the following projects.
+The `Sourcemint JavaScript Loader` takes the best from the following projects:
 
   * https://github.com/unscriptable/curl
   * https://github.com/jrburke/almond
