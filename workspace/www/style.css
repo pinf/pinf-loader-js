@@ -9,6 +9,10 @@ BODY {
 H1 {
 	font-size: 16px;
 }
+H1 > SPAN.plain {
+	font-size: 14px;
+	font-weight: normal;
+}
 #forkme {
     border: 0 none;
     position: absolute;
@@ -41,4 +45,7 @@ H1 {
 	background-color: #ececec;
 	padding-left: 5px;
 	padding-right: 5px;
+}
+#report {
+	display: inline-block;
 }
