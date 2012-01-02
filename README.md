@@ -204,10 +204,12 @@ TODO
 
   * Internet Explorer needs further testing (at least one bug in dev UI or loader).
   * `./examples/DevUI.js#/lib/q.js` does not work in Opera:
+
 		Error thrown at line 7, column 622 in <anonymous function: l>(a) in http://localhost:8080/workspace/www/q.min.js:
     		B.port2.postMessage()
 		called from line 6, column 47 in g(a, b, d) in http://localhost:8080/workspace/www/q.min.js
 		called from line 6, column 882 in v(a) in http://localhost:8080/workspace/www/q.min.js
+
   * `#output` tag in `http://localhost:8080/workspace/www/` does not render properly in `Safari`.
 
 **Features:**
