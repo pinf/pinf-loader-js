@@ -7,7 +7,9 @@ require.bundle("", function(require)
 		{
 			module.log("Hello from 11-LoadBundle!");
 
-			require.async("./ExtraBundle", function(EXTRA_BUNDLE)
+			var extraBundleID = "./ExtraBundle";
+
+			require.async(extraBundleID, function(EXTRA_BUNDLE)
 			{
 				EXTRA_BUNDLE.init();
 			});

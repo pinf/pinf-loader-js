@@ -23,11 +23,37 @@ called **Bundles** from a server via **GET requests** and boots these into sandb
 
 Supported Environments:
 
-  * *TODO*
+  * Browser:
+      * Firefox
+      * Google Chrome
+      * Internet Explorer
+      * Safari
+      * Opera
 
 Supported features:
 
-  * *TODO*
+  * Load bundled JavaScript programs from static URLs
+  * Asynchronously load more program code bundles as needed
+  * Isolated module scopes
+  * Isolated package namespaces
+  * Isolated sandbox namespaces
+  * Nested and circular dependency trees
+  * Consistent mapping of static application resource URLs to loader namespaces
+  * [CommonJS/Modues/1.1](http://wiki.commonjs.org/wiki/Modules/1.1)
+    * `function(require, exports, module) {}`
+    * `var ModuleAPI = require("./Module")`
+  * [CommonJS/Packages/Mappings/C (proposal)](http://wiki.commonjs.org/wiki/Packages/Mappings/C)
+    * `package.json ~ {mappings:{"PackageAlias": "PackageIdentifier"}}`
+    * `var ModuleAPI = require("PackageAlias/Module")`
+  * [CommonJS/Modues/2.0draft8 (draft)](http://www.page.ca/~wes/CommonJS/modules-2.0-draft8/)
+    * `global.require.memoize("CanonicalModuleIdentifier", ModuleInitializer)` (no dependency argument)
+    * `require.uri(ModuleIdentifierString)` (returns `["SandboxURI", "CanonicalModuleIdentifier"]`)
+  * [(Un)CommonJS(kriskowal)/Modules](https://github.com/kriskowal/uncommonjs/blob/master/modules/specification.md)
+    * `require.async(ModuleIdentifierString, function loaded(ModuleAPI) {}, function error(e) {})`
+  * Proposed:
+    * `[global.]require.sandbox(SandboxURI, function loaded(sandbox) {}, SandboxOptions)`
+    * `sandbox.main()`
+    * `require.bundle("BundleIdentifier", function ConsistentModuleSet(require) {})`
 
 Applications may be **coded directly in the bundle format**. Alternatively the bundle format may be treated as a **compile target**.
 The following tools can generate `Sourcemint JavaScript Loader` compatible bundles:
@@ -102,6 +128,11 @@ Tips
   * When using a different loader during development make sure only supported API features
     of this loader are used. Load extra features along with your application by
     [augmenting a sandbox](https://github.com/sourcemint/loader-js/blob/master/examples/12-Sandbox.js).
+  * When writing or generating bundles make sure one consistent set of statically linked modules
+    is contained in each bundle file. Dynamic links to other modules or bundles must be made via
+    `require.async()` or `require.sandbox()` respectively. The hierarchy of how your application nests
+    these dynamic links will determine which modules must be included in subsequently loaded bundles
+    to avoid sending the same modules twice.
 
 
 FAQ
@@ -125,19 +156,37 @@ Also, it is not necessary to have these kinds of loader plugins at the core load
 
 As an alternative it is trivial to load some extra convenience features within the application to do what you need.
 
+**How does the loader compare to [github.com/jrburke/almond](https://github.com/jrburke/almond)?**
+
+While the [RequireJS](https://github.com/jrburke/requirejs) + 
+[Almond](https://github.com/jrburke/almond) combination focuses on loading of optimized [AMD](https://github.com/amdjs/amdjs-api/wiki/AMD)
+formatted modules this loader focuses on loading of optimized [CJS](http://wiki.commonjs.org/wiki/Modules/1.1) formatted modules.
+
+The *AMD Specification* is a small subset combining several *CommonJS Concepts* in a different form.
+
+*CommonJS* represents a more pure and modular approach to devising arbitrary JavaScript application architectures by
+carefully layering a few core concepts into a framework that provides one small existential foundation
+for all other concepts. It allows for isolated namespaces, nested package dependency structures and runtime sandboxes 
+as well as automatic conversion from source trees to optimized bundles. This loader is one *existential foundation implementation*
+and fully compatible with the *CommonJS Concepts*.
+
+In contrast *RequireJS + Almond* focuses on optimally loading a list of packages containing JavaScript modules and 
+resource files primarily into the browser. In optimized form (for *Almond*), several key *RequireJS* features are not supported.
+
 
 Links
 =====
 
-**Influential Specifications**
+**Influential Specifications:**
 
-  * [CommonJS/Modues/1.1.1 (approved)](http://wiki.commonjs.org/wiki/Modules/1.1.1)
+  * [CommonJS/Modues/1.1 (approved)](http://wiki.commonjs.org/wiki/Modules/1.1)
   * [(Un)CommonJS(kriskowal)/Modules](https://github.com/kriskowal/uncommonjs/blob/master/modules/specification.md)
   * [CommonJS/Modues/2.0draft8 (draft)](http://www.page.ca/~wes/CommonJS/modules-2.0-draft8/) with changes that will become `CommonJS/Modues/2/B`
   * [CommonJS/Packages/1.1 (draft)](http://wiki.commonjs.org/wiki/Packages/1.1) with changes that will become `CommonJS/Packages/1.2`
   * [CommonJS/Packages/Mappings/C (proposal)](http://wiki.commonjs.org/wiki/Packages/Mappings/C) with changes that will become `Packages/Mappings/E`
+  * [Asynchronous Module Definition (AMD)](https://github.com/amdjs/amdjs-api/wiki/AMD)
 
-**Prior Art**
+**Prior Art:**
 
   * https://github.com/unscriptable/curl
   * https://github.com/jrburke/almond
@@ -146,3 +195,18 @@ Links
   * https://github.com/NobleJS/Noble-Modules
   * https://github.com/pinf/loader-js
   * https://github.com/kriszyp/nodules
+
+
+TODO
+====
+
+**Bugs:**
+
+  * Internet Explorer needs further testing (at least one bug in dev UI or loader).
+  * `./workspace/www/q.min.js` does not work in Opera causing `./examples/DevUI.js` to fail:
+		Error thrown at line 7, column 622 in <anonymous function: l>(a) in http://localhost:8080/workspace/www/q.min.js:
+    		B.port2.postMessage()
+		called from line 6, column 47 in g(a, b, d) in http://localhost:8080/workspace/www/q.min.js
+		called from line 6, column 882 in v(a) in http://localhost:8080/workspace/www/q.min.js
+  * `#output` tag in `http://localhost:8080/workspace/www/` does not render properly in `Safari`.
+

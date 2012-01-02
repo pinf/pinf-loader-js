@@ -70,9 +70,17 @@ exports.main = function(options)
 					res.end();
 				},
 
-	            "/.*": CONNECT.static(ROOT_PATH, {
-    	            maxAge: 0
-    	        })  
+	            "/.*": function(req, res)
+				{
+					return CONNECT.static(ROOT_PATH, {
+   	            		maxAge: 0
+   	        		})(req, res, function()
+					{
+						console.log("Not found: " + req.originalUrl);
+						res.writeHead(404, {});
+						res.end();
+					});
+				}
         	})
         )
     );
