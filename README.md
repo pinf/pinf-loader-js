@@ -210,3 +210,7 @@ TODO
 		called from line 6, column 882 in v(a) in http://localhost:8080/workspace/www/q.min.js
   * `#output` tag in `http://localhost:8080/workspace/www/` does not render properly in `Safari`.
 
+**Features:**
+
+  * Download mirrors
+  * Multiple hostnames
