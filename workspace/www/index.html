@@ -2,67 +2,18 @@
     <head>
         <title>Optimized PINF/CommonJS Loader for JavaScript</title>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
-        <script type="text/javascript" src="q.min.js"></script>
         <script type="text/javascript" src="../../loader.js"></script>
         <script type="text/javascript">
-			var ROOT_PATH = "/" + document.location.host + document.location.pathname.replace(/\/[^\/]*$/, "/") + "../../";
-		    Q.when(Q.all([
-				"01-HelloWorld",
-				"02-ReturnExports",
-				"03-SpecifyMain",
-				"04-PackageLocalDependencies",
-				"05-CrossPackageDependencies",
-				"07-JsonModule",
-				"08-TextModule",
-				"09-ResourceURI",
-				"10-NamedBundle",
-				"11-LoadBundle",
-				"12-Sandbox",
-				"Avoid-NestedBundles",
-				"Avoid-SplitBundles"
-			].map(function(name) {
-				var result = Q.defer();
-				require.sandbox(ROOT_PATH + "examples/" + name + ".js", function(sandbox)
-				{
-					sandbox.main();
-					result.resolve();
-				}, {
-					onInitModule: function(moduleInterface)
-					{
-						moduleInterface.log = function()
-						{
-							var args = [],
-								i;
-							for (i in arguments) {
-								args.push(arguments[i]);
-							}
-							jQuery("#output").append([
-								"<div><div class=\"from\">",
-								moduleInterface.id,
-								"</div><div class=\"message\">",
-								args.join(", "),
-								"</div></div>"
-							].join(""));
-						}
-					}
-				});
-				return result.promise;
-		    })), function()
+			require.sandbox("../../examples/DevUI.js", function(program)
 			{
-				require.sandbox(ROOT_PATH + "examples/DevUI.js", function(program)
-				{
-					program.main();
-				});
+				program.main();
 			});
 		</script>
-		<link rel="stylesheet" href="style.css">
     </head>
     <body>
-		<a href="https://github.com/sourcemint/loader-js">
-			<img id="forkme" alt="Fork me on GitHub" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png">
-		</a>
+		<a id="forkme" href="https://github.com/sourcemint/loader-js"></a>
 		<h1>Optimized <a href="http://pinf.org/">PINF</a>/<a href="http://commonjs.org/">CommonJS</a> Loader for JavaScript</h1>
-		<div style="padding-right: 60px; float: right;">
+		<div style="padding-right: 140px; float: right;">
 			<b>Copyright:</b> &nbsp;2011 <a href="http://christophdorn.com/">Christoph Dorn</a><br/>
 			<b>License:</b> &nbsp;MIT<br/>
 			<b>Sponsor:</b> &nbsp;<a href="http://sourcemint.com/">Sourcemint</a><br/>

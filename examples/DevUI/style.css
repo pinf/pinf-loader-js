@@ -18,6 +18,9 @@ H1 > SPAN.plain {
     position: absolute;
     right: 0;
     top: 0;
+    background-image: url(forkme.png);
+	width: 149px;
+	height: 149px;
 }
 #loader-min, #output, #report {
 	border: 1px solid #000000;
