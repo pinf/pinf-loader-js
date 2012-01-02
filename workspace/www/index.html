@@ -16,13 +16,15 @@
 				"08-TextModule",
 				"09-ResourceURI",
 				"10-NamedBundle",
+				"11-LoadBundle",
+				"12-Sandbox",
 				"Avoid-NestedBundles",
 				"Avoid-SplitBundles"
 			].map(function(name) {
 				var result = Q.defer();
-				require.sandbox(ROOT_PATH + "examples/" + name + ".js", function(program)
+				require.sandbox(ROOT_PATH + "examples/" + name + ".js", function(sandbox)
 				{
-					program.main();
+					sandbox.main();
 					result.resolve();
 				}, {
 					onInitModule: function(moduleInterface)

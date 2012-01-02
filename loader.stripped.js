@@ -25,14 +25,54 @@ var sourcemint = null;
 	// A set of modules working together.
 	var Sandbox = function(sandboxIdentifier, loadedCallback, sandboxOptions) {
 
-		var bundleIdentifier,
-			moduleInitializers = {},
+		var moduleInitializers = {},
 			initializedModules = {},
-			packages = {};
+			packages = {},
+			headTag;
 
 		var sandbox = {
 				id: sandboxIdentifier
 			};
+
+
+		// These may be overwritten by the environment of the loader.
+		// Defaults to browser use.
+		// @credit https://github.com/unscriptable/curl/blob/62caf808a8fd358ec782693399670be6806f1845/src/curl.js#L319-360
+		function loadInBrowser(uri, loadedCallback) {
+			if (!headTag) {
+				headTag = document.getElementsByTagName("head")[0];
+			}
+			uri = document.location.protocol + "/" + uri;
+			var element = document.createElement("script");
+			element.type = "text/javascript";
+			element.onload = element.onreadystatechange = function(ev) {
+				ev = ev || global.event;
+				if (ev.type === "load" || readyStates[this.readyState]) {
+					this.onload = this.onreadystatechange = this.onerror = null;
+					loadedCallback();
+				}
+			}
+			element.onerror = function(e) {
+			}
+			element.charset = "utf-8";
+			element.async = true;
+			element.src = uri;
+			headTag.insertBefore(element, headTag.firstChild);
+			return element;
+		}
+
+		function load(sandboxIdentifier, loadedCallback) {
+				(sandboxOptions.load || loadInBrowser)(sandboxIdentifier, function() {
+					// Assume a consistent statically linked set of modules has been memoized.
+					var key;
+					for (key in loadedBundles[0][1]) {
+						moduleInitializers[key] = loadedBundles[0][1][key];
+					}
+					loadedBundles.shift();
+					loadedCallback(sandbox);
+				})
+		}
+
 
 		var Package = function(packageIdentifier) {
 			if (packages[packageIdentifier]) {
@@ -47,7 +87,6 @@ var sourcemint = null;
 				libPath = (typeof directories.lib !== "undefined")?directories.lib:"lib";
 			
 			var pkg = {
-				id: packageIdentifier,
 				sandbox: sandboxIdentifier,
 				main: descriptor.main
 			};
@@ -89,6 +128,15 @@ var sourcemint = null;
 					identifier = resolveIdentifier(identifier);
 					return [identifier[0].sandbox, identifier[1]];
 				};
+
+				module.require.async = function(identifier, loadedCallback) {
+					identifier = resolveIdentifier(identifier);
+					load(identifier[0].sandbox + identifier[1], function() {
+						loadedCallback(identifier[0].require(identifier[1]).exports);
+					});
+				};
+
+				module.require.sandbox = sourcemint.sandbox;
 
 				module.load = function() {
 					if (typeof moduleInitializers[moduleIdentifier] === "function") {
@@ -146,40 +194,7 @@ var sourcemint = null;
 		};
 
 
-		// These may be overwritten by the environment of the loader.
-		// Defaults to browser use.
-		// @credit https://github.com/unscriptable/curl/blob/62caf808a8fd358ec782693399670be6806f1845/src/curl.js#L319-360
-		var _head = null;
-		function load(uri, loadedCallback) {
-			if (_head === null) {
-				_head = document.getElementsByTagName("head")[0];
-			}
-			uri = document.location.protocol + "/" + uri;
-			var element = document.createElement("script");
-			element.type = "text/javascript";
-			element.onload = element.onreadystatechange = function(ev) {
-				ev = ev || global.event;
-				if (ev.type === "load" || readyStates[this.readyState]) {
-					this.onload = this.onreadystatechange = this.onerror = null;
-					loadedCallback();
-				}
-			}
-			element.onerror = function(e) {
-			}
-			element.charset = "utf-8";
-			element.async = true;
-			element.src = uri;
-			_head.insertBefore(element, _head.firstChild);
-			return element;
-		}		
-
-		sandbox.scriptTag = (sandboxOptions.load || load)(sandboxIdentifier + ".js", function() {
-			// Assume a consistent statically linked set of modules has been memoized.
-			bundleIdentifier = loadedBundles[0][0];
-			moduleInitializers = loadedBundles[0][1];
-			loadedBundles.shift();
-			loadedCallback(sandbox);
-		});
+		load(sandboxIdentifier + ".js", loadedCallback);
 
 		return sandbox;
 	};
