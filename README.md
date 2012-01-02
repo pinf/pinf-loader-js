@@ -59,9 +59,12 @@ Applications may be **coded directly in the bundle format**. Alternatively the b
 The following tools can generate `Sourcemint JavaScript Loader` compatible bundles:
 
   * [PINF JavaScript Loader](https://github.com/pinf/loader-js) (**JUST ABOUT FUNCTIONAL: DOCS COMING SOON**)
+
     Supports:
+
 	  * [CommonJS Modules (CJS)](http://wiki.commonjs.org/wiki/Modules/1.1)
 	  * [Asynchronous Module Definition (AMD)](https://github.com/amdjs/amdjs-api/wiki/AMD)
+
 	Dynamically generates bundles for your application from a project source tree and its dependencies.
 
 
