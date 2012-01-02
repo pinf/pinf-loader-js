@@ -5,8 +5,7 @@ require.bundle("", function(require)
 	{
 		exports.main = function(options)
 		{
-			var uri = require.uri("./hello.txt").join(""),
-				url = document.location.protocol + "/" + uri;
+			var url = require.uri("./hello.txt").join("");
 
 			jQuery.get(url, function(data) {
 				module.log(data + " from 09-ResourceURI!");
