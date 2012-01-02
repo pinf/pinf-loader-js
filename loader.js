@@ -43,6 +43,8 @@ var sourcemint = null;
 				libPath = (typeof directories.lib !== "undefined")?directories.lib:"lib";
 			
 			var pkg = {
+				id: packageIdentifier,
+				sandbox: sandboxIdentifier,
 				main: descriptor.main
 			};
 
@@ -54,15 +56,19 @@ var sourcemint = null;
 						exports: {}
 					};
 
-				// Statically link a module and its dependencies
-				module.require = function(identifier) {
-					// Check for relative module path to module within same package
+				function normalizeIdentifier(identifier) {
+					// Only append `.js` if module name does not contain a period.
+					return identifier + ((identifier.split("/").pop().indexOf(".")===-1)?".js":"");
+				}
+				
+				function resolveIdentifier(identifier) {
+					// Check for relative module path to module within same package.
 					if (/^\./.test(identifier)) {
 						var segments = identifier.replace(/^\.\//, "").split("../");
 						identifier = moduleIdentifierSegment.slice(0, moduleIdentifierSegment.length-segments.length-1) + "/" + segments[segments.length-1];
-						return pkg.require(identifier + ".js").exports;
+						return [pkg, normalizeIdentifier(identifier)];
 					} else
-					// Check for mapped module path to module within mapped package
+					// Check for mapped module path to module within mapped package.
 					{
 						identifier = identifier.split("/");
 						/*DEBUG*/ if (!mappings) {
@@ -71,8 +77,19 @@ var sourcemint = null;
 						/*DEBUG*/ if (!mappings[identifier[0]]) {
 						/*DEBUG*/ 	throw new Error("Descriptor for sandbox '" + sandbox.id + "' does not declare 'mappings[\"" + identifier[0] + "\"]' property needed to resolve module path '" + identifier.join("/") + "' in module '" + moduleIdentifier + "'!");
 						/*DEBUG*/ }
-						return Package(mappings[identifier[0]]).require(identifier.slice(1).join("/") + ".js").exports;
+						return [Package(mappings[identifier[0]]), normalizeIdentifier(identifier.slice(1).join("/"))];
 					}
+				}
+
+				// Statically link a module and its dependencies
+				module.require = function(identifier) {
+					identifier = resolveIdentifier(identifier);
+					return identifier[0].require(identifier[1]).exports;
+				};
+
+				module.require.uri = function(identifier) {
+					identifier = resolveIdentifier(identifier);
+					return [identifier[0].sandbox, identifier[1]];
 				};
 
 				module.load = function() {
@@ -90,10 +107,14 @@ var sourcemint = null;
 						if (typeof exports !== "undefined") {
 							module.exports = exports;
 						}
+					} else
+					if (typeof moduleInitializers[moduleIdentifier] === "string") {
+						// TODO: Use more optimal string encoding algorythm to reduce payload size?
+						module.exports = decodeURIComponent(moduleInitializers[moduleIdentifier]);
 					} else {
 						module.exports = moduleInitializers[moduleIdentifier];
 					}
-				}
+				};
 
 				/*DEBUG*/ module.getReport = function() {
 				/*DEBUG*/ 	var exportsCount = 0,
@@ -104,7 +125,7 @@ var sourcemint = null;
 				/*DEBUG*/ 	return {
 				/*DEBUG*/ 		exports: exportsCount
 				/*DEBUG*/ 	};
-				/*DEBUG*/ }
+				/*DEBUG*/ };
 
 				return module;
 			};
@@ -218,7 +239,7 @@ var sourcemint = null;
 
 				// Address a specific sandbox or currently loading sandbox if initial load.
 				this.bundle = function(uid, callback) {
-					/*DEBUG*/ if (bundle) {
+					/*DEBUG*/ if (typeof bundle !== "undefined") {
 					/*DEBUG*/ 	throw new Error("You cannot nest require.bundle() calls!");
 					/*DEBUG*/ }
 					/*DEBUG*/ if (uid && bundleIdentifiers[uid]) {

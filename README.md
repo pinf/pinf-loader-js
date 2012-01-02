@@ -1,7 +1,9 @@
 Optimized [PINF](http://pinf.org/)/[CommonJS](http://commonjs.org/) Loader for JavaScript
 =========================================================================================
 
-The `Sourcemint JavaScript Loader` is an optimized *(intended for production use)* **CommonJS package mappings** based **JavaScript module loader** for the browser in only **985 bytes** *(minified and zipped)*.
+*Status: DEV*
+
+The `Sourcemint JavaScript Loader` is an optimized *(intended for production use)* **CommonJS package mappings** based **JavaScript module loader** for the browser in only **1100 bytes** *(minified and zipped)*.
 
   * Copyright: 2011 [Christoph Dorn](http://www.christophdorn.com/)
   * Code License: [MIT License](http://www.opensource.org/licenses/mit-license.php)
@@ -10,6 +12,7 @@ The `Sourcemint JavaScript Loader` is an optimized *(intended for production use
   * Mailing list: [groups.google.com/group/pinf-dev](http://groups.google.com/group/pinf-dev/)
 
 **Demo: [sourcemint.github.com/loader-js/workspace/www](http://sourcemint.github.com/loader-js/workspace/www/index.html)**
+
 
 What
 ----
@@ -90,9 +93,7 @@ For more examples see: [github.com/sourcemint/loader-js/tree/master/examples](ht
 Links
 =====
 
-**Specifications**
-
-The `Sourcemint JavaScript Loader` implements the following specifications:
+**Influential Specifications**
 
   * [CommonJS/Modues/1.1.1 (approved)](http://wiki.commonjs.org/wiki/Modules/1.1.1)
   * [CommonJS/Modues/2.0draft8 (draft)](http://www.page.ca/~wes/CommonJS/modules-2.0-draft8/) with changes that will become `CommonJS/Modues/2/B`
@@ -100,8 +101,6 @@ The `Sourcemint JavaScript Loader` implements the following specifications:
   * [CommonJS/Packages/Mappings/C (proposal)](http://wiki.commonjs.org/wiki/Packages/Mappings/C) with changes that will become `Packages/Mappings/E`
 
 **Prior Art**
-
-The `Sourcemint JavaScript Loader` takes the best from the following projects:
 
   * https://github.com/unscriptable/curl
   * https://github.com/jrburke/almond

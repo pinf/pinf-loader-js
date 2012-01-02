@@ -1,5 +1,5 @@
 
-require.bundle("25D74165-D3CE-4731-92A5-F7309C1DBF75", function(require)
+require.bundle("", function(require)
 {
 	require.memoize("/package.json", {
 		main: "/main.js"
@@ -15,13 +15,13 @@ require.bundle("25D74165-D3CE-4731-92A5-F7309C1DBF75", function(require)
 
 	var error;
 	try {
-		require.bundle("25D74165-D3CE-4731-92A5-F7309C1DBF76", function(require)
+		require.bundle("", function(require)
 		{
 		});
 	} catch(e) {
 		error = e;
 	} finally {
-		if (error.message !== "You cannot nest require.bundle() calls!")
+		if (!error || error.message !== "You cannot nest require.bundle() calls!")
 		{
 			throw new Error("Loader should have thrown: You cannot nest require.bundle() calls!");
 		}

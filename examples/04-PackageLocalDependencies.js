@@ -1,21 +1,14 @@
 
 require.bundle("", function(require)
 {
-
-	require.memoize("/package.json", {
-		main: "/boot.js"
-	});
-
-	require.memoize("/boot.js", function(require, exports, module)
+	require.memoize("/main.js", function(require, exports, module)
 	{
 		// One-way dependency.
 		var GREETINGS = require("./greetings");
 
-		return {
-			main: function(options)
-			{
-				module.log(GREETINGS.getGreeting());
-			}
+		exports.main = function(options)
+		{
+			module.log(GREETINGS.getGreeting());
 		};
 	});
 
@@ -32,7 +25,7 @@ require.bundle("", function(require)
 	
 		exports.getName = function()
 		{
-			return "02-PackageLocalDependencies";
+			return "04-PackageLocalDependencies";
 		}
 	});
 

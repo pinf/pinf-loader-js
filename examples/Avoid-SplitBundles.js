@@ -24,7 +24,7 @@ try {
 } catch(e) {
 	error = e;
 } finally {
-	if (error.message !== "You cannot split require.bundle(UID) calls where UID is constant!")
+	if (!error || error.message !== "You cannot split require.bundle(UID) calls where UID is constant!")
 	{
 		throw new Error("Loader should have thrown: You cannot split require.bundle(UID) calls where UID is constant!");
 	}
