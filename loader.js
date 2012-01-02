@@ -40,7 +40,9 @@ var sourcemint = null;
 			if (!headTag) {
 				headTag = document.getElementsByTagName("head")[0];
 			}
-			uri = document.location.protocol + "/" + uri;
+			if (/^\//.test(uri)) {
+				uri = document.location.protocol + "/" + uri;
+			}
 			var element = document.createElement("script");
 			element.type = "text/javascript";
 			element.onload = element.onreadystatechange = function(ev) {
