@@ -22,6 +22,7 @@ require.bundle("", function(require)
 				"10-NamedBundle",
 				"11-LoadBundle",
 				"12-Sandbox",
+				"13-CrossDomain",
 				"Avoid-NestedBundles",
 				"Avoid-SplitBundles"
 			].map(function(name) {
@@ -47,7 +48,22 @@ require.bundle("", function(require)
 								args.join(", "),
 								"</div></div>"
 							].join(""));
-						}
+						};
+						moduleInterface.logForModule = function(moduleInterface, arguments)
+						{
+							var args = [],
+								i;
+							for (i in arguments) {
+								args.push(arguments[i]);
+							}
+							jQuery("#output").append([
+								"<div><div class=\"from\">",
+								moduleInterface.id,
+								"</div><div class=\"message\">",
+								args.join(", "),
+								"</div></div>"
+							].join(""));					
+						};
 					}
 				});
 				return result.promise;
@@ -61,7 +77,7 @@ require.bundle("", function(require)
 
 				jQuery.get("loader.min.js.gz-size", function(data) {
 					jQuery("#loader-min-size").html(data);
-				});
+				});		
 			});			
 		}
 	});

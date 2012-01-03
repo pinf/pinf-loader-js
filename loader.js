@@ -290,7 +290,7 @@ var sourcemint = null;
 
 		// Create a new environment to memoize modules to.
 		require.sandbox = function(programIdentifier, loadedCallback, options) {
-			var sandboxIdentifier = programIdentifier.replace(/^[^:]*:\//, "").replace(/\.js$/, "");
+			var sandboxIdentifier = programIdentifier.replace(/\.js$/, "");
 			return sandboxes[sandboxIdentifier] = Sandbox(sandboxIdentifier, loadedCallback, options || {});
 		}
 		

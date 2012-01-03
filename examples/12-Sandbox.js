@@ -5,6 +5,8 @@ require.bundle("", function(require)
 	{
 		exports.main = function(options)
 		{
+			// TODO: Return a promise that resolves when the sandbox has been run.
+
 			module.log("Hello from 12-Sandbox!");
 
 			var uri = require.uri("./SandboxedExtraBundle");
@@ -17,7 +19,7 @@ require.bundle("", function(require)
 				{
 					moduleInterface.log = function()
 					{
-						module.log.apply(null, arguments);
+						module.logForModule.call(null, moduleInterface, arguments);
 					}
 				}
 			});
