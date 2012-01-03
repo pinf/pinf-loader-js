@@ -141,13 +141,15 @@ Tips
 FAQ
 ===
 
-**Why does the loader not support feature X?**
+Why does the loader not support feature X?
+------------------------------------------
 
 This loader is pretty much complete in terms of what needs to be implemented at the core
 loader level. Convenience features can be loaded along with the application by
 [augmenting a sandbox](https://github.com/sourcemint/loader-js/blob/master/examples/12-Sandbox.js).
 
-**Why does the loader not support [AMD-style Loader Plugins](https://github.com/amdjs/amdjs-api/wiki/Loader-Plugins)?**
+Why does the loader not support [AMD-style Loader Plugins](https://github.com/amdjs/amdjs-api/wiki/Loader-Plugins)?
+-------------------------------------------------------------------------------------------------------------------
 
 Because code that uses loader plugins that are triggered by modifying the string literal passed to `require()` cannot be
 uniformly and easily optimized when generating bundles. Loader plugins require that:
@@ -159,7 +161,8 @@ Also, it is not necessary to have these kinds of loader plugins at the core load
 
 As an alternative it is trivial to load some extra convenience features within the application to do what you need.
 
-**How does the loader compare to [github.com/jrburke/almond](https://github.com/jrburke/almond)?**
+How does the loader compare to [github.com/jrburke/almond](https://github.com/jrburke/almond)?
+----------------------------------------------------------------------------------------------
 
 While the [RequireJS](https://github.com/jrburke/requirejs) + 
 [Almond](https://github.com/jrburke/almond) combination focuses on loading of optimized [AMD](https://github.com/amdjs/amdjs-api/wiki/AMD)
