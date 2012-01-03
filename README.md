@@ -176,8 +176,9 @@ for all other concepts. It allows for isolated namespaces, nested package depend
 as well as automatic conversion from source trees to optimized bundles. This loader is one *existential foundation implementation*
 and fully compatible with the *CommonJS Concepts*.
 
-In contrast *RequireJS + Almond* focuses on optimally loading a list of packages containing JavaScript modules and 
-resource files primarily into the browser. In optimized form (for *Almond*), several key *RequireJS* features are not supported.
+In contrast *RequireJS + Almond* focuses on optimally loading (primarily into the browser) a list of packages containing 
+JavaScript modules and resource files into a single namespace. In optimized form (for *Almond*), several 
+key *RequireJS* features are not supported.
 
 
 Links
