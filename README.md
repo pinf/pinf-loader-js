@@ -46,8 +46,8 @@ Supported features:
     * `package.json ~ {mappings:{"PackageAlias": "PackageIdentifier"}}`
     * `var ModuleAPI = require("PackageAlias/Module")`
   * [CommonJS/Modues/2.0draft8 (draft)](http://www.page.ca/~wes/CommonJS/modules-2.0-draft8/)
-    * `global.require.memoize("CanonicalModuleIdentifier", ModuleInitializer)` (no dependency argument)
-    * `require.uri(ModuleIdentifierString)` (returns `["SandboxURI", "CanonicalModuleIdentifier"]`)
+    * `global.require.memoize("PackageIdentifier/ModuleIdentifier", ModuleInitializer)` (no dependency argument)
+    * `require.uri(ModuleIdentifierString)` (returns `["SandboxURI", "PackageIdentifier/ModuleIdentifier"]`)
   * [(Un)CommonJS(kriskowal)/Modules](https://github.com/kriskowal/uncommonjs/blob/master/modules/specification.md)
     * `require.async(ModuleIdentifierString, function loaded(ModuleAPI) {}, function error(e) {})`
   * Proposed:
