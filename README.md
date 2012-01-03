@@ -101,7 +101,7 @@ Usage
 
 	<script type="text/javascript" src="loader.js"></script>
 	<script type="text/javascript">
-		require.sandbox(/localhost/app.js", function(sandbox)
+		require.sandbox("app.js", function(sandbox)
 		{
 			sandbox.main();
 		});
