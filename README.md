@@ -136,6 +136,11 @@ Tips
     `require.async()` or `require.sandbox()` respectively. The hierarchy of how your application nests
     these dynamic links will determine which modules must be included in subsequently loaded bundles
     to avoid sending the same modules twice.
+  * A module can only be memoized once for each *Canonical Identifier* (comprising of *SandboxIdentifier/PackageIdentifier/ModuleIdentifier*).
+    When placing modules into bundles make sure bundle filenames do not overlap with module filenames (and the reverse) as these 
+    have the potential to conflict (modules and bundles share the same logical file hierarchy). The idea is that a set of statically 
+    linked modules can always be combined into one file which is placed into the file that first requires the dependencies 
+    and represents the entry point into the bundle.
 
 
 FAQ
@@ -220,6 +225,7 @@ TODO
   * `#output` tag in `http://localhost:8080/workspace/www/` does not render properly in `Safari`.
 
 **Features:**
-
+  
+  * Duplicate *CanonicalIdentifiers* check
   * Download mirrors
   * Multiple hostnames
