@@ -28,7 +28,8 @@ var sourcemint = null;
 		var moduleInitializers = {},
 			initializedModules = {},
 			packages = {},
-			headTag;
+			headTag,
+			loadingBundles = {};
 
 		var sandbox = {
 				id: sandboxIdentifier
@@ -64,19 +65,33 @@ var sourcemint = null;
 			element = headTag.insertBefore(element, headTag.firstChild);
 		}
 
-		function load(sandboxIdentifier, loadedCallback) {
-			(sandboxOptions.load || loadInBrowser)(sandboxIdentifier, function(cleanupCallback) {
-				// Assume a consistent statically linked set of modules has been memoized.
-				var key;
-				for (key in loadedBundles[0][1]) {
-					moduleInitializers[key] = loadedBundles[0][1][key];
-				}
-				loadedBundles.shift();
+		function load(identifier, loadedCallback) {
+			if (initializedModules[identifier]) {
+				// Module is already loaded and initialized.
 				loadedCallback(sandbox);
-				if (cleanupCallback) {
-					cleanupCallback();
+			} else {
+				// Module is not initialized.
+				if (loadingBundles[identifier]) {
+					// Module is already loading.
+					loadingBundles[identifier].push(loadedCallback);
+				} else {
+					// Module is not already loading.
+					loadingBundles[identifier] = [];
+					identifier = sandboxIdentifier + identifier;
+					(sandboxOptions.load || loadInBrowser)(identifier, function(cleanupCallback) {
+						// Assume a consistent statically linked set of modules has been memoized.
+						var key;
+						for (key in loadedBundles[0][1]) {
+							moduleInitializers[key] = loadedBundles[0][1][key];
+						}
+						loadedBundles.shift();
+						loadedCallback(sandbox);
+						if (cleanupCallback) {
+							cleanupCallback();
+						}
+					});
 				}
-			});
+			}
 		}
 
 
@@ -93,7 +108,6 @@ var sourcemint = null;
 				libPath = (typeof directories.lib !== "undefined")?directories.lib:"lib";
 			
 			var pkg = {
-				sandbox: sandboxIdentifier,
 				main: descriptor.main
 			};
 
@@ -101,7 +115,7 @@ var sourcemint = null;
 
 				var moduleIdentifierSegment = moduleIdentifier.replace(/\/[^\/]*$/, "/").split("/"),
 					module = {
-						id: [sandbox.id, moduleIdentifier],
+						id: moduleIdentifier,
 						exports: {}
 					};
 
@@ -132,14 +146,13 @@ var sourcemint = null;
 
 				module.require.id = function(identifier) {
 					identifier = resolveIdentifier(identifier);
-					// NOTE: identifier[0].sandbox is always equal to sandboxIdentifier
 					return identifier[1];
 				};
 
 				module.require.async = function(identifier, loadedCallback) {
 					identifier = resolveIdentifier(identifier);
-					load(identifier[0].sandbox + identifier[1], function() {
-						loadedCallback(identifier[0].require(identifier[1]).exports);
+					load(identifier[1], function() {
+						loadedCallback(identifier[0].require(identifier[1]).exports);							
 					});
 				};
 
@@ -175,12 +188,20 @@ var sourcemint = null;
 			};
 
 			pkg.require = function(moduleIdentifier) {
+				var loadingBundlesCallbacks;
 				if (!/^\//.test(moduleIdentifier)) {
 					moduleIdentifier = "/" + ((libPath)?libPath+"/":"") + moduleIdentifier;
 				}
 				moduleIdentifier = packageIdentifier + moduleIdentifier;
 				if (!initializedModules[moduleIdentifier]) {
 					(initializedModules[moduleIdentifier] = Module(moduleIdentifier)).load();
+				}
+				if (loadingBundles[moduleIdentifier]) {
+					loadingBundlesCallbacks = loadingBundles[moduleIdentifier];
+					delete loadingBundles[moduleIdentifier];
+					for (i=0;i<loadingBundlesCallbacks.length;i++) {
+						loadingBundlesCallbacks[i](sandbox);
+					}
 				}
 				return initializedModules[moduleIdentifier];
 			}
@@ -202,7 +223,7 @@ var sourcemint = null;
 		};
 
 
-		load(sandboxIdentifier + ".js", loadedCallback);
+		load(".js", loadedCallback);
 
 		return sandbox;
 	};

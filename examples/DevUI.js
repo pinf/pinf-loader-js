@@ -7,6 +7,7 @@ require.bundle("", function(require)
 
 		function JQUERY(callback)
 		{
+			// NOTE: We cache the instace so that `instance.noConflict();` only gets called once.
 			var instance = null;
 			if (instance) {
 				callback(instance);
