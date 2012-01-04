@@ -191,6 +191,10 @@ key *RequireJS* features are not supported.
 Links
 =====
 
+**Discussions:**
+
+  * [(groups.google.com/group/commonjs) Introducing the Sourcemint JavaScript Loader](http://groups.google.com/group/commonjs/browse_thread/thread/153ff1a966e56cb)
+
 **Influential Specifications:**
 
   * [CommonJS/Modues/1.1 (approved)](http://wiki.commonjs.org/wiki/Modules/1.1)
