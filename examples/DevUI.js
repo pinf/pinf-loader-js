@@ -29,68 +29,71 @@ require.bundle("", function(require)
 
 		exports.main = function()
 		{
-			jQuery("HEAD").append('<link rel="stylesheet" href="' + require.sandbox.id + require.id("./style.css") + '">');
+			jQuery(function()
+			{
+				jQuery("HEAD").append('<link rel="stylesheet" href="' + require.sandbox.id + require.id("./style.css") + '">');
 
-			jQuery.get("../../loader.min.js", function(data) {
-				jQuery("#loader-min").html(data);
-			});
-
-			jQuery.get("loader.min.js.gz-size", function(data) {
-				jQuery("#loader-min-size").html(data);
-			});		
-
-		    Q.when(Q.all([
-				"01-HelloWorld",
-				"02-ReturnExports",
-				"03-SpecifyMain",
-				"04-PackageLocalDependencies",
-				"05-CrossPackageDependencies",
-				"07-JsonModule",
-				"08-TextModule",
-				"09-ResourceURI",
-				"10-NamedBundle",
-				"11-LoadBundle",
-				"12-Sandbox",
-				"13-CrossDomain",
-				"Avoid-NestedBundles",
-				"Avoid-SplitBundles"
-			].map(function(name) {
-				var result = Q.defer();
-
-				require.sandbox("../../examples/" + name + ".js", function(sandbox)
-				{
-					try {
-						Q.when(sandbox.main(), result.resolve, result.reject);
-					} catch(e) {
-						result.reject(e);
-					}
-				}, {
-					onInitModule: function(moduleInterface, module)
-					{
-						module.require.API = {
-							Q: Q
-						};
-						moduleInterface.log = function()
-						{
-							logToOutput(moduleInterface, arguments);
-						};
-						moduleInterface.logForModule = function(moduleInterface, arguments)
-						{
-							logToOutput(moduleInterface, arguments);
-						};
-					}
+				jQuery.get("../../loader.min.js", function(data) {
+					jQuery("#loader-min").html(data);
 				});
 
-				return result.promise;
-		    })), function()
-			{
-				jQuery("#report").html(JSDUMP.parse(sourcemint.getReport()));
-				jQuery("#output").addClass("success");
-			}, function(e)
-			{
-				logError(e);
-				jQuery("#output").addClass("fail");
-				jQuery("#error-alert").show();
+				jQuery.get("loader.min.js.gz-size", function(data) {
+					jQuery("#loader-min-size").html(data);
+				});		
+
+			    Q.when(Q.all([
+					"01-HelloWorld",
+					"02-ReturnExports",
+					"03-SpecifyMain",
+					"04-PackageLocalDependencies",
+					"05-CrossPackageDependencies",
+					"07-JsonModule",
+					"08-TextModule",
+					"09-ResourceURI",
+					"10-NamedBundle",
+					"11-LoadBundle",
+					"12-Sandbox",
+					"13-CrossDomain",
+					"Avoid-NestedBundles",
+					"Avoid-SplitBundles"
+				].map(function(name) {
+					var result = Q.defer();
+
+					require.sandbox("../../examples/" + name + ".js", function(sandbox)
+					{
+						try {
+							Q.when(sandbox.main(), result.resolve, result.reject);
+						} catch(e) {
+							result.reject(e);
+						}
+					}, {
+						onInitModule: function(moduleInterface, module)
+						{
+							module.require.API = {
+								Q: Q
+							};
+							moduleInterface.log = function()
+							{
+								logToOutput(moduleInterface, arguments);
+							};
+							moduleInterface.logForModule = function(moduleInterface, arguments)
+							{
+								logToOutput(moduleInterface, arguments);
+							};
+						}
+					});
+
+					return result.promise;
+			    })), function()
+				{
+					jQuery("#report").html(JSDUMP.parse(sourcemint.getReport()));
+					jQuery("#output").addClass("success");
+				}, function(e)
+				{
+					logError(e);
+					jQuery("#output").addClass("fail");
+					jQuery("#error-alert").show();
+				});
 			});
 		}
 	});
