@@ -6,9 +6,38 @@ require.bundle("", function(require)
 		var Q = require("./lib/q"),
 			JSDUMP = require("./lib/jsdump");
 
+		function logToOutput(moduleInterface, arguments)
+		{
+			var args = [],
+				i;
+			for (i in arguments) {
+				args.push(arguments[i]);
+			}
+			jQuery("#output").append([
+				"<div><div class=\"from\">",
+				moduleInterface.id,
+				"</div><div class=\"message\">",
+				args.join(", "),
+				"</div></div>"
+			].join(""));
+		}
+		
+		function logError()
+		{
+			console.error.apply(null, ["[DevUI]"].concat(arguments));
+		}
+
 		exports.main = function()
 		{
 			jQuery("HEAD").append('<link rel="stylesheet" href="' + require.sandbox.id + require.id("./style.css") + '">');
+
+			jQuery.get("../../loader.min.js", function(data) {
+				jQuery("#loader-min").html(data);
+			});
+
+			jQuery.get("loader.min.js.gz-size", function(data) {
+				jQuery("#loader-min-size").html(data);
+			});		
 
 		    Q.when(Q.all([
 				"01-HelloWorld",
@@ -27,58 +56,42 @@ require.bundle("", function(require)
 				"Avoid-SplitBundles"
 			].map(function(name) {
 				var result = Q.defer();
+
 				require.sandbox("../../examples/" + name + ".js", function(sandbox)
 				{
-					sandbox.main();
-					result.resolve();
+					try {
+						Q.when(sandbox.main(), result.resolve, result.reject);
+					} catch(e) {
+						result.reject(e);
+					}
 				}, {
-					onInitModule: function(moduleInterface)
+					onInitModule: function(moduleInterface, module)
 					{
+						module.require.API = {
+							Q: Q
+						};
 						moduleInterface.log = function()
 						{
-							var args = [],
-								i;
-							for (i in arguments) {
-								args.push(arguments[i]);
-							}
-							jQuery("#output").append([
-								"<div><div class=\"from\">",
-								moduleInterface.id,
-								"</div><div class=\"message\">",
-								args.join(", "),
-								"</div></div>"
-							].join(""));
+							logToOutput(moduleInterface, arguments);
 						};
 						moduleInterface.logForModule = function(moduleInterface, arguments)
 						{
-							var args = [],
-								i;
-							for (i in arguments) {
-								args.push(arguments[i]);
-							}
-							jQuery("#output").append([
-								"<div><div class=\"from\">",
-								moduleInterface.id,
-								"</div><div class=\"message\">",
-								args.join(", "),
-								"</div></div>"
-							].join(""));					
+							logToOutput(moduleInterface, arguments);
 						};
 					}
 				});
+
 				return result.promise;
 		    })), function()
 			{
 				jQuery("#report").html(JSDUMP.parse(sourcemint.getReport()));
-
-				jQuery.get("../../loader.min.js", function(data) {
-					jQuery("#loader-min").html(data);
-				});
-
-				jQuery.get("loader.min.js.gz-size", function(data) {
-					jQuery("#loader-min-size").html(data);
-				});		
-			});			
+				jQuery("#output").addClass("success");
+			}, function(e)
+			{
+				logError(e);
+				jQuery("#output").addClass("fail");
+				jQuery("#error-alert").show();
+			});
 		}
 	});
 

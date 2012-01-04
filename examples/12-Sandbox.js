@@ -3,9 +3,13 @@ require.bundle("", function(require)
 {
 	require.memoize("/main.js", function(require, exports, module)
 	{
+		var Q;
+
 		exports.main = function(options)
 		{
-			// TODO: Return a promise that resolves when the sandbox has been run.
+			Q = require.API.Q;
+			
+			var result = Q.defer();
 
 			module.log("Hello from 12-Sandbox!");
 
@@ -14,6 +18,8 @@ require.bundle("", function(require)
 			require.sandbox(url, function(sandbox)
 			{
 				sandbox.main();
+
+				result.resolve();
 			}, {
 				onInitModule: function(moduleInterface)
 				{
@@ -23,6 +29,8 @@ require.bundle("", function(require)
 					}
 				}
 			});
+
+			return result.promise;
 		}
 	});
 });

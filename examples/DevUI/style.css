@@ -29,8 +29,22 @@ H1 > SPAN.plain {
 	font-family: Monaco;
 	font-size: 9px;
 }
-#output {
-	border: 5px solid green;
+#output.success {
+	border: 5px solid #00FF00;
+}
+#output.fail {
+	border: 5px solid #FF0000;
+}
+#error-alert {
+	display: none;
+	border: 5px solid #FF0000;
+	color: red;
+	background-color: #000000;
+	font-weight: bold;
+	font-size: 16px;
+	padding: 5px;
+	margin: 10px;
+	padding-left: 10px;
 }
 #output > DIV {
 	margin-bottom: 2px;

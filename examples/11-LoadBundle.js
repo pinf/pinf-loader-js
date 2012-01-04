@@ -3,8 +3,14 @@ require.bundle("", function(require)
 {
 	require.memoize("/main.js", function(require, exports, module)
 	{
+		var Q;
+
 		exports.main = function(options)
 		{
+			Q = require.API.Q;
+			
+			var result = Q.defer();
+
 			module.log("Hello from 11-LoadBundle!");
 
 			var extraBundleID = "./ExtraBundle";
@@ -12,7 +18,11 @@ require.bundle("", function(require)
 			require.async(extraBundleID, function(EXTRA_BUNDLE)
 			{
 				EXTRA_BUNDLE.init();
+
+				result.resolve();
 			});
+
+			return result.promise;
 		}
 	});
 });
