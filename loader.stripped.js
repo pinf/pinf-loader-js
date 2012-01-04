@@ -253,7 +253,9 @@ var sourcemint = null;
 		var require = new Require();
 
 		// TODO: @see URL_TO_SPEC
-		require.supports = "ucjs2-pinf-0";
+		require.supports = [
+			"ucjs2-pinf-0"
+		];
 
 		// Create a new environment to memoize modules to.
 		require.sandbox = function(programIdentifier, loadedCallback, options) {

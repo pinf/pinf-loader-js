@@ -31,7 +31,7 @@ require.bundle("", function(require)
 			JQUERY(function($) {
 				$("#output").append([
 					"<div><div class=\"from\">",
-					moduleInterface.id,
+					moduleObj.require.sandbox.id + " : " + moduleObj.id,
 					"</div><div class=\"message\">",
 					args.join(", "),
 					"</div></div>"
@@ -59,6 +59,7 @@ require.bundle("", function(require)
 				"11-LoadBundle",
 				"12-Sandbox",
 				"13-CrossDomain",
+				"14-Environment",
 				"Avoid-NestedBundles",
 				"Avoid-SplitBundles"
 			].map(function(name) {
