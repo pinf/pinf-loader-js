@@ -23,11 +23,11 @@ require.bundle("", function(require)
 
 					result.resolve();
 				}, {
-					onInitModule: function(moduleInterface)
+					onInitModule: function(moduleInterface, moduleObj)
 					{
 						moduleInterface.log = function()
 						{
-							module.logForModule.call(null, moduleInterface, arguments);
+							module.logForModule(moduleObj, arguments);
 						}
 					}
 				});

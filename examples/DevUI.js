@@ -21,7 +21,7 @@ require.bundle("", function(require)
 			});
 		}
 
-		function logToOutput(moduleInterface, arguments)
+		function logToOutput(moduleObj, arguments)
 		{
 			var args = [],
 				i;
@@ -72,19 +72,19 @@ require.bundle("", function(require)
 						result.reject(e);
 					}
 				}, {
-					onInitModule: function(moduleInterface, module)
+					onInitModule: function(moduleInterface, moduleObj)
 					{
-						module.require.API = {
+						moduleObj.require.API = {
 							Q: Q,
 							JQUERY: JQUERY
 						};
 						moduleInterface.log = function()
 						{
-							logToOutput(moduleInterface, arguments);
+							logToOutput(moduleObj, arguments);
 						};
-						moduleInterface.logForModule = function(moduleInterface, arguments)
+						moduleInterface.logForModule = function(moduleObj, arguments)
 						{
-							logToOutput(moduleInterface, arguments);
+							logToOutput(moduleObj, arguments);
 						};
 					}
 				});
