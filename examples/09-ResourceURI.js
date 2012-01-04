@@ -7,8 +7,11 @@ require.bundle("", function(require)
 		{
 			var url = require.sandbox.id + require.id("./hello.txt");
 
-			jQuery.get(url, function(data) {
-				module.log(data + " from 09-ResourceURI!");
+			require.API.JQUERY(function($)
+			{
+				$.get(url, function(data) {
+					module.log(data + " from 09-ResourceURI!");
+				});
 			});
 		}
 	});
