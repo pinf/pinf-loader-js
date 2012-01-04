@@ -24,7 +24,6 @@ var sourcemint = null;
 		var moduleInitializers = {},
 			initializedModules = {},
 			/*DEBUG*/ bundleIdentifiers = {},
-			/*DEBUG*/ scriptTags = [],
 			packages = {},
 			headTag;
 
@@ -49,7 +48,9 @@ var sourcemint = null;
 				ev = ev || global.event;
 				if (ev.type === "load" || readyStates[this.readyState]) {
 					this.onload = this.onreadystatechange = this.onerror = null;
-					loadedCallback();
+					loadedCallback(function() {
+						element.parentNode.removeChild(element);
+					});
 				}
 			}
 			element.onerror = function(e) {
@@ -58,23 +59,23 @@ var sourcemint = null;
 			element.charset = "utf-8";
 			element.async = true;
 			element.src = uri;
-			headTag.insertBefore(element, headTag.firstChild);
-			return element;
+			element = headTag.insertBefore(element, headTag.firstChild);
 		}
 
 		function load(sandboxIdentifier, loadedCallback) {
-			/*DEBUG*/ scriptTags.push(
-				(sandboxOptions.load || loadInBrowser)(sandboxIdentifier, function() {
-					// Assume a consistent statically linked set of modules has been memoized.
-					/*DEBUG*/ bundleIdentifiers[sandboxIdentifier] = loadedBundles[0][0];
-					var key;
-					for (key in loadedBundles[0][1]) {
-						moduleInitializers[key] = loadedBundles[0][1][key];
-					}
-					loadedBundles.shift();
-					loadedCallback(sandbox);
-				})
-			/*DEBUG*/ );
+			(sandboxOptions.load || loadInBrowser)(sandboxIdentifier, function(cleanupCallback) {
+				// Assume a consistent statically linked set of modules has been memoized.
+				/*DEBUG*/ bundleIdentifiers[sandboxIdentifier] = loadedBundles[0][0];
+				var key;
+				for (key in loadedBundles[0][1]) {
+					moduleInitializers[key] = loadedBundles[0][1][key];
+				}
+				loadedBundles.shift();
+				loadedCallback(sandbox);
+				if (cleanupCallback) {
+					cleanupCallback();
+				}
+			});
 		}
 
 
