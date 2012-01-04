@@ -8,7 +8,7 @@ require.bundle("", function(require)
 
 		exports.main = function()
 		{
-			jQuery("HEAD").append('<link rel="stylesheet" href="' + require.uri("./style.css").join("") + '">');
+			jQuery("HEAD").append('<link rel="stylesheet" href="' + require.sandbox.id + require.id("./style.css") + '">');
 
 		    Q.when(Q.all([
 				"01-HelloWorld",

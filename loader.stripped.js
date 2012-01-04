@@ -126,9 +126,10 @@ var sourcemint = null;
 					return identifier[0].require(identifier[1]).exports;
 				};
 
-				module.require.uri = function(identifier) {
+				module.require.id = function(identifier) {
 					identifier = resolveIdentifier(identifier);
-					return [identifier[0].sandbox, identifier[1]];
+					// NOTE: identifier[0].sandbox is always equal to sandboxIdentifier
+					return identifier[1];
 				};
 
 				module.require.async = function(identifier, loadedCallback) {
@@ -139,6 +140,7 @@ var sourcemint = null;
 				};
 
 				module.require.sandbox = sourcemint.sandbox;
+				module.require.sandbox.id = sandboxIdentifier;
 
 				module.load = function() {
 					if (typeof moduleInitializers[moduleIdentifier] === "function") {

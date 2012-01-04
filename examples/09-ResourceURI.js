@@ -5,7 +5,7 @@ require.bundle("", function(require)
 	{
 		exports.main = function(options)
 		{
-			var url = require.uri("./hello.txt").join("");
+			var url = require.sandbox.id + require.id("./hello.txt");
 
 			jQuery.get(url, function(data) {
 				module.log(data + " from 09-ResourceURI!");

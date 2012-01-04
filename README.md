@@ -48,11 +48,12 @@ Supported features:
     * `var ModuleAPI = require("PackageAlias/Module")`
   * [CommonJS/Modues/2.0draft8 (draft)](http://www.page.ca/~wes/CommonJS/modules-2.0-draft8/)
     * `global.require.memoize("PackageIdentifier/ModuleIdentifier", ModuleInitializer)` (no dependency argument)
-    * `require.uri(ModuleIdentifierString)` (returns `["SandboxURI", "PackageIdentifier/ModuleIdentifier"]`)
+    * `require.id(ModuleIdentifierString)` (returns *PackageIdentifier/ModuleIdentifier*)
   * [(Un)CommonJS(kriskowal)/Modules](https://github.com/kriskowal/uncommonjs/blob/master/modules/specification.md)
     * `require.async(ModuleIdentifierString, function loaded(ModuleAPI) {}, function error(e) {})`
   * Proposed:
     * `[global.]require.sandbox(SandboxURI, function loaded(sandbox) {}, SandboxOptions)`
+    * `[global.]require.sandbox.id` to hold *SandboxURI*
     * `sandbox.main()`
     * `require.bundle("BundleIdentifier", function ConsistentModuleSet(require) {})`
 

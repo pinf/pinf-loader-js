@@ -9,9 +9,9 @@ require.bundle("", function(require)
 
 			module.log("Hello from 12-Sandbox!");
 
-			var uri = require.uri("./SandboxedExtraBundle");
+			var url = require.sandbox.id + require.id("./SandboxedExtraBundle");
 
-			require.sandbox(uri.join(""), function(sandbox)
+			require.sandbox(url, function(sandbox)
 			{
 				sandbox.main();
 			}, {
