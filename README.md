@@ -242,5 +242,5 @@ TODO
 
 **Features:**
   
-  * Duplicate *CanonicalIdentifiers* check
-  * Download mirrors
+  * Duplicate *ModuleIdentifier* check
+  * Destroy sandbox
