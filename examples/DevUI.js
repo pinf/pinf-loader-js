@@ -30,8 +30,6 @@ require.bundle("", function(require)
 
 		exports.main = function()
 		{
-			JQUERY("HEAD").append('<link rel="stylesheet" href="' + require.sandbox.id + require.id("./style.css") + '">');
-
 			JQUERY.get("../../loader.min.js", function(data) {
 				JQUERY("#loader-min").html(data);
 			}, "text");
