@@ -211,6 +211,16 @@ Links
   * https://github.com/kriszyp/nodules
 
 
+Contribute
+==========
+
+To work on the loader use the `./workspace/` (**Development Workspace**). Instructions on how to launch it on your local
+system can be found here: 
+[https://github.com/sourcemint/loader-js/tree/master/workspace](https://github.com/sourcemint/loader-js/tree/master/workspace)
+
+When done send a pull request.
+
+
 TODO
 ====
 
