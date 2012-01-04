@@ -34,11 +34,11 @@ require.bundle("", function(require)
 
 			JQUERY.get("../../loader.min.js", function(data) {
 				JQUERY("#loader-min").html(data);
-			});
+			}, "text");
 
 			JQUERY.get("loader.min.js.gz-size", function(data) {
 				JQUERY("#loader-min-size").html(data);
-			});		
+			}, "text");
 
 		    Q.when(Q.all([
 				"01-HelloWorld",
