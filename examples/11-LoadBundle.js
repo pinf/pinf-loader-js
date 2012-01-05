@@ -24,5 +24,10 @@ require.bundle("", function(require)
 
 			return result.promise;
 		}
+		
+		exports.getExtraBundleGreeting = function()
+		{
+			return "Hello from 11-LoadBundle/ExtraBundle!";
+		}
 	});
 });
