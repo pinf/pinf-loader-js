@@ -5,7 +5,7 @@ require.bundle("", function(require)
 	{
 		exports.main = function(options)
 		{
-			module.log("Hello from SandboxedExtraBundle!");
+			module.log("Hello from 12-Sandbox/SandboxedExtraBundle!");
 		}
 	});
 });

@@ -5,7 +5,7 @@ require.bundle("", function(require)
 	{
 		exports.main = function(options)
 		{
-			module.log("Hello from CrossDomainBundle!");
+			module.log("Hello from 13-CrossDomain/CrossDomainBundle!");
 		}
 	});
 });
