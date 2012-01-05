@@ -156,7 +156,9 @@ var sourcemint = null;
 					});
 				};
 
-				module.require.sandbox = sourcemint.sandbox;
+				module.require.sandbox = function() {
+					return sourcemint.sandbox.apply(null, arguments);
+				}
 				module.require.sandbox.id = sandboxIdentifier;
 
 				module.load = function() {
