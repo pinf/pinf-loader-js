@@ -27,8 +27,10 @@ Supported Environments:
       * Firefox
       * Google Chrome
       * Internet Explorer
+        * **BUG** [https://github.com/sourcemint/loader-js/issues/1](https://github.com/sourcemint/loader-js/issues/1)
       * Safari
       * Opera
+	    * **BUG:** [https://github.com/kriskowal/q/issues/35](https://github.com/kriskowal/q/issues/35)
 
 Supported features:
 
@@ -193,7 +195,7 @@ Links
 
 **Discussions:**
 
-  * [(groups.google.com/group/commonjs) Introducing the Sourcemint JavaScript Loader](http://groups.google.com/group/commonjs/browse_thread/thread/153ff1a966e56cb)
+  * [groups.google.com/group/commonjs - Introducing the Sourcemint JavaScript Loader](http://groups.google.com/group/commonjs/browse_thread/thread/153ff1a966e56cb)
 
 **Influential Specifications:**
 
@@ -224,23 +226,3 @@ system can be found here:
 
 When done send a pull request.
 
-
-TODO
-====
-
-**Bugs:**
-
-  * Internet Explorer needs further testing (at least one bug in dev UI or loader).
-  * `./examples/DevUI.js#/lib/q.js` does not work in Opera:
-
-		Error thrown at line 7, column 622 in <anonymous function: l>(a) in http://localhost:8080/workspace/www/q.min.js:
-    		B.port2.postMessage()
-		called from line 6, column 47 in g(a, b, d) in http://localhost:8080/workspace/www/q.min.js
-		called from line 6, column 882 in v(a) in http://localhost:8080/workspace/www/q.min.js
-
-  * `#output` tag in `http://localhost:8080/workspace/www/` does not render properly in `Safari`.
-
-**Features:**
-  
-  * Duplicate *ModuleIdentifier* check
-  * Destroy sandbox
