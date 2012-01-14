@@ -160,15 +160,19 @@ loader level. Convenience features can be loaded along with the application by
 Why does the loader not support [AMD-style Loader Plugins](https://github.com/amdjs/amdjs-api/wiki/Loader-Plugins)?
 -------------------------------------------------------------------------------------------------------------------
 
-Because code that uses loader plugins that are triggered by modifying the string literal passed to `require()` cannot be
-uniformly and easily optimized when generating bundles. Loader plugins require that:
+Because loader plugins that are invoked by modifying the string literal passed to `require()` are not necessary
+and combine two concepts that should really be separate and implemented differently. For more information see
+[this discussion](http://groups.google.com/group/requirejs/browse_thread/thread/3a06691288655a74).
 
-  * They are present and can be executed when generating bundles.
-  * Module/resource source code is bundled in a specific format potentially leading to duplicate source code in bundles.
+The AMD-style Loader Plugins can be replaced by:
 
-Also, it is not necessary to have these kinds of loader plugins at the core loader level.
+  * [Augmenting a sandbox](https://github.com/sourcemint/loader-js/blob/master/examples/12-Sandbox.js)
+  * Loading helper modules within the application.
+  * Using a loader that can run package-declared plugins.
+  * Using a server helper to run plugins as modules are requested.
 
-As an alternative it is trivial to load some extra convenience features within the application to do what you need.
+An AMD compatibility plugin that aguments a sandbox for AMD support is 
+[planned](https://github.com/sourcemint/loader-js/issues/6).
 
 How does the loader compare to [github.com/jrburke/almond](https://github.com/jrburke/almond)?
 ----------------------------------------------------------------------------------------------
@@ -196,6 +200,7 @@ Links
 **Discussions:**
 
   * [groups.google.com/group/commonjs - Introducing the Sourcemint JavaScript Loader](http://groups.google.com/group/commonjs/browse_thread/thread/153ff1a966e56cb)
+  * [groups.google.com/group/requirejs - Alternative production loader to almond](http://groups.google.com/group/requirejs/browse_thread/thread/3a06691288655a74)
 
 **Influential Specifications:**
 
