@@ -174,11 +174,11 @@ The AMD-style Loader Plugins can be replaced by:
 An AMD compatibility plugin that aguments a sandbox for AMD support is 
 [planned](https://github.com/sourcemint/loader-js/issues/6).
 
-How does the loader compare to [github.com/jrburke/almond](https://github.com/jrburke/almond)?
+How does the loader compare to [almond](https://github.com/jrburke/almond)?
 ----------------------------------------------------------------------------------------------
 
 While the [RequireJS](https://github.com/jrburke/requirejs) + 
-[Almond](https://github.com/jrburke/almond) combination focuses on loading of optimized [AMD](https://github.com/amdjs/amdjs-api/wiki/AMD)
+[almond](https://github.com/jrburke/almond) combination focuses on loading of optimized [AMD](https://github.com/amdjs/amdjs-api/wiki/AMD)
 formatted modules this loader focuses on loading of optimized [CJS](http://wiki.commonjs.org/wiki/Modules/1.1) formatted modules.
 
 The *AMD Specification* is a small subset combining several *CommonJS Concepts* in a different form.
@@ -189,8 +189,8 @@ for all other concepts. It allows for isolated namespaces, nested package depend
 as well as automatic conversion from source trees to optimized bundles. This loader is one *existential foundation implementation*
 and fully compatible with the *CommonJS Concepts*.
 
-In contrast *RequireJS + Almond* focuses on optimally loading (primarily into the browser) a list of packages containing 
-JavaScript modules and resource files into a single namespace. In optimized form (for *Almond*), several 
+In contrast *RequireJS + almond* focuses on optimally loading (primarily into the browser) a list of packages containing 
+JavaScript modules and resource files into a single namespace. In optimized form (for *almond*), several 
 key *RequireJS* features are not supported.
 
 
