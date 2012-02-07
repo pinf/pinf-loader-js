@@ -30,7 +30,9 @@ exports.main = function(API)
 		console.error.apply(null, ["[01-PortableLoaderTests]"].concat(args));
 	}
 	
-	Q.when(Q.all([
+	var done = Q.ref();
+	
+	[
 		"01-HelloWorld",
 		"02-ReturnExports",
 		"03-SpecifyMain",
@@ -46,44 +48,49 @@ exports.main = function(API)
 		"14-Environment",
 		"Avoid-NestedBundles",
 		"Avoid-SplitBundles"
-	].map(function(name)
+	].forEach(function(name)
 	{
-		var result = Q.defer();
-		
-		try
+		done = Q.when(done, function()
 		{
-			API.LOADER.sandbox("github.com/sourcemint/loader-js/0/-raw/examples/" + name + ".js", function(sandbox)
+			var result = Q.defer();
+			
+			try
 			{
-				try {
-					Q.when(sandbox.main(), result.resolve, result.reject);
-				} catch(e) {
-					result.reject(e);
-				}
-			}, {
-				onInitModule: function(moduleInterface, moduleObj)
+				API.LOADER.sandbox("github.com/sourcemint/loader-js/0/-raw/examples/" + name + ".js", function(sandbox)
 				{
-					moduleObj.require.API = {
-						Q: Q
-					};
-					moduleInterface.log = function()
+					try {
+						Q.when(sandbox.main(), result.resolve, result.reject);
+					} catch(e) {
+						result.reject(e);
+					}
+				}, {
+					onInitModule: function(moduleInterface, moduleObj)
 					{
-						logToOutput(moduleObj, arguments);
-					};
-					moduleInterface.logForModule = function(moduleObj, arguments)
-					{
-						logToOutput(moduleObj, arguments);
-					};
-				}
-			});
-		}
-		catch(e)
-		{
-			console.error(e);
-			result.reject(e);
-		}
-	
-		return result.promise;
-	})), function()
+						moduleObj.require.API = {
+							Q: Q
+						};
+						moduleInterface.log = function()
+						{
+							logToOutput(moduleObj, arguments);
+						};
+						moduleInterface.logForModule = function(moduleObj, arguments)
+						{
+							logToOutput(moduleObj, arguments);
+						};
+					}
+				});
+			}
+			catch(e)
+			{
+				console.error(e);
+				result.reject(e);
+			}
+		
+			return result.promise;
+		});
+	});
+
+	Q.when(done, function()
 	{
 	
 		console.log(API.LOADER.getReport());

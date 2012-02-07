@@ -1,7 +1,7 @@
 
 var VOWS = require("vows"),
 	ASSERT = require("assert"),
-	LOADER = require("sourcemint-platform-nodejs/loader");
+	PLATFORM = require("sourcemint-platform-nodejs");
 
 
 VOWS.describe("Examples").addBatch(
@@ -11,24 +11,18 @@ VOWS.describe("Examples").addBatch(
 		topic: function()
 		{
 			var self = this;
-			// TODO: Catch test errors and fail.
-			return require("../examples").main({
-				LOADER: LOADER
+			require("../examples").main({
+				LOADER: PLATFORM.LOADER
 			}).then(function() {
 				self.callback(true);
 			}, function(err) {
-				
-console.log("error", err);
+				// NOTE: If this fires and `err` instanceof Error `vows` will fail this test.
 				self.callback(err);
-
 			});
 		},
-		"result": function(status) {
-			
-			console.log("status", status);
-			
-//			assert.equal(1, true);
-			
+		"all examples worked": function(status)
+		{
+			ASSERT.equal(status, true);
 		}
 	}
 }).export(module);
