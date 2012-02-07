@@ -36,8 +36,6 @@ var sourcemint = null;
 			};
 
 
-		// These may be overwritten by the environment of the loader.
-		// Defaults to browser use.
 		// @credit https://github.com/unscriptable/curl/blob/62caf808a8fd358ec782693399670be6806f1845/src/curl.js#L319-360
 		function loadInBrowser(uri, loadedCallback) {
 			if (!headTag) {
@@ -78,6 +76,7 @@ var sourcemint = null;
 					// Module is not already loading.
 					loadingBundles[identifier] = [];
 					identifier = sandboxIdentifier + identifier;
+					// Default to our script-injection browser loader.
 					(sandboxOptions.load || loadInBrowser)(identifier, function(cleanupCallback) {
 						// Assume a consistent statically linked set of modules has been memoized.
 						var key;
@@ -157,6 +156,10 @@ var sourcemint = null;
 				};
 
 				module.require.sandbox = function() {
+					if (arguments.length === 3)
+					{
+						arguments[2].load = arguments[2].load || sandboxOptions.load;
+					}
 					return sourcemint.sandbox.apply(null, arguments);
 				}
 				module.require.sandbox.id = sandboxIdentifier;
@@ -283,4 +286,4 @@ var sourcemint = null;
 		exports.require = sourcemint;
 	}
 
-}(this, document));
+}(this, (typeof document !== "undefined")?document:null));
