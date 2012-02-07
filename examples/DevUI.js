@@ -21,6 +21,8 @@ require.bundle("", function(require)
 			});
 		}
 
+		// TODO: Use `require("../tests/examples").main()` here with a different logger.
+
 		function logToOutput(moduleObj, arguments)
 		{
 			var args = [],
@@ -62,7 +64,8 @@ require.bundle("", function(require)
 				"14-Environment",
 				"Avoid-NestedBundles",
 				"Avoid-SplitBundles"
-			].map(function(name) {
+			].map(function(name)
+			{
 				var result = Q.defer();
 
 				require.sandbox("../../examples/" + name + ".js", function(sandbox)
