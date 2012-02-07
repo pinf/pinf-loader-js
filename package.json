@@ -1,4 +1,17 @@
 {
 	"uid": "https://github.com/sourcemint/loader-js/",
-	"main": "loader.js"
+	"name": "sourcemint-loader-js",
+	"version": "0.1.8",
+	"main": "loader.js",
+	"directories": {
+	    "lib": "."
+	},
+	"devDependencies": {
+	    "vows": "0.x",
+	    "q": "0.x",
+	    "sourcemint-platform-nodejs": "0.x"
+	},
+	"scripts": {
+	   "test": "vows tests/adapter/vows"
+	}
 }
