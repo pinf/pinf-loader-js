@@ -101,6 +101,9 @@ The `Sourcemint JavaScript Loader` is intended to run your application in **prod
 Usage
 =====
 
+In-Browser
+----------
+
 `http://localhost/index.html`
 
 	<script type="text/javascript" src="loader.js"></script>
@@ -125,6 +128,17 @@ Usage
 	});
 
 For more examples see: [github.com/sourcemint/loader-js/tree/master/examples](https://github.com/sourcemint/loader-js/tree/master/examples)
+
+Tests
+-----
+
+The command-line test suite for the loader uses the [Sourcemint NodeJS Platform](https://github.com/sourcemint/platform-nodejs)
+to bootstrap the loader for [NodeJS](http://nodejs.org/).
+
+    git clone git://github.com/sourcemint/loader-js.git sourcemint-loader-js
+    cd sourcemint-loader-js
+    npm install
+    npm test
 
 
 Tips
