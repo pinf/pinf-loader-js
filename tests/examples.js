@@ -1,10 +1,16 @@
 
 var LOADER = require("../loader"),
-	Q = require("q");
+	Q = require("q"),
+	LOADER = require("sourcemint-platform-nodejs/lib/loader");
 
 
-exports.main = function(API)
+exports.main = function(API, options)
 {
+	API = API || {};
+	API.LOADER = API.LOADER || LOADER;
+	
+	options = options || {};
+
 	var deferred = Q.defer();
 
 	function logToOutput(moduleObj, arguments)
@@ -29,26 +35,29 @@ exports.main = function(API)
 		}
 		console.error.apply(null, ["[01-PortableLoaderTests]"].concat(args));
 	}
-	
+
 	var done = Q.ref();
-	
-	[
+
+	(options.uris || [
 		"01-HelloWorld",
 		"02-ReturnExports",
 		"03-SpecifyMain",
 		"04-PackageLocalDependencies",
 		"05-CrossPackageDependencies",
-		"07-JsonModule",
-		"08-TextModule",
-		"09-ResourceURI",
-		"10-NamedBundle",
-		"11-LoadBundle",
-		"12-Sandbox",
-		"13-CrossDomain",
-		"14-Environment",
+		"06-JsonModule",
+		"07-TextModule",
+		"08-ResourceURI",
+		"09-LoadBundle",
+		"10-Sandbox",
+		"11-CrossDomain",
+		"12-Environment",
+		"NamedBundle",
 		"Avoid-NestedBundles",
 		"Avoid-SplitBundles"
-	].forEach(function(name)
+	].map(function(name)
+	{
+		return "github.com/sourcemint/loader-js/0/-raw/examples/" + name + ".js";
+	})).forEach(function(uri)
 	{
 		done = Q.when(done, function()
 		{
@@ -56,7 +65,7 @@ exports.main = function(API)
 			
 			try
 			{
-				API.LOADER.sandbox("github.com/sourcemint/loader-js/0/-raw/examples/" + name + ".js", function(sandbox)
+				API.LOADER.sandbox(uri, function(sandbox)
 				{
 					try {
 						Q.when(sandbox.main(), result.resolve, result.reject);
@@ -105,4 +114,25 @@ exports.main = function(API)
 	});
 	
 	return deferred.promise;
+}
+
+
+if (require.main === module)
+{
+	exports.main().then(function()
+	{
+		console.log("Success!");
+
+	},function(err)
+	{
+		// TODO: Use generic error formatter here.
+		if (typeof err === "object" && typeof err.stack !== "undefined")
+		{
+			console.error("ERROR", err.stack);
+		}
+		else
+		{
+			console.error("ERROR", err);
+		}
+	});
 }
