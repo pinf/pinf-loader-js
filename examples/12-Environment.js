@@ -17,7 +17,7 @@ require.bundle("", function(require)
 	{
 		exports.main = function(options)
 		{			
-			module.log("Hello from 14-Environment!");
+			module.log("Hello from 12-Environment!");
 			
 			if (module.id !== "/main.js")
 			{

@@ -11,7 +11,7 @@ require.bundle("", function(require)
 			
 			var result = Q.defer();
 
-			module.log("Hello from 11-LoadBundle!");
+			module.log("Hello from 09-LoadBundle!");
 
 			var extraBundleID = "./ExtraBundle";
 
@@ -27,7 +27,7 @@ require.bundle("", function(require)
 		
 		exports.getExtraBundleGreeting = function()
 		{
-			return "Hello from 11-LoadBundle/ExtraBundle!";
+			return "Hello from 09-LoadBundle/ExtraBundle!";
 		}
 	});
 });

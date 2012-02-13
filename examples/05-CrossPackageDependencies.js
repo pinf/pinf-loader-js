@@ -41,7 +41,7 @@ require.bundle("", function(require)
 	
 		exports.getName = function()
 		{
-			return "03-CrossPackageDependencies";
+			return "05-CrossPackageDependencies";
 		}
 	});
 

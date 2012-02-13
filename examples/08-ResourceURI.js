@@ -5,18 +5,19 @@ require.bundle("", function(require)
 	{
 		exports.main = function(options)
 		{
+			var url = require.sandbox.id + require.id("./hello.txt");
+
 			if (typeof require.API.JQUERY === "undefined")
 			{
-				module.log("SKIPPED - 09-ResourceURI");
+				// TODO: Check for consistent `url` value.
+				module.log("SKIPPED - 08-ResourceURI");
 			}
 			else
 			{
-				var url = require.sandbox.id + require.id("./hello.txt");
-
 				require.API.JQUERY(function($)
 				{
 					$.get(url, function(data) {
-						module.log(data + " from 09-ResourceURI!");
+						module.log(data + " from 08-ResourceURI!");
 					});
 				});
 			}

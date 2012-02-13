@@ -7,7 +7,7 @@ require.bundle("", function(require)
 
 		exports.main = function(options)
 		{
-			module.log(WORD + " from 07-JsonModule!");
+			module.log(WORD + " from 06-JsonModule!");
 		}
 	});
 

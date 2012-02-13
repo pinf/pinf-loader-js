@@ -11,7 +11,7 @@ require.bundle("", function(require)
 			
 			var result = Q.defer();
 
-			module.log("Hello from 12-Sandbox!");
+			module.log("Hello from 10-Sandbox!");
 
 			var url = require.sandbox.id + require.id("./SandboxedExtraBundle");
 

@@ -49,21 +49,21 @@ require.bundle("", function(require)
 		exports.main = function()
 		{
 		    Q.when(Q.all([
-				"01-HelloWorld",
-				"02-ReturnExports",
-				"03-SpecifyMain",
-				"04-PackageLocalDependencies",
-				"05-CrossPackageDependencies",
-				"07-JsonModule",
-				"08-TextModule",
-				"09-ResourceURI",
-				"10-NamedBundle",
-				"11-LoadBundle",
-				"12-Sandbox",
-				"13-CrossDomain",
-				"14-Environment",
-				"Avoid-NestedBundles",
-				"Avoid-SplitBundles"
+          		"01-HelloWorld",
+        		"02-ReturnExports",
+        		"03-SpecifyMain",
+        		"04-PackageLocalDependencies",
+        		"05-CrossPackageDependencies",
+        		"06-JsonModule",
+        		"07-TextModule",
+        		"08-ResourceURI",
+        		"09-LoadBundle",
+        		"10-Sandbox",
+        		"11-CrossDomain",
+        		"12-Environment",
+        		"NamedBundle",
+        		"Avoid-NestedBundles",
+        		"Avoid-SplitBundles"
 			].map(function(name)
 			{
 				var result = Q.defer();
