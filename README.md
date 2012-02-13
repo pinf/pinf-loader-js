@@ -244,4 +244,3 @@ system can be found here:
 [https://github.com/sourcemint/loader-js/tree/master/workspace](https://github.com/sourcemint/loader-js/tree/master/workspace)
 
 When done send a pull request.
-
