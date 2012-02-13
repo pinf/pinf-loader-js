@@ -1,7 +1,7 @@
 {
 	"uid": "https://github.com/sourcemint/loader-js/",
 	"name": "sourcemint-loader-js",
-	"version": "0.1.11",
+	"version": "0.1.12",
 	"main": "loader.js",
 	"directories": {
 	    "lib": "."
