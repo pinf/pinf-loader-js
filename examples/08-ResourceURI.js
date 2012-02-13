@@ -7,7 +7,7 @@ require.bundle("", function(require)
 		{
 			var deferred = require.API.Q.defer();
 
-			var uri = require.sandbox.id + require.resolve("./hello.txt");
+			var uri = require.sandbox.id + require.id("./hello.txt");
 
 			require.API.JQUERY(function($)
 			{
