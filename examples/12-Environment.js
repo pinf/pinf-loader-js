@@ -29,6 +29,11 @@ require.bundle("", function(require)
 				throw new Error("`require` is not a function!");
 			}
 
+			if (typeof require.id !== "function")
+			{
+				throw new Error("`require.id` is not a function!");
+			}
+			
 			if (typeof require.async !== "function")
 			{
 				throw new Error("`require.async` is not a function!");
