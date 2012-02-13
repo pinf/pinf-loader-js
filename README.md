@@ -148,7 +148,7 @@ Tips
   * When deploying an application us the `./loader.min.gz` file for optimum performance.
   * When using a different loader during development make sure only supported API features
     of this loader are used. Load extra features along with your application by
-    [augmenting a sandbox](https://github.com/sourcemint/loader-js/blob/master/examples/12-Sandbox.js).
+    [augmenting a sandbox](https://github.com/sourcemint/loader-js/blob/master/examples/10-Sandbox.js).
   * When writing or generating bundles make sure one consistent set of statically linked modules
     is contained in each bundle file. Dynamic links to other modules or bundles must be made via
     `require.async()` or `require.sandbox()` respectively. The hierarchy of how your application nests
@@ -169,7 +169,7 @@ Why does the loader not support feature X?
 
 This loader is pretty much complete in terms of what needs to be implemented at the core
 loader level. Convenience features can be loaded along with the application by
-[augmenting a sandbox](https://github.com/sourcemint/loader-js/blob/master/examples/12-Sandbox.js).
+[augmenting a sandbox](https://github.com/sourcemint/loader-js/blob/master/examples/10-Sandbox.js).
 
 Why does the loader not support [AMD-style Loader Plugins](https://github.com/amdjs/amdjs-api/wiki/Loader-Plugins)?
 -------------------------------------------------------------------------------------------------------------------
@@ -180,7 +180,7 @@ and combine two concepts that should really be separate and implemented differen
 
 The AMD-style Loader Plugins can be replaced by:
 
-  * [Augmenting a sandbox](https://github.com/sourcemint/loader-js/blob/master/examples/12-Sandbox.js)
+  * [Augmenting a sandbox](https://github.com/sourcemint/loader-js/blob/master/examples/10-Sandbox.js)
   * Loading helper modules within the application.
   * Using a loader that can run package-declared plugins.
   * Using a server helper to run plugins as modules are requested.
