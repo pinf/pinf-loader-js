@@ -5,22 +5,28 @@ require.bundle("", function(require)
 	{
 		exports.main = function(options)
 		{
-			var url = require.sandbox.id + require.id("./hello.txt");
+			var deferred = require.API.Q.defer();
 
-			if (typeof require.API.JQUERY === "undefined")
+			var uri = require.sandbox.id + require.resolve("./hello.txt");
+
+			require.API.JQUERY(function($)
 			{
-				// TODO: Check for consistent `url` value.
-				module.log("SKIPPED - 08-ResourceURI");
-			}
-			else
-			{
-				require.API.JQUERY(function($)
+				$.get(uri, function(data)
 				{
-					$.get(url, function(data) {
+					require.API.Q.call(function()
+					{
+						if (data !== "Hello")
+						{
+							throw new Error("Loaded resource does not have correct content!");
+						}
+
 						module.log(data + " from 08-ResourceURI!");
-					});
+
+					}).then(deferred.resolve, deferred.reject);
 				});
-			}
+			});
+			
+			return deferred.promise;
 		}
 	});
 });

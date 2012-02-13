@@ -8,7 +8,7 @@ exports.main = function(API, options)
 {
 	API = API || {};
 	API.LOADER = API.LOADER || LOADER;
-	
+
 	options = options || {};
 
 	var deferred = Q.defer();
@@ -76,7 +76,21 @@ exports.main = function(API, options)
 					onInitModule: function(moduleInterface, moduleObj)
 					{
 						moduleObj.require.API = {
-							Q: Q
+							Q: Q,
+							JQUERY: function(callback) {
+								callback({
+									get: function(uri, callback)
+									{
+										LOADER.resolveURI(uri).then(function(uri)
+										{
+											LOADER.loadBundleCode(uri).then(function(code)
+											{
+												callback(code);
+											});
+										});
+									}
+								});
+							}
 						};
 						moduleInterface.log = function()
 						{
