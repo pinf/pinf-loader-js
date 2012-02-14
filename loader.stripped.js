@@ -228,8 +228,8 @@ var sourcemint = null;
 		}
 
 		// Call the 'main' module of the program
-		sandbox.main = function(options) {
-			return sandbox.require(Package("").main).exports.main(options);
+		sandbox.main = function() {
+			return sandbox.require(Package("").main).exports.main.apply(null, arguments);
 		};
 
 
