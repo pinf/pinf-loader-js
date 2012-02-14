@@ -251,14 +251,14 @@ var sourcemint = null;
 		}
 
 		// Call the 'main' module of the program
-		sandbox.main = function(options) {
+		sandbox.main = function() {
 			/*DEBUG*/ if (typeof Package("").main !== "string") {
 			/*DEBUG*/ 	throw new Error("No 'main' property declared in '/package.json' in sandbox '" + sandbox.id + "'!");
 			/*DEBUG*/ }
 			/*DEBUG*/ if (typeof sandbox.require(Package("").main).exports.main !== "function") {
 			/*DEBUG*/ 	throw new Error("Main module '" + Package("").main + "' does not export 'main()' in sandbox '" + sandbox.id + "'!");
 			/*DEBUG*/ }
-			return sandbox.require(Package("").main).exports.main(options);
+			return sandbox.require(Package("").main).exports.main.apply(null, arguments);
 		};
 
 		/*DEBUG*/ sandbox.getReport = function() {
