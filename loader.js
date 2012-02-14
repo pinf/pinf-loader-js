@@ -106,6 +106,7 @@ var sourcemint = null;
 				libPath = (typeof directories.lib !== "undefined")?directories.lib:"lib";
 			
 			var pkg = {
+				id: packageIdentifier,
 				main: descriptor.main
 			};
 
@@ -234,7 +235,11 @@ var sourcemint = null;
 			/*DEBUG*/ 		mappings: mappings
 			/*DEBUG*/ 	};
 			/*DEBUG*/ }
-			
+
+			if (sandboxOptions.onInitPackage) {
+				sandboxOptions.onInitPackage(pkg, sandbox);
+			}
+
 			packages[packageIdentifier] = pkg;
 
 			return pkg;
