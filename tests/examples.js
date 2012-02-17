@@ -51,6 +51,7 @@ exports.main = function(API, options)
 		"10-Sandbox",
 		"11-CrossDomain",
 		"12-Environment",
+		"13-AssignExports",
 		"NamedBundle",
 		"Avoid-NestedBundles",
 		"Avoid-SplitBundles"

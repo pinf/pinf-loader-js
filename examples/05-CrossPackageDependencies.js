@@ -24,9 +24,6 @@ require.bundle("", function(require)
 	require.memoize("packageA/package.json", {
 		mappings: {
 			"package": "packageB",
-		},
-		directories: {
-			lib: ""
 		}
 	});
 
@@ -78,7 +75,7 @@ require.bundle("", function(require)
 		}
 	});
 
-	require.memoize("packageC/lib/H.js", function(require, exports, module)
+	require.memoize("packageC/H.js", function(require, exports, module)
 	{
 		exports.getLetter = function()
 		{
