@@ -30,7 +30,7 @@ Supported Environments:
         * **BUG** [https://github.com/sourcemint/loader-js/issues/1](https://github.com/sourcemint/loader-js/issues/1)
       * Safari
       * Opera
-	    * **BUG:** [https://github.com/kriskowal/q/issues/35](https://github.com/kriskowal/q/issues/35)
+	    * **BUG:** [https://github.com/sourcemint/loader-js/issues/8](https://github.com/sourcemint/loader-js/issues/8)
 
 Supported features:
 
@@ -62,13 +62,21 @@ Supported features:
 Applications may be **coded directly in the bundle format**. Alternatively the bundle format may be treated as a **compile target**.
 The following tools can generate `Sourcemint JavaScript Loader` compatible bundles:
 
-  * [PINF JavaScript Loader](https://github.com/pinf/loader-js) (**JUST ABOUT FUNCTIONAL: DOCS COMING SOON**)
-
+  * [Sourcemint NodeJS Platform](https://github.com/sourcemint/platform-nodejs)
+    
     Supports:
-
+    
+      * [NodeJS Modules](http://nodejs.org/docs/latest/api/modules.html)
+      * [CommonJS Modules (CJS)](http://wiki.commonjs.org/wiki/Modules/1.1)
+      * [Asynchronous Module Definition (AMD)](https://github.com/amdjs/amdjs-api/wiki/AMD) (**COMING SOON**)  
+    
+  * [PINF JavaScript Loader](https://github.com/pinf/loader-js) (**JUST ABOUT FUNCTIONAL: DOCS COMING SOON**)
+    
+    Supports:
+    
 	  * [CommonJS Modules (CJS)](http://wiki.commonjs.org/wiki/Modules/1.1)
 	  * [Asynchronous Module Definition (AMD)](https://github.com/amdjs/amdjs-api/wiki/AMD)
-
+    
 	Dynamically generates bundles for your application from a project source tree and its dependencies.
 
 
