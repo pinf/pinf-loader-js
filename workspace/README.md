@@ -3,15 +3,15 @@ Development Workspace
 
 Launch this workspace to work on the loader.
 
-Requirements
-------------
+Install
+-------
 
-	npm install -g pinf-loader-js
+	npm install
 
 Run
 ---
 
-	commonjs -v --script serve ./ -v --port 8080 ./
+    node main
 	open http://localhost:8080/
 
 

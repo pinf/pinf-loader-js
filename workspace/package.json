@@ -1,22 +1,11 @@
 {
-	"extends": [
-		{
-    		"location": "https://raw.github.com/pinf/server-js/v0.1.22/package.declarations.json"
-		}
-	],
-    "main": "server.js",
-    "mappings": {
-    	"nodejs": {
-        	"id": "nodejs.org/"
-    	},
-    	"pinf": {
-        	"id": "pinf.org/loader/"
-    	},
-    	"modules": {
-        	"id": "github.com/pinf/modules-js/"
-    	},
-    	"connect-dispatch": {
-        	"id": "github.com/caolan/dispatch/"
-    	}
-    }
+    "name": "sourcemint-loader-js-workspace",
+    "version": "0.1.0",
+    "engines": {
+        "nodejs": "0.x"
+    },
+    "dependencies": {
+        "connect": "1.x"
+    },
+    "main": "./main.js"
 }
