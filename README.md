@@ -4,7 +4,7 @@ Optimized [PINF](http://pinf.org/)/[CommonJS](http://commonjs.org/) Loader for J
 *Status: ALPHA* [![Build Status](https://secure.travis-ci.org/sourcemint/loader-js.png)](http://travis-ci.org/sourcemint/loader-js)
 
 The `Sourcemint JavaScript Loader` is an optimized *(intended for production use)* **CommonJS package mappings** 
-based **JavaScript module loader** for the browser in only **1346 bytes** *(minified and zipped)*.
+based **JavaScript module loader** for the browser in only **1388 bytes** *(minified and zipped)*.
 
   * Copyright: 2011 [Christoph Dorn](http://www.christophdorn.com/)
   * Code License: [MIT License](http://www.opensource.org/licenses/mit-license.php)
@@ -12,7 +12,9 @@ based **JavaScript module loader** for the browser in only **1346 bytes** *(mini
   * Sponsor: [Sourcemint](http://sourcemint.com/)
   * Mailing list: [groups.google.com/group/sourcemint](http://groups.google.com/group/sourcemint)
 
-**Demo: [sourcemint.github.com/loader-js/workspace/www](http://sourcemint.github.com/loader-js/workspace/www/index.html)**
+**Online Demo: [sourcemint.github.com/loader-js/workspace/www](http://sourcemint.github.com/loader-js/workspace/www/index.html)**
+
+**Examples: [github.com/sourcemint/examples-js](http://github.com/sourcemint/examples-js/)**
 
 
 What
@@ -68,16 +70,7 @@ The following tools can generate `Sourcemint JavaScript Loader` compatible bundl
     
       * [NodeJS Modules](http://nodejs.org/docs/latest/api/modules.html)
       * [CommonJS Modules (CJS)](http://wiki.commonjs.org/wiki/Modules/1.1)
-      * [Asynchronous Module Definition (AMD)](https://github.com/amdjs/amdjs-api/wiki/AMD) (**COMING SOON**)  
-    
-  * [PINF JavaScript Loader](https://github.com/pinf/loader-js) (**JUST ABOUT FUNCTIONAL: DOCS COMING SOON**)
-    
-    Supports:
-    
-	  * [CommonJS Modules (CJS)](http://wiki.commonjs.org/wiki/Modules/1.1)
-	  * [Asynchronous Module Definition (AMD)](https://github.com/amdjs/amdjs-api/wiki/AMD)
-    
-	Dynamically generates bundles for your application from a project source tree and its dependencies.
+      * [Asynchronous Module Definition (AMD)](https://github.com/amdjs/amdjs-api/wiki/AMD)
 
 
 Why
@@ -109,7 +102,7 @@ The `Sourcemint JavaScript Loader` is intended to run your application in **prod
 Usage
 =====
 
-In-Browser
+In Browser
 ----------
 
 `http://localhost/index.html`
@@ -135,7 +128,34 @@ In-Browser
 		});
 	});
 
-For more examples see: [github.com/sourcemint/loader-js/tree/master/examples](https://github.com/sourcemint/loader-js/tree/master/examples)
+On Server
+---------
+
+`./index.js`
+
+    var LOADER = require("sourcemint-platform-nodejs/loader");  // NPM package
+    
+    LOADER.sandbox("./app.js", function(sandbox)
+    {
+        sandbox.main();
+    });
+
+`./app.js`
+
+    require.bundle("", function(require)
+    {
+        require.memoize("/main.js", function(require, exports, module)
+        {
+            var __filename = require.sandbox.id + "/main.js";
+            var __dirname = require.sandbox.id + "";
+
+            exports.main = function(options)
+            {
+                console.log("HelloWorld!");
+            }
+        });
+    });
+
 
 Tests
 -----
@@ -147,6 +167,18 @@ to bootstrap the loader for [NodeJS](http://nodejs.org/).
     cd sourcemint-loader-js
     npm install
     npm test
+
+
+Examples
+========
+
+There are various examples that double as unit tests in `./examples`.
+
+For an online demo of the loader features see [sourcemint.github.com/loader-js/workspace/www](http://sourcemint.github.com/loader-js/workspace/www/index.html).
+
+For end-user examples of common use-cases see [github.com/sourcemint/examples-js](http://github.com/sourcemint/examples-js/).
+
+More examples and documentation will be available in time.
 
 
 Tips

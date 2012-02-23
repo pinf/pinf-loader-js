@@ -64,6 +64,9 @@ var sourcemint = null;
 		}
 
 		function load(bundleIdentifier, packageIdentifier, loadedCallback) {
+            if (packageIdentifier !== "") {
+                bundleIdentifier = "/" + packageIdentifier + bundleIdentifier;
+            }
 			if (initializedModules[bundleIdentifier]) {
 				// Module is already loaded and initialized.
 				loadedCallback(sandbox);
@@ -152,6 +155,11 @@ var sourcemint = null;
 
 				// Statically link a module and its dependencies
 				module.require = function(identifier) {
+				    // RequireJS compatibility.
+				    // TODO: Move this to a plugin to save space here.
+				    if (typeof identifier !== "string") {
+				        return module.require.async.call(null, identifier[0], arguments[1]);
+				    }
 					identifier = resolveIdentifier(identifier);
 					return identifier[0].require(identifier[1]).exports;
 				};
