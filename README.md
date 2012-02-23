@@ -225,8 +225,8 @@ The AMD-style Loader Plugins can be replaced by:
   * Using a loader that can run package-declared plugins.
   * Using a server helper to run plugins as modules are requested.
 
-An AMD compatibility plugin that aguments a sandbox for AMD support is 
-[planned](https://github.com/sourcemint/loader-js/issues/6).
+*NOTE: Modules using some of the RequireJS loader plugins can be automatically converted to run on this loader using
+[github.com/sourcemint/sdk-requirejs](http://github.com/sourcemint/sdk-requirejs/).*
 
 How does the loader compare to [almond](https://github.com/jrburke/almond)?
 ----------------------------------------------------------------------------------------------
