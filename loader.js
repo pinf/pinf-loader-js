@@ -160,6 +160,14 @@ var sourcemint = null;
 
 				// Statically link a module and its dependencies
 				module.require = function(identifier) {
+				    // RequireJS compatibility.
+				    // TODO: Move this to a plugin to save space here.
+				    if (typeof identifier !== "string") {
+				        /*DEBUG*/ if (identifier.length > 1) {
+			            /*DEBUG*/     throw new Error("Dynamic 'require([])' may only specify one module in module '" + moduleIdentifier + "'!");
+				        /*DEBUG*/ }
+				        return module.require.async.call(null, identifier[0], arguments[1]);
+				    }
 					identifier = resolveIdentifier(identifier);
 					return identifier[0].require(identifier[1]).exports;
 				};
