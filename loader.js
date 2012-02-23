@@ -62,6 +62,9 @@ var sourcemint = null;
 		}
 
 		function load(bundleIdentifier, packageIdentifier, loadedCallback) {
+            if (packageIdentifier !== "") {
+                bundleIdentifier = "/" + packageIdentifier + bundleIdentifier;
+            }
 			if (initializedModules[bundleIdentifier]) {
 				// Module is already loaded and initialized.
 				loadedCallback(sandbox);
