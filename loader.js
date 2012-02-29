@@ -180,7 +180,11 @@ var sourcemint = null;
 					identifier = resolveIdentifier(identifier);
 					return identifier[0].require(identifier[1]).exports;
 				};
-				
+
+				module.require.supports = [
+		            "ucjs2-pinf-0"
+		        ];
+
 				module.require.id = function(identifier) {
 					identifier = resolveIdentifier(identifier);
 					return identifier[0].require.id(identifier[1]);
