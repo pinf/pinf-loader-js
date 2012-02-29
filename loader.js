@@ -63,7 +63,7 @@ var sourcemint = null;
 
 		function load(bundleIdentifier, packageIdentifier, loadedCallback) {
             if (packageIdentifier !== "") {
-                bundleIdentifier = "/" + packageIdentifier + bundleIdentifier;
+                bundleIdentifier = ("/" + packageIdentifier + "/" + bundleIdentifier).replace(/\/+/g, "/");
             }
 			if (initializedModules[bundleIdentifier]) {
 				// Module is already loaded and initialized.
@@ -134,8 +134,17 @@ var sourcemint = null;
 					};
 
 				function normalizeIdentifier(identifier) {
-					// Only append `.js` if module name does not contain a period.
-					return identifier + ((identifier.split("/").pop().indexOf(".")===-1)?".js":"");
+				    // If we have a period (".") in the basename we want an absolute path from
+				    // the root of the package. Otherwise a relative path to the "lib" directory.
+				    if (identifier.split("/").pop().indexOf(".") === -1) {
+				        // We have a module relative to the "lib" directory of the package.
+				        identifier = identifier + ".js";
+				    } else
+				    if (!/^\//.test(identifier)) {
+				        // We want an absolute path for the module from the root of the package.
+				        identifier = "/" + identifier;
+				    }
+                    return identifier;
 				}
 				
 				function resolveIdentifier(identifier) {
@@ -157,11 +166,11 @@ var sourcemint = null;
 						return [Package(mappings[identifier[0]]), normalizeIdentifier(identifier.slice(1).join("/"))];
 					}
 				}
-
+				
 				// Statically link a module and its dependencies
 				module.require = function(identifier) {
-				    // RequireJS compatibility.
-				    // TODO: Move this to a plugin to save space here.
+				    // HACK: RequireJS compatibility.
+				    // TODO: Move this to a plugin.
 				    if (typeof identifier !== "string") {
 				        /*DEBUG*/ if (identifier.length > 1) {
 			            /*DEBUG*/     throw new Error("Dynamic 'require([])' may only specify one module in module '" + moduleIdentifier + "'!");
@@ -171,17 +180,15 @@ var sourcemint = null;
 					identifier = resolveIdentifier(identifier);
 					return identifier[0].require(identifier[1]).exports;
 				};
-
+				
 				module.require.id = function(identifier) {
 					identifier = resolveIdentifier(identifier);
-					return identifier[1];
+					return identifier[0].require.id(identifier[1]);
 				};
 
 				module.require.async = function(identifier, loadedCallback) {
 					identifier = resolveIdentifier(identifier);
-					load(identifier[1], identifier[0].id, function() {
-						loadedCallback(identifier[0].require(identifier[1]).exports);							
-					});
+					identifier[0].load(identifier[1], loadedCallback);
 				};
 
 				module.require.sandbox = function() {
@@ -242,11 +249,17 @@ var sourcemint = null;
 				return module;
 			};
 
+			pkg.load = function(moduleIdentifier, loadedCallback) {
+                load(((!/^\//.test(moduleIdentifier))?"/"+libPath:"") + moduleIdentifier, packageIdentifier, function() {
+                    loadedCallback(pkg.require(moduleIdentifier).exports);                           
+                });
+			}
+
 			pkg.require = function(moduleIdentifier) {
 				var loadingBundlesCallbacks;
-				if (!/^\//.test(moduleIdentifier)) {
-					moduleIdentifier = "/" + libPath + moduleIdentifier;
-				}
+                if (!/^\//.test(moduleIdentifier)) {
+                    moduleIdentifier = "/" + libPath + moduleIdentifier;
+                }
 				moduleIdentifier = packageIdentifier + moduleIdentifier;
 				if (!initializedModules[moduleIdentifier]) {
 					/*DEBUG*/ if (!moduleInitializers[moduleIdentifier]) {
@@ -263,7 +276,14 @@ var sourcemint = null;
 				}
 				return initializedModules[moduleIdentifier];
 			}
-			
+
+            pkg.require.id = function(moduleIdentifier) {
+                if (!/^\//.test(moduleIdentifier)) {
+                    moduleIdentifier = "/" + libPath + moduleIdentifier;
+                }
+                return (((packageIdentifier !== "")?"/"+packageIdentifier+"/":"") + moduleIdentifier).replace(/\/+/g, "/");
+            }
+
 			/*DEBUG*/ pkg.getReport = function() {
 			/*DEBUG*/ 	return {
 			/*DEBUG*/ 		mappings: mappings
@@ -272,7 +292,8 @@ var sourcemint = null;
 
 			if (sandboxOptions.onInitPackage) {
 				sandboxOptions.onInitPackage(pkg, sandbox, {
-					finalizeLoad: finalizeLoad
+					finalizeLoad: finalizeLoad,
+					moduleInitializers: moduleInitializers
 				});
 			}
 
