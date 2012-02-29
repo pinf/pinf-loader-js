@@ -78,7 +78,9 @@ var sourcemint = null;
 					loadingBundles[bundleIdentifier] = [];
 					bundleIdentifier = sandboxIdentifier + bundleIdentifier;
 					// Default to our script-injection browser loader.
-					(sandboxOptions.load || loadInBrowser)(bundleIdentifier, function(cleanupCallback) {
+					(sandboxOptions.rootBundleLoader || sandboxOptions.load || loadInBrowser)(bundleIdentifier, function(cleanupCallback) {
+					    // The rootBundleLoader is only applicable for the first load.
+                        delete sandboxOptions.rootBundleLoader;
 						finalizeLoad(bundleIdentifier, packageIdentifier);
 						loadedCallback(sandbox);
 						if (cleanupCallback) {
