@@ -193,6 +193,13 @@ var sourcemint = null;
 				}
 				module.require.sandbox.id = sandboxIdentifier;
 
+                // HACK: RequireJS compatibility.
+                // TODO: Move this to a plugin.
+                module.require.nameToUrl = function(identifier)
+                {
+                    return sandboxIdentifier + module.require.id(identifier);
+                }
+
 				module.load = function() {
 					if (typeof moduleInitializers[moduleIdentifier] === "function") {
 						
