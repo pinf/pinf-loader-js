@@ -251,11 +251,6 @@ key *RequireJS* features are not supported.
 Links
 =====
 
-**Discussions:**
-
-  * [groups.google.com/group/commonjs - Introducing the Sourcemint JavaScript Loader](http://groups.google.com/group/commonjs/browse_thread/thread/153ff1a966e56cb)
-  * [groups.google.com/group/requirejs - Alternative production loader to almond](http://groups.google.com/group/requirejs/browse_thread/thread/3a06691288655a74)
-
 **Influential Specifications:**
 
   * [CommonJS/Modues/1.1 (approved)](http://wiki.commonjs.org/wiki/Modules/1.1)
@@ -274,6 +269,11 @@ Links
   * https://github.com/NobleJS/Noble-Modules
   * https://github.com/pinf/loader-js
   * https://github.com/kriszyp/nodules
+
+**Discussions:**
+
+  * [groups.google.com/group/commonjs - Introducing the Sourcemint JavaScript Loader](http://groups.google.com/group/commonjs/browse_thread/thread/153ff1a966e56cb)
+  * [groups.google.com/group/requirejs - Alternative production loader to almond](http://groups.google.com/group/requirejs/browse_thread/thread/3a06691288655a74)
 
 
 Contribute
