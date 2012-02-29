@@ -157,10 +157,10 @@ var sourcemint = null;
 					// Check for mapped module path to module within mapped package.
 					{
 						identifier = identifier.split("/");
-						/*DEBUG*/ if (!mappings) {
+						/*DEBUG*/ if (typeof mappings === "undefined") {
 						/*DEBUG*/ 	throw new Error("Descriptor for sandbox '" + sandbox.id + "' does not declare 'mappings' property needed to resolve module path '" + identifier.join("/") + "' in module '" + moduleIdentifier + "'!");
 						/*DEBUG*/ }
-						/*DEBUG*/ if (!mappings[identifier[0]]) {
+						/*DEBUG*/ if (typeof mappings[identifier[0]] === "undefined") {
 						/*DEBUG*/ 	throw new Error("Descriptor for sandbox '" + sandbox.id + "' does not declare 'mappings[\"" + identifier[0] + "\"]' property needed to resolve module path '" + identifier.join("/") + "' in module '" + moduleIdentifier + "'!");
 						/*DEBUG*/ }
 						return [Package(mappings[identifier[0]]), normalizeIdentifier(identifier.slice(1).join("/"))];
