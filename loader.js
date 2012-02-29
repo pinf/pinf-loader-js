@@ -35,11 +35,17 @@ var sourcemint = null;
 
 		// @credit https://github.com/unscriptable/curl/blob/62caf808a8fd358ec782693399670be6806f1845/src/curl.js#L319-360
 		function loadInBrowser(uri, loadedCallback) {
+            if (/^\//.test(uri)) {
+                uri = document.location.protocol + "/" + uri;
+            }
+		    // See if we are in a web worker.
+		    if (typeof importScripts !== "undefined") {
+		        importScripts(uri);
+		        loadedCallback();
+		        return;
+		    }
 			if (!headTag) {
 				headTag = document.getElementsByTagName("head")[0];
-			}
-			if (/^\//.test(uri)) {
-				uri = document.location.protocol + "/" + uri;
 			}
 			var element = document.createElement("script");
 			element.type = "text/javascript";
