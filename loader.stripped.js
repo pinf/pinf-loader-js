@@ -38,11 +38,17 @@ var sourcemint = null;
 
 		// @credit https://github.com/unscriptable/curl/blob/62caf808a8fd358ec782693399670be6806f1845/src/curl.js#L319-360
 		function loadInBrowser(uri, loadedCallback) {
+            if (/^\//.test(uri)) {
+                uri = document.location.protocol + "/" + uri;
+            }
+		    // See if we are in a web worker.
+		    if (typeof importScripts !== "undefined") {
+		        importScripts(uri);
+		        loadedCallback();
+		        return;
+		    }
 			if (!headTag) {
 				headTag = document.getElementsByTagName("head")[0];
-			}
-			if (/^\//.test(uri)) {
-				uri = document.location.protocol + "/" + uri;
 			}
 			var element = document.createElement("script");
 			element.type = "text/javascript";
@@ -65,7 +71,7 @@ var sourcemint = null;
 
 		function load(bundleIdentifier, packageIdentifier, loadedCallback) {
             if (packageIdentifier !== "") {
-                bundleIdentifier = "/" + packageIdentifier + bundleIdentifier;
+                bundleIdentifier = ("/" + packageIdentifier + "/" + bundleIdentifier).replace(/\/+/g, "/");
             }
 			if (initializedModules[bundleIdentifier]) {
 				// Module is already loaded and initialized.
@@ -80,7 +86,9 @@ var sourcemint = null;
 					loadingBundles[bundleIdentifier] = [];
 					bundleIdentifier = sandboxIdentifier + bundleIdentifier;
 					// Default to our script-injection browser loader.
-					(sandboxOptions.load || loadInBrowser)(bundleIdentifier, function(cleanupCallback) {
+					(sandboxOptions.rootBundleLoader || sandboxOptions.load || loadInBrowser)(bundleIdentifier, function(cleanupCallback) {
+					    // The rootBundleLoader is only applicable for the first load.
+                        delete sandboxOptions.rootBundleLoader;
 						finalizeLoad(bundleIdentifier, packageIdentifier);
 						loadedCallback(sandbox);
 						if (cleanupCallback) {
@@ -135,8 +143,17 @@ var sourcemint = null;
 					};
 
 				function normalizeIdentifier(identifier) {
-					// Only append `.js` if module name does not contain a period.
-					return identifier + ((identifier.split("/").pop().indexOf(".")===-1)?".js":"");
+				    // If we have a period (".") in the basename we want an absolute path from
+				    // the root of the package. Otherwise a relative path to the "lib" directory.
+				    if (identifier.split("/").pop().indexOf(".") === -1) {
+				        // We have a module relative to the "lib" directory of the package.
+				        identifier = identifier + ".js";
+				    } else
+				    if (!/^\//.test(identifier)) {
+				        // We want an absolute path for the module from the root of the package.
+				        identifier = "/" + identifier;
+				    }
+                    return identifier;
 				}
 				
 				function resolveIdentifier(identifier) {
@@ -152,11 +169,11 @@ var sourcemint = null;
 						return [Package(mappings[identifier[0]]), normalizeIdentifier(identifier.slice(1).join("/"))];
 					}
 				}
-
+				
 				// Statically link a module and its dependencies
 				module.require = function(identifier) {
-				    // RequireJS compatibility.
-				    // TODO: Move this to a plugin to save space here.
+				    // HACK: RequireJS compatibility.
+				    // TODO: Move this to a plugin.
 				    if (typeof identifier !== "string") {
 				        return module.require.async.call(null, identifier[0], arguments[1]);
 				    }
@@ -164,16 +181,18 @@ var sourcemint = null;
 					return identifier[0].require(identifier[1]).exports;
 				};
 
+				module.require.supports = [
+		            "ucjs2-pinf-0"
+		        ];
+
 				module.require.id = function(identifier) {
 					identifier = resolveIdentifier(identifier);
-					return identifier[1];
+					return identifier[0].require.id(identifier[1]);
 				};
 
 				module.require.async = function(identifier, loadedCallback) {
 					identifier = resolveIdentifier(identifier);
-					load(identifier[1], identifier[0].id, function() {
-						loadedCallback(identifier[0].require(identifier[1]).exports);							
-					});
+					identifier[0].load(identifier[1], loadedCallback);
 				};
 
 				module.require.sandbox = function() {
@@ -184,6 +203,13 @@ var sourcemint = null;
 					return sourcemint.sandbox.apply(null, arguments);
 				}
 				module.require.sandbox.id = sandboxIdentifier;
+
+                // HACK: RequireJS compatibility.
+                // TODO: Move this to a plugin.
+                module.require.nameToUrl = function(identifier)
+                {
+                    return sandboxIdentifier + module.require.id(identifier);
+                }
 
 				module.load = function() {
 					if (typeof moduleInitializers[moduleIdentifier] === "function") {
@@ -217,11 +243,17 @@ var sourcemint = null;
 				return module;
 			};
 
+			pkg.load = function(moduleIdentifier, loadedCallback) {
+                load(((!/^\//.test(moduleIdentifier))?"/"+libPath:"") + moduleIdentifier, packageIdentifier, function() {
+                    loadedCallback(pkg.require(moduleIdentifier).exports);                           
+                });
+			}
+
 			pkg.require = function(moduleIdentifier) {
 				var loadingBundlesCallbacks;
-				if (!/^\//.test(moduleIdentifier)) {
-					moduleIdentifier = "/" + libPath + moduleIdentifier;
-				}
+                if (!/^\//.test(moduleIdentifier)) {
+                    moduleIdentifier = "/" + libPath + moduleIdentifier;
+                }
 				moduleIdentifier = packageIdentifier + moduleIdentifier;
 				if (!initializedModules[moduleIdentifier]) {
 					(initializedModules[moduleIdentifier] = Module(moduleIdentifier)).load();
@@ -235,11 +267,19 @@ var sourcemint = null;
 				}
 				return initializedModules[moduleIdentifier];
 			}
-			
+
+            pkg.require.id = function(moduleIdentifier) {
+                if (!/^\//.test(moduleIdentifier)) {
+                    moduleIdentifier = "/" + libPath + moduleIdentifier;
+                }
+                return (((packageIdentifier !== "")?"/"+packageIdentifier+"/":"") + moduleIdentifier).replace(/\/+/g, "/");
+            }
+
 
 			if (sandboxOptions.onInitPackage) {
 				sandboxOptions.onInitPackage(pkg, sandbox, {
-					finalizeLoad: finalizeLoad
+					finalizeLoad: finalizeLoad,
+					moduleInitializers: moduleInitializers
 				});
 			}
 
@@ -255,7 +295,8 @@ var sourcemint = null;
 
 		// Call the 'main' module of the program
 		sandbox.main = function() {
-			return sandbox.require(Package("").main).exports.main.apply(null, arguments);
+			var exports = sandbox.require(Package("").main).exports;
+			return ((exports.main)?exports.main.apply(null, arguments):undefined);
 		};
 
 

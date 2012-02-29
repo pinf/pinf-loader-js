@@ -4,7 +4,7 @@ Optimized [PINF](http://pinf.org/)/[CommonJS](http://commonjs.org/) Loader for J
 *Status: ALPHA* [![Build Status](https://secure.travis-ci.org/sourcemint/loader-js.png)](http://travis-ci.org/sourcemint/loader-js)
 
 The `Sourcemint JavaScript Loader` is an optimized *(intended for production use)* **CommonJS package mappings** 
-based **JavaScript module loader** for the browser in only **1388 bytes** *(minified and zipped)*.
+based **JavaScript module loader** for the browser in only **1527 bytes** *(minified and zipped)*.
 
   * Copyright: 2011 [Christoph Dorn](http://www.christophdorn.com/)
   * Code License: [MIT License](http://www.opensource.org/licenses/mit-license.php)
