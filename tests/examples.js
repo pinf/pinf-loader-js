@@ -1,7 +1,8 @@
 
 var LOADER = require("../loader"),
 	Q = require("q"),
-	LOADER = require("sourcemint-platform-nodejs/lib/loader");
+	LOADER = require("sourcemint-platform-nodejs/lib/loader"),
+    ERROR = require("sourcemint-platform-nodejs/lib/util/error");
 
 
 exports.main = function(API, options)
@@ -134,20 +135,5 @@ exports.main = function(API, options)
 
 if (require.main === module)
 {
-	exports.main().then(function()
-	{
-		console.log("Success!");
-
-	},function(err)
-	{
-		// TODO: Use generic error formatter here.
-		if (typeof err === "object" && typeof err.stack !== "undefined")
-		{
-			console.error("ERROR", err.stack);
-		}
-		else
-		{
-			console.error("ERROR", err);
-		}
-	});
+    Q.call(exports.main).fail(ERROR.exitProcessWithError);
 }
