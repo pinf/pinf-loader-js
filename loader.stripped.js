@@ -38,15 +38,18 @@ var sourcemint = null;
 
 		// @credit https://github.com/unscriptable/curl/blob/62caf808a8fd358ec782693399670be6806f1845/src/curl.js#L319-360
 		function loadInBrowser(uri, loadedCallback) {
-            if (/^\//.test(uri)) {
-                uri = document.location.protocol + "/" + uri;
-            }
 		    // See if we are in a web worker.
 		    if (typeof importScripts !== "undefined") {
-		        importScripts(uri);
+		        importScripts(uri.replace(/^\{host\}/, ""));
 		        loadedCallback();
 		        return;
 		    }
+            if (/^\{host\}\//.test(uri)) {
+                uri = document.location.protocol + "//" + document.location.host + uri.substring(6);
+            } else
+            if (/^\//.test(uri)) {
+                uri = document.location.protocol + "/" + uri;
+            }
 			if (!headTag) {
 				headTag = document.getElementsByTagName("head")[0];
 			}
@@ -200,6 +203,13 @@ var sourcemint = null;
 					{
 						arguments[2].load = arguments[2].load || sandboxOptions.load;
 					}
+	                // If the `programIdentifier` (first argument) is relative it is resolved against the URI of the owning sandbox (not the owning page).
+					if (/^\./.test(arguments[0]))
+					{
+					    arguments[0] = sandboxIdentifier.replace(/\/[^\/]*$/, "") + "/" + arguments[0];
+					    // HACK: Temporary hack as zombie (https://github.com/assaf/zombie) does not normalize path before sending to server.
+					    arguments[0] = arguments[0].replace(/\/\.\//g, "/");
+					}
 					return sourcemint.sandbox.apply(null, arguments);
 				}
 				module.require.sandbox.id = sandboxIdentifier;
@@ -335,6 +345,7 @@ var sourcemint = null;
 		];
 
 		// Create a new environment to memoize modules to.
+		// If relative, the `programIdentifier` is resolved against the URI of the owning page (this is only for the global require).
 		require.sandbox = function(programIdentifier, loadedCallback, options) {
 			var sandboxIdentifier = programIdentifier.replace(/\.js$/, "");
 			return sandboxes[sandboxIdentifier] = Sandbox(sandboxIdentifier, loadedCallback, options || {});
