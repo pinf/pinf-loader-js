@@ -13,7 +13,7 @@ require.bundle("", function(require)
 
 			module.log("Hello from 10-Sandbox!");
 
-			var url = require.sandbox.id + require.id("./SandboxedExtraBundle");
+			var url = "." + require.id("./SandboxedExtraBundle");
 
 			require.sandbox(url, function(sandbox)
 			{

@@ -75,7 +75,7 @@ require.bundle("", function(require)
 			{
 				var result = Q.defer();
 
-				require.sandbox("./" + name + ".js", function(sandbox)
+				require.sandbox("../" + name + ".js", function(sandbox)
 				{
 					try {
 						Q.when(sandbox.main(options), result.resolve, result.reject);
