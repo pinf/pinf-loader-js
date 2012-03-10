@@ -11,6 +11,10 @@ exports.main = function(API, options)
 	API.LOADER = API.LOADER || LOADER;
 
 	options = options || {};
+    if (typeof options.debug === "undefined")
+    {
+        options.debug = true;
+    }
 
 	var deferred = Q.defer();
 
@@ -70,7 +74,7 @@ exports.main = function(API, options)
 				API.LOADER.sandbox(uri, function(sandbox)
 				{
 					try {
-						Q.when(sandbox.main(), result.resolve, result.reject);
+						Q.when(sandbox.main(options), result.resolve, result.reject);
 					} catch(e) {
 						result.reject(e);
 					}
