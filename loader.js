@@ -214,7 +214,7 @@ var sourcemint = null;
 	                // If the `programIdentifier` (first argument) is relative it is resolved against the URI of the owning sandbox (not the owning page).
 					if (/^\./.test(arguments[0]))
 					{
-					    arguments[0] = sandboxIdentifier.replace(/\/[^\/]*$/, "") + "/" + arguments[0];
+					    arguments[0] = sandboxIdentifier + "/" + arguments[0];
 					    // HACK: Temporary hack as zombie (https://github.com/assaf/zombie) does not normalize path before sending to server.
 					    arguments[0] = arguments[0].replace(/\/\.\//g, "/");
 					}
