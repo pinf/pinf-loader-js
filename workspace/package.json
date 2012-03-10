@@ -1,6 +1,7 @@
 {
     "name": "sourcemint-loader-js-workspace",
     "version": "0.1.0",
+    "private": true,
     "engines": {
         "nodejs": "0.x"
     },
