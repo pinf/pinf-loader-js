@@ -40,12 +40,12 @@ var sourcemint = null;
 		function loadInBrowser(uri, loadedCallback) {
 		    // See if we are in a web worker.
 		    if (typeof importScripts !== "undefined") {
-		        importScripts(uri.replace(/^\{host\}/, ""));
+		        importScripts(uri.replace(/^\/?\{host\}/, ""));
 		        loadedCallback();
 		        return;
 		    }
-            if (/^\{host\}\//.test(uri)) {
-                uri = document.location.protocol + "//" + document.location.host + uri.substring(6);
+            if (/^\/?\{host\}\//.test(uri)) {
+                uri = document.location.protocol + "//" + document.location.host + uri.replace(/^\/?\{host\}/, "");
             } else
             if (/^\//.test(uri)) {
                 uri = document.location.protocol + "/" + uri;

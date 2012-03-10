@@ -48,6 +48,12 @@ require.bundle("", function(require)
 
 		exports.main = function(options)
 		{
+		    options = options || {};
+		    if (typeof options.debug === "undefined")
+		    {
+		        options.debug = true;
+		    }
+
 		    Q.when(Q.all([
           		"01-HelloWorld",
         		"02-ReturnExports",
@@ -69,7 +75,7 @@ require.bundle("", function(require)
 			{
 				var result = Q.defer();
 
-				require.sandbox("../../examples/" + name + ".js", function(sandbox)
+				require.sandbox("./" + name + ".js", function(sandbox)
 				{
 					try {
 						Q.when(sandbox.main(options), result.resolve, result.reject);
