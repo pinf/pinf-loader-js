@@ -43,6 +43,14 @@ exports.main = function()
                 res.end(source);
             });
         });
+        app.get(/^\/loader.crush.js/, function(req, res)
+        {
+            res.setHeader("Content-Type", "text/plain");
+            getCrushedSource(function(source)
+            {
+                res.end(source);
+            });
+        });
         app.get(/^\/loader.min.js.gz/, function(req, res)
         {
             res.setHeader("Content-Type", "application/x-javascript");
@@ -50,6 +58,19 @@ exports.main = function()
             getMinifiedSource(function()
             {
                 var raw = FS.createReadStream(ROOT_PATH + "/loader.min.js.gz");
+                res.writeHead(200, {
+                    "content-encoding": "gzip"
+                });
+                raw.pipe(res);
+            });
+        });
+        app.get(/^\/loader.crush.js.gz/, function(req, res)
+        {
+            res.setHeader("Content-Type", "application/x-javascript");
+            res.setHeader("Content-Encoding", "gzip");
+            getCrushedSource(function()
+            {
+                var raw = FS.createReadStream(ROOT_PATH + "/loader.crush.js.gz");
                 res.writeHead(200, {
                     "content-encoding": "gzip"
                 });
@@ -91,6 +112,7 @@ function getStrippedSource()
 	return source;
 }
 
+var minifying = false;
 function getMinifiedSource(callback)
 {
 	var source = getStrippedSource(),
@@ -107,33 +129,44 @@ function getMinifiedSource(callback)
 		fileHash = FS.readFileSync(ROOT_PATH + "/workspace/www/loader.stripped.js.md5").toString();
 	}
 	
-	if (sourceHash != fileHash)
+	if (sourceHash != fileHash && minifying === false)
 	{
-		console.log("Minifying loader.js using Google Closure ...");
-		
+	    minifying = true;
+
+	    console.log("Minifying loader.js using Google Closure ...");
+
 		compileSource(source, function(compiledSource)
 		{
 			FS.writeFileSync(ROOT_PATH + "/loader.min.js", compiledSource);
-			
-			ZLIB.gzip(new Buffer(compiledSource), function(err, result)
+            FS.writeFileSync(ROOT_PATH + "/workspace/www/loader.min.js-size", ""+compiledSource.length);
+
+            writeZip(compiledSource, ROOT_PATH + "/loader.min.js.gz", function(result)
 			{
-				FS.writeFileSync(ROOT_PATH + "/loader.min.js.gz", result.toString("binary"));
+                FS.writeFileSync(ROOT_PATH + "/workspace/www/loader.min.js.gz-size", ""+result.length);
 
-				var out = FS.createWriteStream(ROOT_PATH + "/loader.min.js.gz");
-				out.on("close", function()
-				{
-					var readme = FS.readFileSync(ROOT_PATH + "/README.md").toString();
-					readme = readme.replace(/\*\*\d* bytes\*\* \*\(minified and zipped\)\*/, "**" + result.length + " bytes** *(minified and zipped)*");
-					FS.writeFileSync(ROOT_PATH + "/README.md", readme);
+                var readme = FS.readFileSync(ROOT_PATH + "/README.md").toString();
+                readme = readme.replace(/\*\*\d* bytes\*\* \*\(minified and zipped\)\*/, "**" + result.length + " bytes** *(minified and zipped)*");
+                FS.writeFileSync(ROOT_PATH + "/README.md", readme);
 
-					FS.writeFileSync(ROOT_PATH + "/workspace/www/loader.stripped.js.md5", sourceHash);
-					FS.writeFileSync(ROOT_PATH + "/workspace/www/loader.min.js.gz-size", ""+result.length);
+			    console.log("... OK");
+                console.log("Crushing loader.min.js using JSCrush ...");
 
-					console.log("... OK");
+		        crushSource(compiledSource, function(crushedSource)
+                {
+		            FS.writeFileSync(ROOT_PATH + "/loader.crush.js", crushedSource);
+		            FS.writeFileSync(ROOT_PATH + "/workspace/www/loader.crush.js-size", ""+crushedSource.length);
 
-					done();
-				});
-				out.end(result);
+		            writeZip(crushedSource, ROOT_PATH + "/loader.crush.js.gz", function(result)
+                    {
+		                FS.writeFileSync(ROOT_PATH + "/workspace/www/loader.crush.js.gz-size", ""+result.length);
+
+        	            FS.writeFileSync(ROOT_PATH + "/workspace/www/loader.stripped.js.md5", sourceHash);
+        	            console.log("... OK");
+        	            minifying = false;
+
+        	            done();
+                    });
+                });
 			});
 		});
 	}
@@ -143,11 +176,34 @@ function getMinifiedSource(callback)
 	}
 }
 
+function getCrushedSource(callback)
+{
+    getMinifiedSource(function()
+    {
+        callback(FS.readFileSync(ROOT_PATH + "/loader.crush.js").toString());
+    });
+}
+
 function md5Hash(data)
 {
     var shasum = CRYPTO.createHash("md5");
     shasum.update(data);
     return shasum.digest("hex");
+}
+
+function writeZip(source, zipPath, callback)
+{
+    ZLIB.gzip(new Buffer(source), function(err, result)
+    {
+        FS.writeFileSync(zipPath, result.toString("binary"));
+
+        var out = FS.createWriteStream(zipPath);
+        out.on("close", function()
+        {
+            callback(result);
+        });
+        out.end(result);
+    });
 }
 
 function compileSource(codestring, callback)
@@ -189,3 +245,26 @@ function compileSource(codestring, callback)
 	post_req.write(post_data);
 	post_req.end();	
 }
+
+
+/* @source http://www.iteral.com/jscrush/ */
+function crushSource(codestring, callback)
+{
+//    b.innerHTML="Javascript  source<br><textarea rows=12 cols=80></textarea><br><button>CRUSH</button> <b></b><br><textarea rows=12 cols=80></textarea>"+b.innerHTML;
+    Q=[];
+    for(i=127;--i;i-10&&i-13&&i-34&&i-39&&i-92&&Q.push(String.fromCharCode(i)));
+//    setTimeout("b.children[1].value=eval(b.children[9].innerHTML.replace(/eval\\(_\\)/,'_'));L()");
+//    b.children[3].onclick=L=
+    callback(function(s) {
+         i=s=s.replace(/([\r\n]|^)\s*\/\/.*|[\r\n]+\s*/g,'').replace(/\\/g,'\\\\'),B=s.length/2,m='';
+         for(S=encodeURI(i).replace(/%../g,'i').length;;m=c+m){for(c=0,i=122;!c&&--i;!~s.indexOf(Q[i])&&(c=Q[i]));if(!c)break;
+         for(o={},M=N=e=Z=t=0;++t<=B;)for(i=0;++i<s.length-t;)if(!o[x=s.substr(j=i,t)])
+         if(~(j=s.indexOf(x,j+t)))for(Z=t,o[x]=1;~j;o[x]++)j=s.indexOf(x,j+t);B=Z;
+         for(i in o){j=encodeURI(i).replace(/%../g,'i').length;if(j=(R=o[i])*j-R-j-1)if(j>M||j==M&&R>N)M=j,N=R,e=i}if(!e)break;
+         s=s.split(e).join(c)+c+e}c=s.split('"').length<s.split("'").length?(B='"',/"/g):(B="'",/'/g);
+         return '_='+B+s.replace(c,'\\'+B)+B+';for(Y=0;$='+B+m+B+'[Y++];)with(_.split($))_=join(pop());eval(_)';
+//         i=encodeURI(i).replace(/%../g,'i').length;
+//         b.children[4].innerHTML=S+'B to '+i+'B ('+(i=i-S)+'B, '+((i/S*1e4|0)/100)+'%)'
+    }(codestring));
+}
+

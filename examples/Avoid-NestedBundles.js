@@ -10,21 +10,27 @@ require.bundle("", function(require)
 		exports.main = function(options)
 		{
 			module.log("Hello from Avoid-NestedBundles!");
+			
+            if (options.debug === true)
+            {
+                test();
+            }
 		}
 	});
-
-	var error;
-	try {
-		require.bundle("", function(require)
-		{
-		});
-	} catch(e) {
-		error = e;
-	} finally {
-		if (!error || error.message !== "You cannot nest require.bundle() calls!")
-		{
-			throw new Error("Loader should have thrown: You cannot nest require.bundle() calls!");
-		}
+	
+	function test() {
+    	var error;
+    	try {
+    		require.bundle("", function(require)
+    		{
+    		});
+    	} catch(e) {
+    		error = e;
+    	} finally {
+    		if (!error || error.message !== "You cannot nest require.bundle() calls!")
+    		{
+    			throw new Error("Loader should have thrown: You cannot nest require.bundle() calls!");
+    		}
+    	}
 	}
-
 });

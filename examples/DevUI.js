@@ -46,7 +46,7 @@ require.bundle("", function(require)
 			console.error.apply(null, ["[DevUI]"].concat(arguments));
 		}
 
-		exports.main = function()
+		exports.main = function(options)
 		{
 		    Q.when(Q.all([
           		"01-HelloWorld",
@@ -72,7 +72,7 @@ require.bundle("", function(require)
 				require.sandbox("../../examples/" + name + ".js", function(sandbox)
 				{
 					try {
-						Q.when(sandbox.main(), result.resolve, result.reject);
+						Q.when(sandbox.main(options), result.resolve, result.reject);
 					} catch(e) {
 						result.reject(e);
 					}
@@ -118,10 +118,18 @@ require.bundle("", function(require)
 				$.get("../../loader.min.js", function(data) {
 					$("#loader-min").html(data);
 				}, "text");
-
-				$.get("loader.min.js.gz-size", function(data) {
+				$.get("loader.min.js-size", function(data) {
 					$("#loader-min-size").html(data);
 				}, "text");
+                $.get("loader.min.js.gz-size", function(data) {
+                    $("#loader-min-gz-size").html(data);
+                }, "text");
+                $.get("loader.crush.js-size", function(data) {
+                    $("#loader-crush-size").html(data);
+                }, "text");
+                $.get("loader.crush.js.gz-size", function(data) {
+                    $("#loader-crush-gz-size").html(data);
+                }, "text");
 			});
 		}
 	});
