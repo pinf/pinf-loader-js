@@ -292,7 +292,7 @@ var sourcemint = null;
 				if (loadingBundles[moduleIdentifier]) {
 					loadingBundlesCallbacks = loadingBundles[moduleIdentifier];
 					delete loadingBundles[moduleIdentifier];
-					for (i=0;i<loadingBundlesCallbacks.length;i++) {
+					for (var i=0 ; i<loadingBundlesCallbacks.length ; i++) {
 						loadingBundlesCallbacks[i](sandbox);
 					}
 				}
