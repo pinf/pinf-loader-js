@@ -274,6 +274,7 @@ Links
 
   * [groups.google.com/group/commonjs - Introducing the Sourcemint JavaScript Loader](http://groups.google.com/group/commonjs/browse_thread/thread/153ff1a966e56cb)
   * [groups.google.com/group/requirejs - Alternative production loader to almond](http://groups.google.com/group/requirejs/browse_thread/thread/3a06691288655a74)
+  * [groups.google.com/group/firebug-working-group - Better Firebug Loader & Module Packaging](https://groups.google.com/d/topic/firebug-working-group/qWR1wdB-WQA/discussion)
 
 
 Contribute
