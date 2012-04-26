@@ -2,6 +2,7 @@
 	"uid": "https://github.com/sourcemint/loader-js/",
 	"name": "sourcemint-loader-js",
 	"version": "0.3.3",
+    "pm": "npm",
 	"main": "loader.js",
 	"directories": {
 	    "lib": "."
