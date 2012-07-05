@@ -237,6 +237,11 @@ var sourcemint = null;
 							exports: undefined
 						}
 
+						// If embedded in bundle `isMain` will be set to `true` if bundle was `require.main`.
+				        if (packageIdentifier === "" && pkg.main === moduleIdentifier && sandboxOptions.isMain === true) {
+				        	module.require.main = moduleInterface;
+				        }
+
 						if (sandboxOptions.onInitModule) {
 							sandboxOptions.onInitModule(moduleInterface, module, pkg, sandbox);
 						}
@@ -330,11 +335,16 @@ var sourcemint = null;
 		}
 
 		// Call the 'main' module of the program
-		sandbox.main = function() {
+		sandbox.boot = function() {
 			/*DEBUG*/ if (typeof Package("").main !== "string") {
 			/*DEBUG*/ 	throw new Error("No 'main' property declared in '/package.json' in sandbox '" + sandbox.id + "'!");
 			/*DEBUG*/ }
-			var exports = sandbox.require(Package("").main).exports;
+			return sandbox.require(Package("").main).exports;
+		};
+
+		// Call the 'main' exported function of the main' module of the program
+		sandbox.main = function() {
+			var exports = sandbox.boot();
 			return ((exports.main)?exports.main.apply(null, arguments):undefined);
 		};
 
