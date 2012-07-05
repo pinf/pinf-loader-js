@@ -87,10 +87,18 @@ exports.main = function(API, options)
 								callback({
 									get: function(uri, callback)
 									{
-										LOADER.resolveURI(uri).then(function(uri)
+										LOADER.resolveURI(uri, function(err, uri)
 										{
-											LOADER.loadBundleCode(uri).then(function(code)
+											if (err)
 											{
+												throw err;
+											}
+											LOADER.loadBundleCode(uri, function(err, code)
+											{
+												if (err)
+												{
+													throw err;
+												}
 												callback(code);
 											});
 										});
