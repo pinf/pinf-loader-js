@@ -3,6 +3,7 @@
     "name": "sourcemint-loader-js",
     "version": "0.3.5",
     "pm": "npm",
+    "shrinkwrap": true,
     "main": "loader.js",
     "directories": {
         "lib": "."
