@@ -229,6 +229,11 @@ var sourcemint = null;
 							exports: undefined
 						}
 
+						// If embedded in bundle `isMain` will be set to `true` if bundle was `require.main`.
+				        if (packageIdentifier === "" && pkg.main === moduleIdentifier && sandboxOptions.isMain === true) {
+				        	module.require.main = moduleInterface;
+				        }
+
 						if (sandboxOptions.onInitModule) {
 							sandboxOptions.onInitModule(moduleInterface, module, pkg, sandbox);
 						}
@@ -271,7 +276,7 @@ var sourcemint = null;
 				if (loadingBundles[moduleIdentifier]) {
 					loadingBundlesCallbacks = loadingBundles[moduleIdentifier];
 					delete loadingBundles[moduleIdentifier];
-					for (i=0;i<loadingBundlesCallbacks.length;i++) {
+					for (var i=0 ; i<loadingBundlesCallbacks.length ; i++) {
 						loadingBundlesCallbacks[i](sandbox);
 					}
 				}
@@ -304,8 +309,13 @@ var sourcemint = null;
 		}
 
 		// Call the 'main' module of the program
+		sandbox.boot = function() {
+			return sandbox.require(Package("").main).exports;
+		};
+
+		// Call the 'main' exported function of the main' module of the program
 		sandbox.main = function() {
-			var exports = sandbox.require(Package("").main).exports;
+			var exports = sandbox.boot();
 			return ((exports.main)?exports.main.apply(null, arguments):undefined);
 		};
 
