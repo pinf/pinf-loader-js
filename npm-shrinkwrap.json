@@ -1,6 +1,6 @@
 {
   "name": "sourcemint-loader-js",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "dependencies": {
     "q": {
       "version": "0.8.2",
@@ -11,13 +11,13 @@
       }
     },
     "sourcemint-platform-nodejs": {
-      "version": "0.4.0",
+      "version": "0.4.2",
       "dependencies": {
         "q": {
           "version": "0.8.5"
         },
         "sourcemint-bundler-js": {
-          "version": "0.3.5",
+          "version": "0.3.6",
           "dependencies": {
             "n-util": {
               "version": "0.0.1"
@@ -118,7 +118,7 @@
           }
         },
         "sourcemint-platform-browser": {
-          "version": "0.1.4",
+          "version": "0.1.5",
           "dependencies": {
             "connect": {
               "version": "1.9.1",
@@ -139,6 +139,51 @@
             },
             "q": {
               "version": "0.8.5"
+            },
+            "wrench": {
+              "version": "1.3.9"
+            }
+          }
+        },
+        "sourcemint-util-js": {
+          "version": "0.1.30",
+          "dependencies": {
+            "n-util": {
+              "version": "0.0.1"
+            },
+            "q": {
+              "version": "0.8.5"
+            },
+            "glob": {
+              "version": "3.1.12",
+              "dependencies": {
+                "minimatch": {
+                  "version": "0.2.6",
+                  "dependencies": {
+                    "lru-cache": {
+                      "version": "2.0.1"
+                    }
+                  }
+                },
+                "graceful-fs": {
+                  "version": "1.1.10"
+                },
+                "inherits": {
+                  "version": "1.0.0"
+                }
+              }
+            },
+            "wrench": {
+              "version": "1.3.9"
+            },
+            "console-trace": {
+              "version": "0.1.0",
+              "from": "https://github.com/LearnBoost/console-trace/tarball/8a54bf706d001f1eef166b99391e952e4be10982",
+              "dependencies": {
+                "callsite": {
+                  "version": "0.0.2"
+                }
+              }
             }
           }
         },
