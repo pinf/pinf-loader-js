@@ -149,6 +149,9 @@ function getMinifiedSource(callback)
                 FS.writeFileSync(ROOT_PATH + "/README.md", readme);
 
 			    console.log("... OK");
+
+                // TMP: Bypass for now cos it is so slow.
+                /*
                 console.log("Crushing loader.min.js using JSCrush ...");
 
 		        crushSource(compiledSource, function(crushedSource)
@@ -162,11 +165,14 @@ function getMinifiedSource(callback)
 
         	            FS.writeFileSync(ROOT_PATH + "/workspace/www/loader.stripped.js.md5", sourceHash);
         	            console.log("... OK");
+                        */
         	            minifying = false;
 
         	            done();
+                        /*
                     });
                 });
+                */
 			});
 		});
 	}

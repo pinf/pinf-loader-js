@@ -32,9 +32,27 @@ var sourcemint = null;
 				id: sandboxIdentifier
 			};
 
+		/*DEBUG*/ function logDebug() {
+		/*DEBUG*/ 	if (sandboxOptions.debug !== true) return;
+		/*DEBUG*/ 	// NOTRE: This does not work in google chrome.
+		/*DEBUG*/ 	//console.log.apply(null, arguments);
+		/*DEBUG*/ 	if (arguments.length === 1) {
+		/*DEBUG*/ 		console.log(arguments[0]);
+		/*DEBUG*/ 	} else
+		/*DEBUG*/ 	if (arguments.length === 2) {
+		/*DEBUG*/ 		console.log(arguments[0], arguments[1]);
+		/*DEBUG*/ 	} else
+		/*DEBUG*/ 	if (arguments.length === 3) {
+		/*DEBUG*/ 		console.log(arguments[0], arguments[1], arguments[2]);
+		/*DEBUG*/ 	} else
+		/*DEBUG*/ 	if (arguments.length === 4) {
+		/*DEBUG*/ 		console.log(arguments[0], arguments[1], arguments[2], arguments[3]);
+		/*DEBUG*/ 	}
+		/*DEBUG*/ }
 
 		// @credit https://github.com/unscriptable/curl/blob/62caf808a8fd358ec782693399670be6806f1845/src/curl.js#L319-360
 		function loadInBrowser(uri, loadedCallback) {
+			/*DEBUG*/ logDebug("[sm-loader]", 'loadInBrowser("' + uri + '")"');
 		    // See if we are in a web worker.
 		    if (typeof importScripts !== "undefined") {
 		        importScripts(uri.replace(/^\/?\{host\}/, ""));
