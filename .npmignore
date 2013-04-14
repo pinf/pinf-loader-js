@@ -1,0 +1,9 @@
+/.sm/
+node_modules/
+npm-debug.log
+/workspace/
+/Makefile
+/.travis.yml
+/scripts/
+/examples/
+/test/

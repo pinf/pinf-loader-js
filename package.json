@@ -3,6 +3,7 @@
     "name": "pinf-loader-js",
     "version": "0.4.1",
     "pm": "npm",
+    "publish": true,
     "main": "./loader.js",
     "directories": {
         "lib": "./"
