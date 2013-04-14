@@ -1,5 +1,5 @@
-Optimized JavaScript Package Loader
-===================================
+Optimized JavaScript Bundle Loader
+==================================
 
 *Status: BETA* [![Build Status](https://secure.travis-ci.org/pinf/pinf-loader-js.png)](http://travis-ci.org/pinf/pinf-loader-js)
 
