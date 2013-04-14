@@ -1,5 +1,5 @@
 
-require.bundle("27980559-C22C-4DDC-9340-248F4BF2A5E6", function(require)
+PINF.bundle("27980559-C22C-4DDC-9340-248F4BF2A5E6", function(require)
 {
 
 	require.memoize("/package.json", {
@@ -25,7 +25,7 @@ function __TEST__Avoid_SplitBundles() {
 
     var error;
     try {
-    	require.bundle("27980559-C22C-4DDC-9340-248F4BF2A5E6", function(require)
+    	PINF.bundle("27980559-C22C-4DDC-9340-248F4BF2A5E6", function(require)
     	{
     	});
     } catch(e) {

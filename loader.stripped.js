@@ -9,13 +9,14 @@
  */
 
 
-// Ignore all globals except for `require`, `exports` and `sourcemint`.
-// Declare `require` global but ignore if it already exists.
-var require;
-// Set `sourcemint` global no matter what.
-var sourcemint = null;
-// Combat pollution if used via <script> tag.
+// Combat pollution when used via <script> tag.
+// Don't touch any globals except for `exports` and `PINF`.
 (function (global, document) {
+
+	// If `PINF` gloabl already exists, don't do anything to change it.
+	if (typeof PINF !== "undefined") {
+		return;
+	}
 
 	var loadedBundles = [],
 		// @see https://github.com/unscriptable/curl/blob/62caf808a8fd358ec782693399670be6806f1845/src/curl.js#L69
@@ -209,7 +210,7 @@ var sourcemint = null;
 					    // HACK: Temporary hack as zombie (https://github.com/assaf/zombie) does not normalize path before sending to server.
 					    arguments[0] = arguments[0].replace(/\/\.\//g, "/");
 					}
-					return sourcemint.sandbox.apply(null, arguments);
+					return PINF.sandbox.apply(null, arguments);
 				}
 				module.require.sandbox.id = sandboxIdentifier;
 
@@ -337,6 +338,7 @@ var sourcemint = null;
 				this.bundle = function(uid, callback) {
 					var moduleInitializers = {},
 						req = new Require(uid);
+					delete req.bundle;
 					// Store raw module in loading bundle
 					req.memoize = function(moduleIdentifier, moduleInitializer) {
 						moduleInitializers[moduleIdentifier] = moduleInitializer;
@@ -364,18 +366,12 @@ var sourcemint = null;
 		return require;
 	}
 
-
-	sourcemint = Loader();
-
-
-	// Ignore `require` global if already exists.
-    if (!require) {
-        require = sourcemint;
-    }
+	// Set `PINF` gloabl.
+	PINF = Loader();
 
 	// Export `require` for CommonJS if `exports` global exists.
 	if (typeof exports === "object") {
-		exports.require = sourcemint;
+		exports.require = PINF;
 	}
 
 }(this, (typeof document !== "undefined")?document:null));

@@ -1,4 +1,5 @@
-require.bundle("", function(require)
+
+PINF.bundle("", function(require)
 {
 	require.memoize("/main.js", function(require, exports, module)
 	{

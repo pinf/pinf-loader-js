@@ -1,10 +1,10 @@
 Optimized JavaScript Package Loader
 ===================================
 
-*Status: BETA* [![Build Status](https://secure.travis-ci.org/sourcemint/loader-js.png)](http://travis-ci.org/pinf/pinf-loader-js)
+*Status: BETA* [![Build Status](https://secure.travis-ci.org/pinf/pinf-loader-js.png)](http://travis-ci.org/pinf/pinf-loader-js)
 
 The `PINF JavaScript Loader` is an optimized *(intended for production use)* **CommonJS package mappings** 
-based **JavaScript module loader** for the browser in only **1640 bytes** *(minified and zipped)*.
+based **JavaScript module loader** for the browser in only **1626 bytes** *(minified and zipped)*.
 
   * Code License: [UNLICENSE](http://unlicense.org/)
   * Docs License: [Creative Commons Attribution-NonCommercial-ShareAlike 3.0](http://creativecommons.org/licenses/by-nc-sa/3.0/)
@@ -12,13 +12,13 @@ based **JavaScript module loader** for the browser in only **1640 bytes** *(mini
 
 **Online Demo: [pinf.github.com/pinf-loader-js/workspace/www](http://pinf.github.com/pinf-loader-js/workspace/www/index.html)**
 
-**Examples: [github.com/sourcemint/examples-js](http://github.com/sourcemint/examples-js/)**
+**Examples: [github.com/pinf-it/pinf-it-bundler/tree/master/examples](http://github.com/pinf-it/pinf-it-bundler/tree/master/examples)**
 
 
 What
 ====
 
-The `Sourcemint JavaScript Loader` provides a **minimal CommonJS environment** that requests **optimized static JavaScript code files** 
+The `PINF JavaScript Loader` provides a **minimal CommonJS environment** that requests **optimized static JavaScript code files** 
 called **Bundles** from a server via **GET requests** and boots these into sandboxes in the browser identified by the requested URL.
 
 Supported Environments:
@@ -136,7 +136,7 @@ There are various examples that double as tests in `./examples`.
 
 For an online demo of the loader features see [pinf.github.com/pinf-loader-js/workspace/www](http://pinf.github.com/pinf-loader-js/workspace/www/index.html).
 
-For end-user examples of common use-cases see [github.com/sourcemint/examples-js](http://github.com/sourcemint/examples-js/).
+For end-user examples of common use-cases see [github.com/pinf-it/pinf-it-bundler/tree/master/examples](http://github.com/pinf-it/pinf-it-bundler/tree/master/examples).
 
 More examples and documentation will be available in time.
 

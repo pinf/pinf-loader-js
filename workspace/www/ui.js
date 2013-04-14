@@ -22,7 +22,6 @@
 			"12-Environment",
 			"13-AssignExports",
 			"14-NamedBundle",
-			"Avoid-NestedBundles",
 			"Avoid-SplitBundles"
 		].map(function(name) {
 
@@ -40,7 +39,7 @@
 			return wrap(function() {
 				var result = Q.defer();
 
-				require.sandbox("../../examples/" + name + ".js", function(sandbox) {
+				PINF.sandbox("../../examples/" + name + ".js", function(sandbox) {
 					try {
 						Q.when(sandbox.main(options), result.resolve, result.reject);
 					} catch(e) {
@@ -97,7 +96,7 @@
 					$("#error-alert").show();
 				} else {
 					$("#output").addClass("success");
-					$("#report").html(jsDump.parse(sourcemint.getReport()));
+					$("#report").html(jsDump.parse(PINF.getReport()));
 				}
 			});
 		});
