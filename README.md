@@ -10,7 +10,7 @@ based **JavaScript module loader** for the browser in only **1626 bytes** *(mini
   * Docs License: [Creative Commons Attribution-NonCommercial-ShareAlike 3.0](http://creativecommons.org/licenses/by-nc-sa/3.0/)
   * Mailing list: [groups.google.com/group/pinf](http://groups.google.com/group/pinf)
 
-**Online Demo: [pinf.github.com/pinf-loader-js/workspace/www](http://pinf.github.com/pinf-loader-js/workspace/www/index.html)**
+**Online Demo: [pinf.github.io/pinf-loader-js/workspace/www](http://pinf.github.io/pinf-loader-js/workspace/www/index.html)**
 
 **Examples: [github.com/pinf-it/pinf-it-bundler/tree/master/examples](http://github.com/pinf-it/pinf-it-bundler/tree/master/examples)**
 
@@ -134,7 +134,7 @@ Examples
 
 There are various examples that double as tests in `./examples`.
 
-For an online demo of the loader features see [pinf.github.com/pinf-loader-js/workspace/www](http://pinf.github.com/pinf-loader-js/workspace/www/index.html).
+For an online demo of the loader features see [pinf.github.io/pinf-loader-js/workspace/www](http://pinf.github.io/pinf-loader-js/workspace/www/index.html).
 
 For end-user examples of common use-cases see [github.com/pinf-it/pinf-it-bundler/tree/master/examples](http://github.com/pinf-it/pinf-it-bundler/tree/master/examples).
 
