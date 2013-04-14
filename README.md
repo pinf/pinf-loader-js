@@ -109,20 +109,16 @@ Usage
 
 	<script type="text/javascript" src="loader.js"></script>
 	<script type="text/javascript">
-		require.sandbox("app.js", function(sandbox)
-		{
+		PINF.sandbox("app.js", function(sandbox) {
 			sandbox.main();
 		});
 	</script>
 
 `http://localhost/app.js`
 
-	require.bundle("", function(require)
-	{
-		require.memoize("/main.js", function(require, exports, module)
-		{
-			exports.main = function(options)
-			{
+	PINF.bundle("", function(require) {
+		require.memoize("/main.js", function(require, exports, module) {
+			exports.main = function(options) {
 				console.log("HelloWorld!");
 			}
 		});
