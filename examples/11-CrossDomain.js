@@ -11,9 +11,7 @@ require.bundle("", function(require)
 			module.log("Hello from 11-CrossDomain!");
 
 		    return Q.all([
-				"https://raw.github.com/sourcemint/loader-js/master/examples/11-CrossDomain/CrossDomainBundle.js",
-				// TODO: Point to `http://sourcemint.com/` URL
-				"http://static.cadorn.net/CrossDomainBundle.js"
+				"https://raw.github.com/pinf/pinf-loader-js/master/examples/11-CrossDomain/CrossDomainBundle.js"
 			].map(function(url) {
 				var result = Q.defer();
 

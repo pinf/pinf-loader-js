@@ -1,26 +1,20 @@
 <html>
     <head>
-        <title>Optimized PINF/CommonJS Loader for JavaScript</title>
-		<link rel="stylesheet" href="../../examples/DevUI/style.css"/>
+        <title>Optimized JavaScript Package Loader</title>
+		<link rel="stylesheet" href="style.css"/>
+        <script type="text/javascript" src="q.js"></script>
+        <script type="text/javascript" src="jsdump.js"></script>
+        <script type="text/javascript" src="jquery.js"></script>
         <script type="text/javascript" src="../../loader.js"></script>
-        <script type="text/javascript">
-			require.sandbox("../../examples/DevUI.js", function(sandbox)
-			{
-				sandbox.main({
-				    debug: true
-				});
-			});
-		</script>
+        <script type="text/javascript" src="ui.js"></script>
     </head>
     <body>
-		<a id="forkme" href="https://github.com/sourcemint/loader-js"></a>
-		<h1>Optimized <a href="http://pinf.org/">PINF</a>/<a href="http://commonjs.org/">CommonJS</a> Loader for JavaScript</h1>
+		<a id="forkme" href="https://github.com/pinf/pinf-loader-js"></a>
+		<h1>Optimized JavaScript Package Loader</h1>
 		<div style="padding-right: 140px; float: right;">
-			<b>Copyright:</b> &nbsp;2011 <a href="http://christophdorn.com/">Christoph Dorn</a><br/>
-			<b>License:</b> &nbsp;<a href="http://www.opensource.org/licenses/mit-license.php">MIT</a> and <a href="http://mozilla.org/MPL/2.0/">MPL</a><br/>
-			<b>Sponsor:</b> &nbsp;<a href="http://sourcemint.com/">Sourcemint</a><br/>
-			<b>Source &amp; Docs:</b> &nbsp;<a href="https://github.com/sourcemint/loader-js">github.com/sourcemint/loader-js</a><br/>
-			<b>Mailing list:</b> &nbsp;<a href="http://groups.google.com/group/sourcemint/">groups.google.com/group/sourcemint</a><br/>
+			<b>License:</b> &nbsp;<a href="http://unlicense.org/">UNLICENSE</a><br/>
+			<b>Source &amp; Docs:</b> &nbsp;<a href="https://github.com/pinf/pinf-loader-js">github.com/pinf/pinf-loader-js</a><br/>
+			<b>Mailing list:</b> &nbsp;<a href="http://groups.google.com/group/pinf">groups.google.com/group/pinf</a><br/>
             <b>Use-case examples:</b> &nbsp;<a href="http://github.com/sourcemint/examples-js">github.com/sourcemint/examples-js</a>
 		</div>
 		<div style="padding-left: 10px;">
@@ -28,12 +22,10 @@
 			<a href="../../loader.stripped.js">loader.stripped.js</a> (source with <i>/*DEBUG*/</i> lines removed)<br/>
 			<a href="../../loader.min.js">loader.min.js</a> (<span id="loader-min-size"></span> bytes via <a href="http://closure-compiler.appspot.com">GoogleClosure Compiler</a>)<br/>
 			<a href="../../loader.min.js.gz">loader.min.js.gz</a> (<b><span id="loader-min-gz-size"></span> bytes</b>)<br/>
-            <a href="../../loader.crush.js">loader.crush.js</a> (<span id="loader-crush-size"></span> bytes via <a href="http://www.iteral.com/jscrush/">JSCrush</a>)<br/>
-            <a href="../../loader.crush.js.gz">loader.crush.js.gz</a> (<span id="loader-crush-gz-size"></span> bytes)<br/>
 		</div>
 		<h1>Minified Loader</h1>
         <div id="loader-min"></div>
-		<h1>Test Examples Output <span class="plain">(Source code: <a href="https://github.com/sourcemint/loader-js/tree/master/examples">github.com/sourcemint/loader-js/tree/master/examples</a>)</span></h1>
+		<h1>Test Examples Output <span class="plain">(Source code: <a href="https://github.com/pinf/pinf-loader-js/tree/master/examples">github.com/pinf/pinf-loader-js/tree/master/examples</a>)</span></h1>
 		<div id="error-alert">An error occurred while running tests! Check browser console for errors.</div>
         <pre id="output"></pre>
 		<h1>Loaded Resources <span class="plain">(on this page)</span></h1>

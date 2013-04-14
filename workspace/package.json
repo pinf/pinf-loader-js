@@ -1,12 +1,9 @@
 {
-    "name": "sourcemint-loader-js-workspace",
+    "name": "pinf-loader-js-workspace",
     "version": "0.1.0",
     "private": true,
-    "engines": {
-        "nodejs": "0.x"
-    },
     "dependencies": {
-        "connect": "1.x"
+        "express": "~3.1.2"
     },
-    "main": "./main.js"
+    "main": "./server.js"
 }

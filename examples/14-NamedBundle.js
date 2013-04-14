@@ -5,7 +5,7 @@ require.bundle("7242C938-E147-43B4-9EC6-77EBDEB4FAFC", function(require)
 	{
 		exports.main = function(options)
 		{
-			module.log("Hello from NamedBundle!");
+			module.log("Hello from 14-NamedBundle!");
 		}
 	});
 });

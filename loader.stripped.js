@@ -4,8 +4,8 @@
 
 
 /**
- * Copyright: 2011 Christoph Dorn <christoph@christophdorn.com>
- * License: MIT
+ * Author: Christoph Dorn <christoph@christophdorn.com>
+ * [UNLICENSE](http://unlicense.org/)
  */
 
 
@@ -20,7 +20,6 @@ var sourcemint = null;
 	var loadedBundles = [],
 		// @see https://github.com/unscriptable/curl/blob/62caf808a8fd358ec782693399670be6806f1845/src/curl.js#L69
 		readyStates = { 'loaded': 1, 'interactive': 1, 'complete': 1 };
-
 
 	// A set of modules working together.
 	var Sandbox = function(sandboxIdentifier, loadedCallback, sandboxOptions) {
