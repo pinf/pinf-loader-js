@@ -1,26 +1,24 @@
-Optimized [PINF](http://pinf.org/)/[CommonJS](http://commonjs.org/) Loader for JavaScript
-=========================================================================================
+Optimized JavaScript Package Loader
+===================================
 
-*Status: ALPHA* [![Build Status](https://secure.travis-ci.org/sourcemint/loader-js.png)](http://travis-ci.org/sourcemint/loader-js)
+*Status: BETA* [![Build Status](https://secure.travis-ci.org/pinf/pinf-loader-js.png)](http://travis-ci.org/pinf/pinf-loader-js)
 
-The `Sourcemint JavaScript Loader` is an optimized *(intended for production use)* **CommonJS package mappings** 
-based **JavaScript module loader** for the browser in only **1720 bytes** *(minified and zipped)*.
+The `PINF JavaScript Loader` is an optimized *(intended for production use)* **CommonJS package mappings** 
+based **JavaScript module loader** for the browser in only **1626 bytes** *(minified and zipped)*.
 
-  * Copyright: 2011 [Christoph Dorn](http://www.christophdorn.com/)
-  * Code License: [MIT](http://www.opensource.org/licenses/mit-license.php) and [MPL](http://mozilla.org/MPL/2.0/)
+  * Code License: [UNLICENSE](http://unlicense.org/)
   * Docs License: [Creative Commons Attribution-NonCommercial-ShareAlike 3.0](http://creativecommons.org/licenses/by-nc-sa/3.0/)
-  * Sponsor: [Sourcemint](http://sourcemint.com/)
-  * Mailing list: [groups.google.com/group/sourcemint](http://groups.google.com/group/sourcemint)
+  * Mailing list: [groups.google.com/group/pinf](http://groups.google.com/group/pinf)
 
-**Online Demo: [sourcemint.github.com/loader-js/workspace/www](http://sourcemint.github.com/loader-js/workspace/www/index.html)**
+**Online Demo: [pinf.github.com/pinf-loader-js/workspace/www](http://pinf.github.com/pinf-loader-js/workspace/www/index.html)**
 
-**Examples: [github.com/sourcemint/examples-js](http://github.com/sourcemint/examples-js/)**
+**Examples: [github.com/pinf-it/pinf-it-bundler/tree/master/examples](http://github.com/pinf-it/pinf-it-bundler/tree/master/examples)**
 
 
 What
-----
+====
 
-The `Sourcemint JavaScript Loader` provides a **minimal CommonJS environment** that requests **optimized static JavaScript code files** 
+The `PINF JavaScript Loader` provides a **minimal CommonJS environment** that requests **optimized static JavaScript code files** 
 called **Bundles** from a server via **GET requests** and boots these into sandboxes in the browser identified by the requested URL.
 
 Supported Environments:
@@ -29,10 +27,10 @@ Supported Environments:
       * Firefox
       * Google Chrome
       * Internet Explorer
-        * **BUG** [https://github.com/sourcemint/loader-js/issues/1](https://github.com/sourcemint/loader-js/issues/1)
+        * **BUG** [https://github.com/pinf/pinf-loader-js/issues/1](https://github.com/pinf/pinf-loader-js/issues/1)
       * Safari
       * Opera
-	    * **BUG:** [https://github.com/sourcemint/loader-js/issues/8](https://github.com/sourcemint/loader-js/issues/8)
+	    * **BUG:** [https://github.com/pinf/pinf-loader-js/issues/8](https://github.com/spinf/pinf-loader-js/issues/8)
 
 Supported features:
 
@@ -61,10 +59,14 @@ Supported features:
     * `sandbox.main()`
     * `require.bundle("BundleIdentifier", function ConsistentModuleSet(require) {})`
 
-Applications may be **coded directly in the bundle format**. Alternatively the bundle format may be treated as a **compile target**.
-The following tools can generate `Sourcemint JavaScript Loader` compatible bundles:
 
-  * [Sourcemint NodeJS Platform](https://github.com/sourcemint/platform-nodejs)
+Bundlers
+--------
+
+Applications may be *coded directly in the bundle format*. Alternatively the bundle format may be treated as a **compile target** (typical).
+The following tools can generate `PINF JavaScript Loader` compatible bundles:
+
+  * [PINF.it Bundler](https://github.com/pinf-it/pinf-it-bundler)
     
     Supports:
     
@@ -96,14 +98,12 @@ When coding using these standards you need to keep in mind the two primary envir
   2) **Production** - Needs a build step that collects modules from the source tree and generates static optimized bundles that will be fetched
 	 by a loader optimized for production runtime performance.
 
-The `Sourcemint JavaScript Loader` is intended to run your application in **production**. 
+The `PINF JavaScript Loader` is intended to run your application in **development** and **production** and may be fed
+by various `Bundlers` (see above).
 
 
 Usage
 =====
-
-In Browser
-----------
 
 `http://localhost/index.html`
 
@@ -128,55 +128,15 @@ In Browser
 		});
 	});
 
-On Server
----------
-
-`./index.js`
-
-    var LOADER = require("sourcemint-platform-nodejs/loader");  // NPM package
-    
-    LOADER.sandbox("./app.js", function(sandbox)
-    {
-        sandbox.main();
-    });
-
-`./app.js`
-
-    require.bundle("", function(require)
-    {
-        require.memoize("/main.js", function(require, exports, module)
-        {
-            var __filename = require.sandbox.id + "/main.js";
-            var __dirname = require.sandbox.id + "";
-
-            exports.main = function(options)
-            {
-                console.log("HelloWorld!");
-            }
-        });
-    });
-
-
-Tests
------
-
-The command-line test suite for the loader uses the [Sourcemint NodeJS Platform](https://github.com/sourcemint/platform-nodejs)
-to bootstrap the loader for [NodeJS](http://nodejs.org/).
-
-    git clone git://github.com/sourcemint/loader-js.git sourcemint-loader-js
-    cd sourcemint-loader-js
-    npm install
-    npm test
-
 
 Examples
 ========
 
-There are various examples that double as unit tests in `./examples`.
+There are various examples that double as tests in `./examples`.
 
-For an online demo of the loader features see [sourcemint.github.com/loader-js/workspace/www](http://sourcemint.github.com/loader-js/workspace/www/index.html).
+For an online demo of the loader features see [pinf.github.com/pinf-loader-js/workspace/www](http://pinf.github.com/pinf-loader-js/workspace/www/index.html).
 
-For end-user examples of common use-cases see [github.com/sourcemint/examples-js](http://github.com/sourcemint/examples-js/).
+For end-user examples of common use-cases see [github.com/pinf-it/pinf-it-bundler/tree/master/examples](http://github.com/pinf-it/pinf-it-bundler/tree/master/examples).
 
 More examples and documentation will be available in time.
 
@@ -188,7 +148,7 @@ Tips
   * When deploying an application us the `./loader.min.gz` file for optimum performance.
   * When using a different loader during development make sure only supported API features
     of this loader are used. Load extra features along with your application by
-    [augmenting a sandbox](https://github.com/sourcemint/loader-js/blob/master/examples/10-Sandbox.js).
+    [augmenting a sandbox](https://github.com/pinf/pinf-loader-js/blob/master/examples/10-Sandbox.js).
   * When writing or generating bundles make sure one consistent set of statically linked modules
     is contained in each bundle file. Dynamic links to other modules or bundles must be made via
     `require.async()` or `require.sandbox()` respectively. The hierarchy of how your application nests
@@ -209,24 +169,23 @@ Why does the loader not support feature X?
 
 This loader is pretty much complete in terms of what needs to be implemented at the core
 loader level. Convenience features can be loaded along with the application by
-[augmenting a sandbox](https://github.com/sourcemint/loader-js/blob/master/examples/10-Sandbox.js).
+[augmenting a sandbox](https://github.com/pinf/pinf-loader-js/blob/master/examples/10-Sandbox.js).
 
 Why does the loader not support [AMD-style Loader Plugins](https://github.com/amdjs/amdjs-api/wiki/Loader-Plugins)?
 -------------------------------------------------------------------------------------------------------------------
 
 Because loader plugins that are invoked by modifying the string literal passed to `require()` are not necessary
-and combine two concepts that should really be separate and implemented differently. For more information see
-[this discussion](http://groups.google.com/group/requirejs/browse_thread/thread/3a06691288655a74).
+and combine two concepts that should really be separate and implemented differently.
 
 The AMD-style Loader Plugins can be replaced by:
 
-  * [Augmenting a sandbox](https://github.com/sourcemint/loader-js/blob/master/examples/10-Sandbox.js)
+  * [Augmenting a sandbox](https://github.com/pinf/pinf-loader-js/blob/master/examples/10-Sandbox.js)
   * Loading helper modules within the application.
   * Using a loader that can run package-declared plugins.
   * Using a server helper to run plugins as modules are requested.
 
 *NOTE: Modules using some of the RequireJS loader plugins can be automatically converted to run on this loader using
-[github.com/sourcemint/sdk-requirejs](http://github.com/sourcemint/sdk-requirejs/).*
+[github.com/pinf-it/pinf-it-bundler](http://github.com/pinf-it/pinf-it-bundler).*
 
 How does the loader compare to [almond](https://github.com/jrburke/almond)?
 ----------------------------------------------------------------------------------------------
@@ -270,18 +229,36 @@ Links
   * https://github.com/pinf/loader-js
   * https://github.com/kriszyp/nodules
 
-**Discussions:**
 
-  * [groups.google.com/group/commonjs - Introducing the Sourcemint JavaScript Loader](http://groups.google.com/group/commonjs/browse_thread/thread/153ff1a966e56cb)
-  * [groups.google.com/group/requirejs - Alternative production loader to almond](http://groups.google.com/group/requirejs/browse_thread/thread/3a06691288655a74)
-  * [groups.google.com/group/firebug-working-group - Better Firebug Loader & Module Packaging](https://groups.google.com/d/topic/firebug-working-group/qWR1wdB-WQA/discussion)
+Test & Development
+==================
 
+Requirements:
 
-Contribute
-==========
+  * [NodeJS](http://nodejs.org/)
 
-To work on the loader use the `./workspace/` (**Development Workspace**). Instructions on how to launch it on your local
-system can be found here: 
-[https://github.com/sourcemint/loader-js/tree/master/workspace](https://github.com/sourcemint/loader-js/tree/master/workspace)
+Run tests:
 
-When done send a pull request.
+    make test
+
+Launch development workspace:
+
+    make run-dev
+    open http://localhost:8080/
+
+Build
+-----
+
+When running the development workspace the following files are automatically
+generated every time `./loader.js` changes.
+
+  * `./loader.min.js`
+  * `./loader.min.js.gz`
+  * `./loader.stripped.js`
+  * `./workspace/www/loader.min.js-size`
+  * `./workspace/www/loader.min.js.gz-size`
+  * `./workspace/www/loader.stripped.js.md5`
+
+You can also build these from the command-line:
+
+    make build

@@ -1,5 +1,5 @@
 
-require.bundle("", function(require)
+PINF.bundle("", function(require)
 {
 	require.memoize("/package.json", {
 		main: "/init.js"
