@@ -1,19 +1,22 @@
 
 REPORTER ?= list
 
-test:
+install-all:
 	@if [ ! -d "node_modules" ]; then npm install; fi
+	@if [ ! -d "workspace/node_modules" ]; then cd workspace; npm install; fi
+
+test:
+	$(MAKE) install-all
 	@./node_modules/.bin/mocha \
 		--reporter $(REPORTER) \
 		test/*.js
 
 run-dev:
-	@if [ ! -d "node_modules" ]; then npm install; fi
-	@if [ ! -d "workspace/node_modules" ]; then cd workspace; npm install; fi
+	$(MAKE) install-all
 	@node workspace
 
 build:
-	@if [ ! -d "node_modules" ]; then npm install; fi
+	$(MAKE) install-all
 	@node scripts/build
 
 publish-www:
@@ -22,4 +25,4 @@ publish-www:
 	git checkout master
 	git push origin
 
-.PHONY: test run-dev build publish-www
+.PHONY: install-all test run-dev build publish-www
