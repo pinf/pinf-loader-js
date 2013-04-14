@@ -1,5 +1,5 @@
 
-require.bundle("", function(require)
+PINF.bundle("", function(require)
 {
 	require.memoize("/main.js", function(require, exports, module)
 	{
@@ -9,23 +9,21 @@ require.bundle("", function(require)
 
 			var uri = require.sandbox.id + require.id("./hello.txt");
 
-			require.API.JQUERY(function($)
+			require.API.JQUERY.get(uri).done(function(data, textStatus, jqXHR)
 			{
-				$.get(uri, function(data)
+				if (data !== "Hello")
 				{
-					require.API.Q.call(function()
-					{
-						if (data !== "Hello")
-						{
-							throw new Error("Loaded resource does not have correct content!");
-						}
+					return deferred.reject(new Error("Loaded resource does not have correct content!"));
+				}
 
-						module.log(data + " from 08-ResourceURI!");
+				module.log(data + " from 08-ResourceURI!");
 
-					}).then(deferred.resolve, deferred.reject);
-				});
+				return deferred.resolve();
+
+			}).fail(function(jqXHR, textStatus, errorThrown) {
+				return deferred.reject(new Error((errorThrown && errorThrown.message) || textStatus));
 			});
-			
+
 			return deferred.promise;
 		}
 	});

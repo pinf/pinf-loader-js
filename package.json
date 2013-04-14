@@ -1,18 +1,20 @@
 {
-    "uid": "https://github.com/sourcemint/loader-js/",
-    "name": "sourcemint-loader-js",
-    "version": "0.3.7",
+    "uid": "https://github.com/pinf/pinf-loader-js/",
+    "name": "pinf-loader-js",
+    "version": "0.4.0",
     "pm": "npm",
-    "shrinkwrap": true,
-    "main": "loader.js",
+    "main": "./loader.js",
     "directories": {
-        "lib": "."
+        "lib": "./"
     },
     "devDependencies": {
-        "q": "0.x",
-        "sourcemint-platform-nodejs": "0.x"
+        "fs-extra": "~0.6.0",
+        "request": "~2.16.6",
+        "mocha": "~1.9.0",
+        "grunt": "~0.4.1",
+        "grunt-mocha": "~0.3.1"
     },
     "scripts": {
-        "test": "node tests/examples"
+        "test": "make test"
     }
 }
