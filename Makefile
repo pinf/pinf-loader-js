@@ -16,4 +16,10 @@ build:
 	@if [ ! -d "node_modules" ]; then npm install; fi
 	@node scripts/build
 
-.PHONY: test run-dev build
+publish-www:
+	git checkout gh-pages
+	git merge master
+	git checkout master
+	git push origin
+
+.PHONY: test run-dev build publish-www
