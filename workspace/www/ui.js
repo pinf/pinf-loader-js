@@ -39,7 +39,7 @@
 			return wrap(function() {
 				var result = Q.defer();
 
-				PINF.sandbox("../../examples/" + name + ".js", function(sandbox) {
+				PINF.sandbox("../../features/" + name + ".js", function(sandbox) {
 					try {
 						Q.when(sandbox.main(options), result.resolve, result.reject);
 					} catch(e) {

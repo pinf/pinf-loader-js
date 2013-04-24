@@ -3,7 +3,7 @@ const SERVER = require("../workspace/server");
 const GRUNT = require("grunt");
 
 
-describe("examples", function() {
+describe("features", function() {
 
     it("grunt-phantomjs", function(done) {
 
