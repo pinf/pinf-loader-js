@@ -9,8 +9,9 @@ PINF.bundle("", function(require)
 
 			var uri = require.sandbox.id + require.id("./hello.txt");
 
-			require.API.JQUERY.get(uri).done(function(data, textStatus, jqXHR)
-			{
+			require.API.FETCH(uri, function(err, data) {
+				if (err) return deferred.reject(err);
+
 				if (data !== "Hello")
 				{
 					return deferred.reject(new Error("Loaded resource does not have correct content!"));
@@ -19,9 +20,6 @@ PINF.bundle("", function(require)
 				module.log(data + " from 08-ResourceURI!");
 
 				return deferred.resolve();
-
-			}).fail(function(jqXHR, textStatus, errorThrown) {
-				return deferred.reject(new Error((errorThrown && errorThrown.message) || textStatus));
 			});
 
 			return deferred.promise;

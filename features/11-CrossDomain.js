@@ -16,12 +16,7 @@ PINF.bundle("", function(require)
 			].map(function(url) {
 				var result = Q.defer();
 
-				require.sandbox(url, function(sandbox)
-				{
-					sandbox.main();
-
-					result.resolve();
-				}, {
+				require.sandbox(url, {
 					onInitModule: function(moduleInterface, moduleObj)
 					{
 						moduleInterface.log = function()
@@ -29,7 +24,12 @@ PINF.bundle("", function(require)
 							module.logForModule(moduleObj, arguments);
 						}
 					}
-				});
+				}, function(sandbox)
+				{
+					sandbox.main();
+
+					result.resolve();
+				}, result.reject);
 
 				return result.promise;
 		    }));

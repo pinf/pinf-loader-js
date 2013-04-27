@@ -39,17 +39,17 @@
 			return wrap(function() {
 				var result = Q.defer();
 
-				PINF.sandbox("../../features/" + name + ".js", function(sandbox) {
-					try {
-						Q.when(sandbox.main(options), result.resolve, result.reject);
-					} catch(e) {
-						result.reject(e);
-					}
-				}, {
+				PINF.sandbox("../../features/" + name + ".js", {
 					onInitModule: function(moduleInterface, moduleObj) {
 						moduleObj.require.API = {
 							Q: Q,
-							JQUERY: $
+							FETCH: function(uri, callback) {
+								return $.get(uri).done(function(data, textStatus, jqXHR) {
+									return callback(null, data);
+								}).fail(function(jqXHR, textStatus, errorThrown) {
+									return callback(new Error((errorThrown && errorThrown.message) || textStatus));
+								});
+							}
 						};
 						moduleInterface.log = function() {
 							logToOutput(moduleObj, arguments);
@@ -58,7 +58,13 @@
 							logToOutput(moduleObj, arguments);
 						};
 					}
-				});
+				}, function(sandbox) {
+					try {
+						return Q.when(sandbox.main(options), result.resolve, result.reject);
+					} catch(err) {
+						return result.reject(err);
+					}
+				}, result.reject);
 
 				return result.promise;
 			});
@@ -91,6 +97,7 @@
 
 			run(function(err) {
 				if (err) {
+					console.error(err.stack);
 					console.error(err);
 					$("#output").addClass("fail");
 					$("#error-alert").show();

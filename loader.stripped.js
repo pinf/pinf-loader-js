@@ -22,8 +22,25 @@
 		// @see https://github.com/unscriptable/curl/blob/62caf808a8fd358ec782693399670be6806f1845/src/curl.js#L69
 		readyStates = { 'loaded': 1, 'interactive': 1, 'complete': 1 };
 
+	function normalizeSandboxArguments(implementation) {
+		return function(programIdentifier, options, loadedCallback, errorCallback) {
+			if (typeof options === "function" && !loadedCallback && !errorCallback) {
+				loadedCallback = options;
+				options = {};
+			} else
+			if (typeof options === "function" && typeof loadedCallback === "function" && !errorCallback) {
+				errorCallback = loadedCallback;
+				loadedCallback = options;
+				options = {};
+			} else {
+				options = options || {};
+			}
+			implementation(programIdentifier, options, loadedCallback, errorCallback);
+		};
+	}
+
 	// A set of modules working together.
-	var Sandbox = function(sandboxIdentifier, loadedCallback, sandboxOptions) {
+	var Sandbox = function(sandboxIdentifier, sandboxOptions, loadedCallback) {
 
 		var moduleInitializers = {},
 			initializedModules = {},
@@ -38,67 +55,76 @@
 
 		// @credit https://github.com/unscriptable/curl/blob/62caf808a8fd358ec782693399670be6806f1845/src/curl.js#L319-360
 		function loadInBrowser(uri, loadedCallback) {
-		    // See if we are in a web worker.
-		    if (typeof importScripts !== "undefined") {
-		        importScripts(uri.replace(/^\/?\{host\}/, ""));
-		        loadedCallback();
-		        return;
-		    }
-            if (/^\/?\{host\}\//.test(uri)) {
-                uri = document.location.protocol + "//" + document.location.host + uri.replace(/^\/?\{host\}/, "");
-            } else
-            if (/^\//.test(uri)) {
-                uri = document.location.protocol + "/" + uri;
-            }
-			if (!headTag) {
-				headTag = document.getElementsByTagName("head")[0];
-			}
-			var element = document.createElement("script");
-			element.type = "text/javascript";
-			element.onload = element.onreadystatechange = function(ev) {
-				ev = ev || global.event;
-				if (ev.type === "load" || readyStates[this.readyState]) {
-					this.onload = this.onreadystatechange = this.onerror = null;
-					loadedCallback(function() {
-						element.parentNode.removeChild(element);
-					});
+			try {
+			    // See if we are in a web worker.
+			    if (typeof importScripts !== "undefined") {
+			        importScripts(uri.replace(/^\/?\{host\}/, ""));
+			        return loadedCallback(null);
+			    }
+	            if (/^\/?\{host\}\//.test(uri)) {
+	                uri = document.location.protocol + "//" + document.location.host + uri.replace(/^\/?\{host\}/, "");
+	            } else
+	            if (/^\//.test(uri)) {
+	                uri = document.location.protocol + "/" + uri;
+	            }
+				if (!headTag) {
+					headTag = document.getElementsByTagName("head")[0];
 				}
+				var element = document.createElement("script");
+				element.type = "text/javascript";
+				element.onload = element.onreadystatechange = function(ev) {
+					ev = ev || global.event;
+					if (ev.type === "load" || readyStates[this.readyState]) {
+						this.onload = this.onreadystatechange = this.onerror = null;
+						loadedCallback(null, function() {
+							element.parentNode.removeChild(element);
+						});
+					}
+				}
+				element.onerror = function(err) {
+					return loadedCallback(err);
+				}
+				element.charset = "utf-8";
+				element.async = true;
+				element.src = uri;
+				element = headTag.insertBefore(element, headTag.firstChild);
+			} catch(err) {
+				loadedCallback(err);
 			}
-			element.onerror = function(e) {
-			}
-			element.charset = "utf-8";
-			element.async = true;
-			element.src = uri;
-			element = headTag.insertBefore(element, headTag.firstChild);
 		}
 
 		function load(bundleIdentifier, packageIdentifier, loadedCallback) {
-            if (packageIdentifier !== "") {
-                bundleIdentifier = ("/" + packageIdentifier + "/" + bundleIdentifier).replace(/\/+/g, "/");
-            }
-			if (initializedModules[bundleIdentifier]) {
-				// Module is already loaded and initialized.
-				loadedCallback(sandbox);
-			} else {
-				// Module is not initialized.
-				if (loadingBundles[bundleIdentifier]) {
-					// Module is already loading.
-					loadingBundles[bundleIdentifier].push(loadedCallback);
+			try {
+	            if (packageIdentifier !== "") {
+	                bundleIdentifier = ("/" + packageIdentifier + "/" + bundleIdentifier).replace(/\/+/g, "/");
+	            }
+				if (initializedModules[bundleIdentifier]) {
+					// Module is already loaded and initialized.
+					loadedCallback(null, sandbox);
 				} else {
-					// Module is not already loading.
-					loadingBundles[bundleIdentifier] = [];
-					bundleIdentifier = sandboxIdentifier + bundleIdentifier;
-					// Default to our script-injection browser loader.
-					(sandboxOptions.rootBundleLoader || sandboxOptions.load || loadInBrowser)(bundleIdentifier, function(cleanupCallback) {
-					    // The rootBundleLoader is only applicable for the first load.
-                        delete sandboxOptions.rootBundleLoader;
-						finalizeLoad(bundleIdentifier, packageIdentifier);
-						loadedCallback(sandbox);
-						if (cleanupCallback) {
-							cleanupCallback();
-						}
-					});
+					// Module is not initialized.
+					if (loadingBundles[bundleIdentifier]) {
+						// Module is already loading.
+						loadingBundles[bundleIdentifier].push(loadedCallback);
+					} else {
+						// Module is not already loading.
+						loadingBundles[bundleIdentifier] = [];
+						bundleIdentifier = sandboxIdentifier + bundleIdentifier;
+						// Default to our script-injection browser loader.
+						(sandboxOptions.rootBundleLoader || sandboxOptions.load || loadInBrowser)(bundleIdentifier, function(err, cleanupCallback) {
+							if (err) return loadedCallback(err);
+						    // The rootBundleLoader is only applicable for the first load.
+	                        delete sandboxOptions.rootBundleLoader;
+							finalizeLoad(bundleIdentifier, packageIdentifier);
+							loadedCallback(null, sandbox);
+							if (cleanupCallback) {
+								cleanupCallback();
+							}
+						});
+					}
 				}
+			} catch(err) {
+				loadedCallback(err);
 			}
 		}
 
@@ -178,7 +204,9 @@
 				    // HACK: RequireJS compatibility.
 				    // TODO: Move this to a plugin.
 				    if (typeof identifier !== "string") {
-				        return module.require.async.call(null, identifier[0], arguments[1]);
+				        return module.require.async.call(null, identifier[0], arguments[1], function(err) {
+				        	throw err;
+				        });
 				    }
 					identifier = resolveIdentifier(identifier);
 					return identifier[0].require(identifier[1]).exports;
@@ -193,25 +221,28 @@
 					return identifier[0].require.id(identifier[1]);
 				};
 
-				module.require.async = function(identifier, loadedCallback) {
+				module.require.async = function(identifier, loadedCallback, errorCallback) {
 					identifier = resolveIdentifier(identifier);
-					identifier[0].load(identifier[1], loadedCallback);
+					identifier[0].load(identifier[1], function(err, moduleAPI) {
+						if (err) {
+							if (errorCallback) return errorCallback(err);
+							throw err;
+						}
+						loadedCallback(moduleAPI);
+					});
 				};
 
-				module.require.sandbox = function() {
-					if (arguments.length === 3)
+				module.require.sandbox = normalizeSandboxArguments(function(programIdentifier, options, loadedCallback, errorCallback) {
+					options.load = options.load || sandboxOptions.load;
+	                // If the `programIdentifier` is relative it is resolved against the URI of the owning sandbox (not the owning page).
+					if (/^\./.test(programIdentifier))
 					{
-						arguments[2].load = arguments[2].load || sandboxOptions.load;
-					}
-	                // If the `programIdentifier` (first argument) is relative it is resolved against the URI of the owning sandbox (not the owning page).
-					if (/^\./.test(arguments[0]))
-					{
-					    arguments[0] = sandboxIdentifier + "/" + arguments[0];
+					    programIdentifier = sandboxIdentifier + "/" + programIdentifier;
 					    // HACK: Temporary hack as zombie (https://github.com/assaf/zombie) does not normalize path before sending to server.
-					    arguments[0] = arguments[0].replace(/\/\.\//g, "/");
+					    programIdentifier = programIdentifier.replace(/\/\.\//g, "/");
 					}
-					return PINF.sandbox.apply(null, arguments);
-				}
+					return PINF.sandbox(programIdentifier, options, loadedCallback, errorCallback);
+				});
 				module.require.sandbox.id = sandboxIdentifier;
 
                 // HACK: RequireJS compatibility.
@@ -259,8 +290,9 @@
 			};
 
 			pkg.load = function(moduleIdentifier, loadedCallback) {
-                load(((!/^\//.test(moduleIdentifier))?"/"+libPath:"") + moduleIdentifier, packageIdentifier, function() {
-                    loadedCallback(pkg.require(moduleIdentifier).exports);                           
+                load(((!/^\//.test(moduleIdentifier))?"/"+libPath:"") + moduleIdentifier, packageIdentifier, function(err) {
+                	if (err) return loadedCallback(err);
+                    loadedCallback(null, pkg.require(moduleIdentifier).exports);
                 });
 			}
 
@@ -277,7 +309,7 @@
 					loadingBundlesCallbacks = loadingBundles[moduleIdentifier];
 					delete loadingBundles[moduleIdentifier];
 					for (var i=0 ; i<loadingBundlesCallbacks.length ; i++) {
-						loadingBundlesCallbacks[i](sandbox);
+						loadingBundlesCallbacks[i](null, sandbox);
 					}
 				}
 				return initializedModules[moduleIdentifier];
@@ -357,10 +389,16 @@
 
 		// Create a new environment to memoize modules to.
 		// If relative, the `programIdentifier` is resolved against the URI of the owning page (this is only for the global require).
-		require.sandbox = function(programIdentifier, loadedCallback, options) {
+		require.sandbox = normalizeSandboxArguments(function(programIdentifier, options, loadedCallback, errorCallback) {
 			var sandboxIdentifier = programIdentifier.replace(/\.js$/, "");
-			return sandboxes[sandboxIdentifier] = Sandbox(sandboxIdentifier, loadedCallback, options || {});
-		}
+			return sandboxes[sandboxIdentifier] = Sandbox(sandboxIdentifier, options, function(err, sandbox) {
+				if (err) {
+					if (errorCallback) return errorCallback(err);
+					throw err;
+				}
+				loadedCallback(sandbox);
+			});
+		});
 		
 
 		return require;
@@ -369,9 +407,9 @@
 	// Set `PINF` gloabl.
 	PINF = Loader();
 
-	// Export `require` for CommonJS if `exports` global exists.
-	if (typeof exports === "object") {
-		exports.require = PINF;
+	// Export `require` for CommonJS if `module` and `exports` globals exists.
+	if (typeof module === "object" && typeof exports === "object") {
+		module.exports = PINF;
 	}
 
 }(this, (typeof document !== "undefined")?document:null));

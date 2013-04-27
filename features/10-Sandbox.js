@@ -15,12 +15,7 @@ PINF.bundle("", function(require)
 
 			var url = "." + require.id("./SandboxedExtraBundle");
 
-			require.sandbox(url, function(sandbox)
-			{
-				sandbox.main();
-
-				result.resolve();
-			}, {
+			require.sandbox(url, {
 				onInitModule: function(moduleInterface, moduleObj)
 				{
 					moduleInterface.log = function()
@@ -28,7 +23,12 @@ PINF.bundle("", function(require)
 						module.logForModule(moduleObj, arguments);
 					}
 				}
-			});
+			}, function(sandbox)
+			{
+				sandbox.main();
+
+				result.resolve();
+			}, result.reject);
 
 			return result.promise;
 		}

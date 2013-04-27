@@ -20,7 +20,7 @@ PINF.bundle("", function(require)
 				EXTRA_BUNDLE.init();
 
 				result.resolve();
-			});
+			}, result.reject);
 
 			return result.promise;
 		}
