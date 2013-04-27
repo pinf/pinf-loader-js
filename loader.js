@@ -73,7 +73,7 @@
 		// @credit https://github.com/unscriptable/curl/blob/62caf808a8fd358ec782693399670be6806f1845/src/curl.js#L319-360
 		function loadInBrowser(uri, loadedCallback) {
 			try {
-				/*DEBUG*/ logDebug("[sm-loader]", 'loadInBrowser("' + uri + '")"');
+				/*DEBUG*/ logDebug("[pinf-loader]", 'loadInBrowser("' + uri + '")"');
 			    // See if we are in a web worker.
 			    if (typeof importScripts !== "undefined") {
 			        importScripts(uri.replace(/^\/?\{host\}/, ""));
