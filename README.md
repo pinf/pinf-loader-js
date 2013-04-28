@@ -4,7 +4,7 @@ Optimized JavaScript Bundle Loader
 *Status: BETA* [![Build Status](https://secure.travis-ci.org/pinf/pinf-loader-js.png)](http://travis-ci.org/pinf/pinf-loader-js)
 
 The `PINF JavaScript Loader` is an optimized *(intended for production use)* **CommonJS package mappings** 
-based **JavaScript module loader** for the browser in only **1754 bytes** *(minified and zipped)*.
+based **JavaScript module loader** for the browser in only **1770 bytes** *(minified and zipped)*.
 
   * Code License: [UNLICENSE](http://unlicense.org/)
   * Docs License: [Creative Commons Attribution-NonCommercial-ShareAlike 3.0](http://creativecommons.org/licenses/by-nc-sa/3.0/)

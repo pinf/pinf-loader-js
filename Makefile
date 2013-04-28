@@ -6,17 +6,17 @@ install-all:
 	@if [ ! -d "workspace/node_modules" ]; then cd workspace; npm install; fi
 
 test:
-	$(MAKE) install-all
+	@$(MAKE) install-all
 	@./node_modules/.bin/mocha \
 		--reporter $(REPORTER) \
 		test/*.js
 
 run-dev:
-	$(MAKE) install-all
+	@$(MAKE) install-all
 	@node workspace
 
 build:
-	$(MAKE) install-all
+	@$(MAKE) install-all
 	@node scripts/build
 
 publish-www:

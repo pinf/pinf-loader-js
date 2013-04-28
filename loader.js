@@ -100,8 +100,8 @@
 					}
 				}
 				element.onerror = function(err) {
-					/*DEBUG*/ console.error(err.stack);
-					return loadedCallback(err);
+					/*DEBUG*/ console.error(err);
+					return loadedCallback(new Error("Error loading '" + uri + "'"));
 				}
 				element.charset = "utf-8";
 				element.async = true;
