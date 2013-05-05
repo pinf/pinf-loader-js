@@ -183,6 +183,23 @@
 				main: descriptor.main
 			};
 
+			function require(moduleIdentifier) {
+				if (!initializedModules[moduleIdentifier]) {
+					/*DEBUG*/ if (!moduleInitializers[moduleIdentifier]) {
+					/*DEBUG*/ 	throw new Error("Module '" + moduleIdentifier + "' not found in sandbox '" + sandbox.id + "'!");
+					/*DEBUG*/ }
+					(initializedModules[moduleIdentifier] = Module(moduleIdentifier)).load();
+				}
+				if (loadingBundles[moduleIdentifier]) {
+					loadingBundlesCallbacks = loadingBundles[moduleIdentifier];
+					delete loadingBundles[moduleIdentifier];
+					for (var i=0 ; i<loadingBundlesCallbacks.length ; i++) {
+						loadingBundlesCallbacks[i](null, sandbox);
+					}
+				}
+				return initializedModules[moduleIdentifier];
+			}
+
 			var Module = function(moduleIdentifier) {
 
 				var moduleIdentifierSegment = moduleIdentifier.replace(/\/[^\/]*$/, "").split("/"),
@@ -212,12 +229,13 @@
 						identifier = "/" + moduleIdentifierSegment.slice(1, moduleIdentifierSegment.length-segments.length+1).concat(segments[segments.length-1]).join("/");
 						return [pkg, normalizeIdentifier(identifier)];
 					} else
+					// Check for global module path within sandbox.
+					if (moduleInitializers[normalizeIdentifier(identifier)]) {						
+						return [null, normalizeIdentifier(identifier)];
+					} else
 					// Check for mapped module path to module within mapped package.
 					{
 						identifier = identifier.split("/");
-						/*DEBUG*/ if (typeof mappings === "undefined") {
-						/*DEBUG*/ 	throw new Error("Descriptor for sandbox '" + sandbox.id + "' does not declare 'mappings' property needed to resolve module path '" + identifier.join("/") + "' in module '" + moduleIdentifier + "'!");
-						/*DEBUG*/ }
 						/*DEBUG*/ if (typeof mappings[identifier[0]] === "undefined") {
 						/*DEBUG*/ 	throw new Error("Descriptor for sandbox '" + sandbox.id + "' does not declare 'mappings[\"" + identifier[0] + "\"]' property needed to resolve module path '" + identifier.join("/") + "' in module '" + moduleIdentifier + "'!");
 						/*DEBUG*/ }
@@ -238,7 +256,7 @@
 				        });
 				    }
 					identifier = resolveIdentifier(identifier);
-					return identifier[0].require(identifier[1]).exports;
+					return ((identifier[0] && identifier[0].require) || require)(identifier[1]).exports;
 				};
 
 				module.require.supports = [
@@ -340,21 +358,7 @@
                 if (!/^\//.test(moduleIdentifier)) {
                     moduleIdentifier = "/" + libPath + moduleIdentifier;
                 }
-				moduleIdentifier = packageIdentifier + moduleIdentifier;
-				if (!initializedModules[moduleIdentifier]) {
-					/*DEBUG*/ if (!moduleInitializers[moduleIdentifier]) {
-					/*DEBUG*/ 	throw new Error("Module '" + moduleIdentifier + "' not found in sandbox '" + sandbox.id + "'!");
-					/*DEBUG*/ }
-					(initializedModules[moduleIdentifier] = Module(moduleIdentifier)).load();
-				}
-				if (loadingBundles[moduleIdentifier]) {
-					loadingBundlesCallbacks = loadingBundles[moduleIdentifier];
-					delete loadingBundles[moduleIdentifier];
-					for (var i=0 ; i<loadingBundlesCallbacks.length ; i++) {
-						loadingBundlesCallbacks[i](null, sandbox);
-					}
-				}
-				return initializedModules[moduleIdentifier];
+				return require(packageIdentifier + moduleIdentifier);
 			}
 
             pkg.require.id = function(moduleIdentifier) {
