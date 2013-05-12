@@ -204,27 +204,25 @@
 				    }
                     return identifier;
 				}
-				
+
 				function resolveIdentifier(identifier) {
 					// Check for relative module path to module within same package.
 					if (/^\./.test(identifier)) {
 						var segments = identifier.replace(/^\.\//, "").split("../");
 						identifier = "/" + moduleIdentifierSegment.slice(1, moduleIdentifierSegment.length-segments.length+1).concat(segments[segments.length-1]).join("/");
 						return [pkg, normalizeIdentifier(identifier)];
-					} else
-					// Check for mapped module path to module within mapped package.
-					{
-						identifier = identifier.split("/");
-						/*DEBUG*/ if (typeof mappings === "undefined") {
-						/*DEBUG*/ 	throw new Error("Descriptor for sandbox '" + sandbox.id + "' does not declare 'mappings' property needed to resolve module path '" + identifier.join("/") + "' in module '" + moduleIdentifier + "'!");
-						/*DEBUG*/ }
-						/*DEBUG*/ if (typeof mappings[identifier[0]] === "undefined") {
-						/*DEBUG*/ 	throw new Error("Descriptor for sandbox '" + sandbox.id + "' does not declare 'mappings[\"" + identifier[0] + "\"]' property needed to resolve module path '" + identifier.join("/") + "' in module '" + moduleIdentifier + "'!");
-						/*DEBUG*/ }
-						return [Package(mappings[identifier[0]]), normalizeIdentifier(identifier.slice(1).join("/"))];
 					}
+					var splitIdentifier = identifier.split("/");
+					// Check for mapped module path to module within mapped package.
+					if (typeof mappings[splitIdentifier[0]] !== "undefined") {
+						return [Package(mappings[splitIdentifier[0]]), normalizeIdentifier(splitIdentifier.slice(1).join("/"))];
+					}
+					/*DEBUG*/ if (!moduleInitializers["/" + normalizeIdentifier(identifier)]) {
+					/*DEBUG*/     throw new Error("Descriptor for sandbox '" + sandbox.id + "' does not declare 'mappings[\"" + splitIdentifier[0] + "\"]' property nor does sandbox have module memoized at '" + "/" + normalizeIdentifier(identifier) + "' needed to satisfy module path '" + identifier + "' in module '" + moduleIdentifier + "'!");
+					/*DEBUG*/ }
+					return [Package(""), "/" + normalizeIdentifier(identifier)];
 				}
-				
+
 				// Statically link a module and its dependencies
 				module.require = function(identifier) {
 				    // HACK: RequireJS compatibility.

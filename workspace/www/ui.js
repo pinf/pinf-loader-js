@@ -22,6 +22,7 @@
 			"12-Environment",
 			"13-AssignExports",
 			"14-NamedBundle",
+			"15-GlobalDependencyFallback",
 			"Avoid-SplitBundles"
 		].map(function(name) {
 
