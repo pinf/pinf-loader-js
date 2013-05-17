@@ -23,6 +23,7 @@
 			"13-AssignExports",
 			"14-NamedBundle",
 			"15-GlobalDependencyFallback",
+			"16-MemoizedDynamic",
 			"Avoid-SplitBundles"
 		].map(function(name) {
 

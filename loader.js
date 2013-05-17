@@ -327,6 +327,10 @@
 			};
 
 			pkg.load = function(moduleIdentifier, loadedCallback) {
+				// If module/bundle to be loaded asynchronously is already memoized we skip the load.
+				if (moduleInitializers[moduleIdentifier]) {
+					return loadedCallback(null, pkg.require(moduleIdentifier).exports);
+				}
                 load(((!/^\//.test(moduleIdentifier))?"/"+libPath:"") + moduleIdentifier, packageIdentifier, function(err) {
                 	if (err) return loadedCallback(err);
                     loadedCallback(null, pkg.require(moduleIdentifier).exports);
