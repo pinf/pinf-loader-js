@@ -225,16 +225,6 @@
 
 				// Statically link a module and its dependencies
 				module.require = function(identifier) {
-				    // HACK: RequireJS compatibility.
-				    // TODO: Move this to a plugin.
-				    if (typeof identifier !== "string") {
-				        /*DEBUG*/ if (identifier.length > 1) {
-			            /*DEBUG*/     throw new Error("Dynamic 'require([])' may only specify one module in module '" + moduleIdentifier + "'!");
-				        /*DEBUG*/ }
-				        return module.require.async.call(null, identifier[0], arguments[1], function(err) {
-				        	throw err;
-				        });
-				    }
 					identifier = resolveIdentifier(identifier);
 					return identifier[0].require(identifier[1]).exports;
 				};
@@ -271,13 +261,6 @@
 					return PINF.sandbox(programIdentifier, options, loadedCallback, errorCallback);
 				});
 				module.require.sandbox.id = sandboxIdentifier;
-
-                // HACK: RequireJS compatibility.
-                // TODO: Move this to a plugin.
-                module.require.nameToUrl = function(identifier)
-                {
-                    return sandboxIdentifier + module.require.id(identifier);
-                }
 
 				module.load = function() {
 					if (typeof moduleInitializers[moduleIdentifier] === "function") {
