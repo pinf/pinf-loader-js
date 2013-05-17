@@ -73,6 +73,8 @@ The following tools can generate `PINF JavaScript Loader` compatible bundles:
       * [NodeJS Modules](http://nodejs.org/docs/latest/api/modules.html)
       * [CommonJS Modules (CJS)](http://wiki.commonjs.org/wiki/Modules/1.1)
       * [Asynchronous Module Definition (AMD)](https://github.com/amdjs/amdjs-api/wiki/AMD)
+      * Plain old JavaScript
+      * Various other formats
 
 
 Why
