@@ -1,7 +1,7 @@
 
-if (! (PINF.supports.indexOf("ucjs2-pinf-0") >= 0))
+if (! (PINF.supports.indexOf("ucjs-pinf-0") >= 0))
 {
-	throw new Error("`require.supports` does not contain '" + "ucjs2-pinf-0" + "'!");
+	throw new Error("`require.supports` does not contain '" + "ucjs-pinf-0" + "'!");
 }
 
 // Value of `require.sandbox.id` is unspecified.

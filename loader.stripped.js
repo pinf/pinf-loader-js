@@ -207,7 +207,7 @@
 				};
 
 				module.require.supports = [
-		            "ucjs2-pinf-0"
+		            "ucjs-pinf-0"
 		        ];
 
 				module.require.id = function(identifier) {
@@ -375,7 +375,7 @@
 
 		// TODO: @see URL_TO_SPEC
 		require.supports = [
-			"ucjs2-pinf-0"
+			"ucjs-pinf-0"
 		];
 
 		// Create a new environment to memoize modules to.
