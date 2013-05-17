@@ -202,13 +202,6 @@
 
 				// Statically link a module and its dependencies
 				module.require = function(identifier) {
-				    // HACK: RequireJS compatibility.
-				    // TODO: Move this to a plugin.
-				    if (typeof identifier !== "string") {
-				        return module.require.async.call(null, identifier[0], arguments[1], function(err) {
-				        	throw err;
-				        });
-				    }
 					identifier = resolveIdentifier(identifier);
 					return identifier[0].require(identifier[1]).exports;
 				};
@@ -245,13 +238,6 @@
 					return PINF.sandbox(programIdentifier, options, loadedCallback, errorCallback);
 				});
 				module.require.sandbox.id = sandboxIdentifier;
-
-                // HACK: RequireJS compatibility.
-                // TODO: Move this to a plugin.
-                module.require.nameToUrl = function(identifier)
-                {
-                    return sandboxIdentifier + module.require.id(identifier);
-                }
 
 				module.load = function() {
 					if (typeof moduleInitializers[moduleIdentifier] === "function") {
@@ -291,6 +277,10 @@
 			};
 
 			pkg.load = function(moduleIdentifier, loadedCallback) {
+				// If module/bundle to be loaded asynchronously is already memoized we skip the load.
+				if (moduleInitializers[moduleIdentifier]) {
+					return loadedCallback(null, pkg.require(moduleIdentifier).exports);
+				}
                 load(((!/^\//.test(moduleIdentifier))?"/"+libPath:"") + moduleIdentifier, packageIdentifier, function(err) {
                 	if (err) return loadedCallback(err);
                     loadedCallback(null, pkg.require(moduleIdentifier).exports);
