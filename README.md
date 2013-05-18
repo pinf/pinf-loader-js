@@ -118,19 +118,8 @@ There are adapters for streamlined integration with other tools:
   * [NodeJS](http://nodejs.org/) package: [github.com/pinf/pinf-for-nodejs](https://github.com/pinf/pinf-for-nodejs)
   * [jQuery](http://jquery.com/) plugin: [github.com/pinf/pinf-for-jquery](https://github.com/pinf/pinf-for-jquery)
 
-
-Examples
-========
-
-There are various feature examples that double as tests in `./features`.
-
-For an online demo of the loader features see [pinf.github.io/pinf-loader-js/workspace/www](http://pinf.github.io/pinf-loader-js/workspace/www/index.html).
-
-For end-user examples of common use-cases see [github.com/pinf-it/pinf-it-bundler/tree/master/examples](http://github.com/pinf-it/pinf-it-bundler/tree/master/examples).
-
-
 Bundlers
-========
+--------
 
 Applications may be *coded directly in the bundle format*. Alternatively the bundle format may be treated as a **compile target** (typical).
 The following tools can generate `PINF JavaScript Loader` compatible bundles:
@@ -144,6 +133,16 @@ The following tools can generate `PINF JavaScript Loader` compatible bundles:
       * [Asynchronous Module Definition (AMD)](https://github.com/amdjs/amdjs-api/wiki/AMD)
       * Plain old JavaScript
       * Various other formats
+
+
+Examples
+========
+
+There are various feature examples that double as tests in `./features`.
+
+For an online demo of the loader features see [pinf.github.io/pinf-loader-js/workspace/www](http://pinf.github.io/pinf-loader-js/workspace/www/index.html).
+
+For end-user examples of common use-cases see [github.com/pinf-it/pinf-it-bundler/tree/master/examples](http://github.com/pinf-it/pinf-it-bundler/tree/master/examples).
 
 
 Tips
