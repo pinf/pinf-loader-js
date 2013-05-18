@@ -15,6 +15,33 @@ based **JavaScript module loader** for the browser in only **1730 bytes** *(mini
 **Examples: [github.com/pinf-it/pinf-it-bundler/tree/master/examples](http://github.com/pinf-it/pinf-it-bundler/tree/master/examples)**
 
 
+Why
+===
+
+Namespace isolation is essential for modular development when integrating arbitrary JavaScript libraries.
+
+To achieve namespace isolation you need JavaScript libraries written in conventions that:
+  
+  * do not pollute the global namespace and 
+  * expose the library's API consistently
+
+There are two evolving standards that specify such conventions:
+
+  * [CommonJS Modules (CJS)](http://wiki.commonjs.org/wiki/Modules/1.1)
+  * [Asynchronous Module Definition (AMD)](https://github.com/amdjs/amdjs-api/wiki/AMD)
+
+When coding using these standards you need to keep in mind the two primary environments that the application will run in:
+
+  1) **Development** - Needs a loader that will, on demand, locate in the source tree, assemble and transport module source 
+   files to the browser for rapid development.
+
+  2) **Production** - Needs a build step that collects modules from the source tree and generates static optimized bundles that will be fetched
+   by a loader optimized for production runtime performance.
+
+The `PINF JavaScript Loader` is intended to run your application in **development** and **production** and may be fed
+by various `Bundlers` (see above).
+
+
 What
 ====
 
@@ -60,50 +87,6 @@ Supported features:
     * `require.bundle("BundleIdentifier", function ConsistentModuleSet(require) {})`
 
 
-Bundlers
---------
-
-Applications may be *coded directly in the bundle format*. Alternatively the bundle format may be treated as a **compile target** (typical).
-The following tools can generate `PINF JavaScript Loader` compatible bundles:
-
-  * [PINF.it Bundler](https://github.com/pinf-it/pinf-it-bundler)
-    
-    Supports:
-    
-      * [NodeJS Modules](http://nodejs.org/docs/latest/api/modules.html)
-      * [CommonJS Modules (CJS)](http://wiki.commonjs.org/wiki/Modules/1.1)
-      * [Asynchronous Module Definition (AMD)](https://github.com/amdjs/amdjs-api/wiki/AMD)
-      * Plain old JavaScript
-      * Various other formats
-
-
-Why
----
-
-Namespace isolation is essential for modular development when integrating arbitrary JavaScript libraries.
-
-To achieve namespace isolation you need JavaScript libraries written in conventions that:
-  
-  * do not pollute the global namespace and 
-  * expose the library's API consistently
-
-There are two evolving standards that specify such conventions:
-
-  * [CommonJS Modules (CJS)](http://wiki.commonjs.org/wiki/Modules/1.1)
-  * [Asynchronous Module Definition (AMD)](https://github.com/amdjs/amdjs-api/wiki/AMD)
-
-When coding using these standards you need to keep in mind the two primary environments that the application will run in:
-
-  1) **Development** - Needs a loader that will, on demand, locate in the source tree, assemble and transport module source 
-	 files to the browser for rapid development.
-
-  2) **Production** - Needs a build step that collects modules from the source tree and generates static optimized bundles that will be fetched
-	 by a loader optimized for production runtime performance.
-
-The `PINF JavaScript Loader` is intended to run your application in **development** and **production** and may be fed
-by various `Bundlers` (see above).
-
-
 Usage
 =====
 
@@ -144,6 +127,23 @@ There are various feature examples that double as tests in `./features`.
 For an online demo of the loader features see [pinf.github.io/pinf-loader-js/workspace/www](http://pinf.github.io/pinf-loader-js/workspace/www/index.html).
 
 For end-user examples of common use-cases see [github.com/pinf-it/pinf-it-bundler/tree/master/examples](http://github.com/pinf-it/pinf-it-bundler/tree/master/examples).
+
+
+Bundlers
+========
+
+Applications may be *coded directly in the bundle format*. Alternatively the bundle format may be treated as a **compile target** (typical).
+The following tools can generate `PINF JavaScript Loader` compatible bundles:
+
+  * [PINF.it Bundler](https://github.com/pinf-it/pinf-it-bundler)
+    
+    Supports:
+    
+      * [NodeJS Modules](http://nodejs.org/docs/latest/api/modules.html)
+      * [CommonJS Modules (CJS)](http://wiki.commonjs.org/wiki/Modules/1.1)
+      * [Asynchronous Module Definition (AMD)](https://github.com/amdjs/amdjs-api/wiki/AMD)
+      * Plain old JavaScript
+      * Various other formats
 
 
 Tips
