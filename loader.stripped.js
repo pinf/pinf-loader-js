@@ -11,10 +11,10 @@
 
 // Combat pollution when used via <script> tag.
 // Don't touch any globals except for `exports` and `PINF`.
-(function (global, document) {
+;(function (global) {
 
 	// If `PINF` gloabl already exists, don't do anything to change it.
-	if (typeof PINF !== "undefined") {
+	if (typeof global.PINF !== "undefined") {
 		return;
 	}
 
@@ -61,11 +61,13 @@
 			        importScripts(uri.replace(/^\/?\{host\}/, ""));
 			        return loadedCallback(null);
 			    }
+			    var document = global.document;
+			    var location = document.location;
 	            if (/^\/?\{host\}\//.test(uri)) {
-	                uri = document.location.protocol + "//" + document.location.host + uri.replace(/^\/?\{host\}/, "");
+	                uri = location.protocol + "//" + location.host + uri.replace(/^\/?\{host\}/, "");
 	            } else
 	            if (/^\//.test(uri)) {
-	                uri = document.location.protocol + "/" + uri;
+	                uri = location.protocol + "/" + uri;
 	            }
 				if (!headTag) {
 					headTag = document.getElementsByTagName("head")[0];
@@ -396,11 +398,11 @@
 	}
 
 	// Set `PINF` gloabl.
-	PINF = Loader();
+	global.PINF = PINF = Loader();
 
 	// Export `require` for CommonJS if `module` and `exports` globals exists.
 	if (typeof module === "object" && typeof exports === "object") {
 		module.exports = PINF;
 	}
 
-}(this, (typeof document !== "undefined")?document:null));
+}(this));
