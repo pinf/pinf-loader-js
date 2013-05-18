@@ -126,6 +126,15 @@ Usage
 		});
 	});
 
+Integrate
+---------
+
+There are adapters for streamlined integration with other tools:
+
+  * [RequireJS](http://requirejs.org/) plugin: [github.com/pinf/pinf-for-requirejs](https://github.com/pinf/pinf-for-requirejs)
+  * [NodeJS](http://nodejs.org/) package: [github.com/pinf/pinf-for-nodejs](https://github.com/pinf/pinf-for-nodejs)
+  * [jQuery](http://jquery.com/) plugin: [github.com/pinf/pinf-for-jquery](https://github.com/pinf/pinf-for-jquery)
+
 
 Examples
 ========
