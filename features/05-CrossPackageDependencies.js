@@ -53,7 +53,8 @@ PINF.bundle("", function(require)
 	require.memoize("packageB/package.json", {
 		mappings: {
 			"package": "packageA",
-			"letters": "packageC"
+			"letters": "packageC",
+			"letter-o": "packageD"
 		},
 		directories: {
 			lib: "words"
@@ -66,7 +67,7 @@ PINF.bundle("", function(require)
 	
 		exports.getWord = function()
 		{
-			return require("letters/H").getLetter() + "ello";
+			return require("letters/H").getLetter() + "ell" + require("letter-o").getLetter();
 		}
 	
 		exports.getName = function()
@@ -81,6 +82,18 @@ PINF.bundle("", function(require)
 		{
 			return "H";
 		}
+	});
+
+	require.memoize("packageD/o.js", function(require, exports, module)
+	{
+		exports.getLetter = function()
+		{
+			return "o";
+		}
+	});
+
+	require.memoize("packageD/package.json", {
+		main: "packageD/o.js"
 	});
 
 });

@@ -16,7 +16,8 @@
 
 	var loadedBundles = [],
 		// @see https://github.com/unscriptable/curl/blob/62caf808a8fd358ec782693399670be6806f1845/src/curl.js#L69
-		readyStates = { 'loaded': 1, 'interactive': 1, 'complete': 1 };
+		readyStates = { 'loaded': 1, 'interactive': 1, 'complete': 1 },
+		lastModule = null;
 
 	function normalizeSandboxArguments(implementation) {
 		return function(programIdentifier, options, loadedCallback, errorCallback) {
@@ -136,7 +137,7 @@
 							if (err) return loadedCallback(err);
 						    // The rootBundleLoader is only applicable for the first load.
 	                        delete sandboxOptions.rootBundleLoader;
-							finalizeLoad(bundleIdentifier, packageIdentifier);
+							finalizeLoad(bundleIdentifier);
 							loadedCallback(null, sandbox);
 							if (cleanupCallback) {
 								cleanupCallback();
@@ -151,18 +152,50 @@
 
 		// Called after a bundle has been loaded. Takes the top bundle off the *loading* stack
 		// and makes the new modules available to the sandbox.
-		// If a `packageIdentifier` is supplied we prefix it to all module identifiers anchored
-		// at the root of the bundle (starting with `/`).
-		function finalizeLoad(bundleIdentifier, packageIdentifier)
+		function finalizeLoad(bundleIdentifier)
 		{
 			// Assume a consistent statically linked set of modules has been memoized.
 			/*DEBUG*/ bundleIdentifiers[bundleIdentifier] = loadedBundles[0][0];
 			var key;
 			for (key in loadedBundles[0][1]) {
+				// If we have a package descriptor add it or merge it on top.
+				if (/^[^\/]*\/package.json$/.test(key)) {
+					// NOTE: Not quite sure if we should allow agumenting package descriptors.
+					//       When doing nested requires using same package we can either add all
+					//		 mappings (included mappings not needed until further down the tree) to
+					//       the first encounter of the package descriptor or add more mappings as
+					//       needed down the road. We currently support both.
+					if (moduleInitializers[key]) {
+						// TODO: Keep array of bundle identifiers instead of overwriting existing one?
+						//		 Overwriting may change subsequent bundeling behaviour?
+						moduleInitializers[key][0] = bundleIdentifier;
+						// Only augment (instead of replace existing values).
+						if (typeof moduleInitializers[key][1].main === "undefined") {
+							moduleInitializers[key][1].main = loadedBundles[0][1][key].main;
+						}
+						if (loadedBundles[0][1][key].mappings) {
+							if (!moduleInitializers[key][1].mappings) {
+								moduleInitializers[key][1].mappings = {};
+							}
+							for (var alias in loadedBundles[0][1][key].mappings) {
+								if (typeof moduleInitializers[key][1].mappings[alias] === "undefined") {
+									moduleInitializers[key][1].mappings[alias] = loadedBundles[0][1][key].mappings[alias];
+								}
+							}
+						}
+					} else {
+						moduleInitializers[key] = [bundleIdentifier, loadedBundles[0][1][key]];
+					}
+					// Now that we have a [updated] package descriptor, re-initialize it if we have it already in cache.
+					var packageIdentifier = key.split("/").shift();
+					if (packages[packageIdentifier]) {
+						packages[packageIdentifier].init();
+					}
+				}
 				// Only add modules that don't already exist!
 				// TODO: Log warning in debug mode if module already exists.
 				if (typeof moduleInitializers[key] === "undefined") {
-					moduleInitializers[packageIdentifier + key] = loadedBundles[0][1][key];
+					moduleInitializers[key] = [bundleIdentifier, loadedBundles[0][1][key]];
 				}
 			}
 			loadedBundles.shift();
@@ -172,42 +205,61 @@
 			if (packages[packageIdentifier]) {
 				return packages[packageIdentifier];
 			}
-			
-			var descriptor = moduleInitializers[packageIdentifier + "/package.json"] || {
-					main: "/main.js"
-				},
-				mappings = descriptor.mappings || {},
-				directories = descriptor.directories || {},
-				libPath = (typeof directories.lib !== "undefined" && directories.lib != "")?directories.lib + "/":"";
-			
+
 			var pkg = {
 				id: packageIdentifier,
-				main: descriptor.main
+				descriptor: null,
+				main: "/main.js",
+				mappings: {},
+				directories: {},
+				libPath: ""
 			};
 
-			var Module = function(moduleIdentifier) {
+			var parentModule = lastModule;
+
+			pkg.init = function() {
+				var descriptor = (moduleInitializers[packageIdentifier + "/package.json"] && moduleInitializers[packageIdentifier + "/package.json"][1]) || null;
+				if (descriptor) {
+					if (typeof descriptor.main === "string") {
+						pkg.main = descriptor.main;
+					}
+					pkg.mappings = descriptor.mappings || pkg.mappings;
+					pkg.directories = descriptor.directories || pkg.directories;
+					// NOTE: We need `lib` directory support so that the source directory structure can be mapped
+					//       into the bundle structure without modification. If this is not done, a module doing a relative require
+					//       for a resource outside of the lib directory will not find the file.
+					pkg.libPath = (typeof pkg.directories.lib !== "undefined" && pkg.directories.lib != "") ? pkg.directories.lib + "/" : pkg.libPath;
+				}
+			}
+			pkg.init();
+
+			function normalizeIdentifier(identifier) {
+			    // If we have a period (".") in the basename we want an absolute path from
+			    // the root of the package. Otherwise a relative path to the "lib" directory.
+			    if (identifier.split("/").pop().indexOf(".") === -1) {
+			        // We have a module relative to the "lib" directory of the package.
+			        identifier = identifier + ".js";
+			    } else
+			    if (!/^\//.test(identifier)) {
+			        // We want an absolute path for the module from the root of the package.
+			        identifier = "/" + identifier;
+			    }
+                return identifier;
+			}
+
+			var Module = function(moduleIdentifier, parentModule) {
 
 				var moduleIdentifierSegment = moduleIdentifier.replace(/\/[^\/]*$/, "").split("/"),
 					module = {
 						id: moduleIdentifier,
-						exports: {}
+						exports: {},
+						parentModule: parentModule,
+						bundle: null,
+						pkg: packageIdentifier
 					};
 
-				function normalizeIdentifier(identifier) {
-				    // If we have a period (".") in the basename we want an absolute path from
-				    // the root of the package. Otherwise a relative path to the "lib" directory.
-				    if (identifier.split("/").pop().indexOf(".") === -1) {
-				        // We have a module relative to the "lib" directory of the package.
-				        identifier = identifier + ".js";
-				    } else
-				    if (!/^\//.test(identifier)) {
-				        // We want an absolute path for the module from the root of the package.
-				        identifier = "/" + identifier;
-				    }
-                    return identifier;
-				}
-
 				function resolveIdentifier(identifier) {
+					lastModule = module;
 					// Check for relative module path to module within same package.
 					if (/^\./.test(identifier)) {
 						var segments = identifier.replace(/^\.\//, "").split("../");
@@ -216,18 +268,20 @@
 					}
 					var splitIdentifier = identifier.split("/");
 					// Check for mapped module path to module within mapped package.
-					if (typeof mappings[splitIdentifier[0]] !== "undefined") {
-						return [Package(mappings[splitIdentifier[0]]), normalizeIdentifier(splitIdentifier.slice(1).join("/"))];
+					if (typeof pkg.mappings[splitIdentifier[0]] !== "undefined") {
+						return [Package(pkg.mappings[splitIdentifier[0]]), (splitIdentifier.length > 1)?normalizeIdentifier(splitIdentifier.slice(1).join("/")):""];
 					}
 					/*DEBUG*/ if (!moduleInitializers["/" + normalizeIdentifier(identifier)]) {
-					/*DEBUG*/     throw new Error("Descriptor for sandbox '" + sandbox.id + "' does not declare 'mappings[\"" + splitIdentifier[0] + "\"]' property nor does sandbox have module memoized at '" + "/" + normalizeIdentifier(identifier) + "' needed to satisfy module path '" + identifier + "' in module '" + moduleIdentifier + "'!");
+					/*DEBUG*/     throw new Error("Descriptor for package '" + pkg.id + "' in sandbox '" + sandbox.id + "' does not declare 'mappings[\"" + splitIdentifier[0] + "\"]' property nor does sandbox have module memoized at '" + "/" + normalizeIdentifier(identifier) + "' needed to satisfy module path '" + identifier + "' in module '" + moduleIdentifier + "'!");
 					/*DEBUG*/ }
 					return [Package(""), "/" + normalizeIdentifier(identifier)];
 				}
 
 				// Statically link a module and its dependencies
 				module.require = function(identifier) {
+
 					identifier = resolveIdentifier(identifier);
+
 					return identifier[0].require(identifier[1]).exports;
 				};
 
@@ -265,23 +319,29 @@
 				module.require.sandbox.id = sandboxIdentifier;
 
 				module.load = function() {
-					if (typeof moduleInitializers[moduleIdentifier] === "function") {
-						
+					module.bundle = moduleInitializers[moduleIdentifier][0];
+					if (typeof moduleInitializers[moduleIdentifier][1] === "function") {
+
 						var moduleInterface = {
 							id: module.id,
 							exports: undefined
 						}
 
-						// If embedded in bundle `isMain` will be set to `true` if bundle was `require.main`.
-				        if (packageIdentifier === "" && pkg.main === moduleIdentifier && sandboxOptions.isMain === true) {
+				        if (packageIdentifier === "" && pkg.main === moduleIdentifier) {
 				        	module.require.main = moduleInterface;
 				        }
 
 						if (sandboxOptions.onInitModule) {
-							sandboxOptions.onInitModule(moduleInterface, module, pkg, sandbox);
+							sandboxOptions.onInitModule(moduleInterface, module, pkg, sandbox, {
+								normalizeIdentifier: normalizeIdentifier,
+								resolveIdentifier: resolveIdentifier,
+								finalizeLoad: finalizeLoad,
+								moduleInitializers: moduleInitializers,
+								initializedModules: initializedModules
+							});
 						}
 
-						var exports = moduleInitializers[moduleIdentifier](module.require, module.exports, moduleInterface);
+						var exports = moduleInitializers[moduleIdentifier][1](module.require, module.exports, moduleInterface);
 						if (typeof moduleInterface.exports !== "undefined") {
 							module.exports = moduleInterface.exports;
 						} else
@@ -289,11 +349,11 @@
 							module.exports = exports;
 						}
 					} else
-					if (typeof moduleInitializers[moduleIdentifier] === "string") {
+					if (typeof moduleInitializers[moduleIdentifier][1] === "string") {
 						// TODO: Use more optimal string encoding algorythm to reduce payload size?
-						module.exports = decodeURIComponent(moduleInitializers[moduleIdentifier]);
+						module.exports = decodeURIComponent(moduleInitializers[moduleIdentifier][1]);
 					} else {
-						module.exports = moduleInitializers[moduleIdentifier];
+						module.exports = moduleInitializers[moduleIdentifier][1];
 					}
 				};
 
@@ -316,24 +376,32 @@
 				if (moduleInitializers[moduleIdentifier]) {
 					return loadedCallback(null, pkg.require(moduleIdentifier).exports);
 				}
-                load(((!/^\//.test(moduleIdentifier))?"/"+libPath:"") + moduleIdentifier, packageIdentifier, function(err) {
+                load(((!/^\//.test(moduleIdentifier))?"/"+pkg.libPath:"") + moduleIdentifier, packageIdentifier, function(err) {
                 	if (err) return loadedCallback(err);
                     loadedCallback(null, pkg.require(moduleIdentifier).exports);
                 });
 			}
 
 			pkg.require = function(moduleIdentifier) {
-				var loadingBundlesCallbacks;
-                if (!/^\//.test(moduleIdentifier)) {
-                    moduleIdentifier = "/" + libPath + moduleIdentifier;
-                }
-				moduleIdentifier = packageIdentifier + moduleIdentifier;
+
+				if (moduleIdentifier) {
+	                if (!/^\//.test(moduleIdentifier)) {
+	                    moduleIdentifier = "/" + pkg.libPath + moduleIdentifier;
+	                }
+					moduleIdentifier = packageIdentifier + moduleIdentifier;
+				} else {
+					moduleIdentifier = pkg.main;
+				}
+
 				if (!initializedModules[moduleIdentifier]) {
 					/*DEBUG*/ if (!moduleInitializers[moduleIdentifier]) {
+					/*DEBUG*/ 	console.error("[pinf-loader-js]", "moduleInitializers", moduleInitializers);
 					/*DEBUG*/ 	throw new Error("Module '" + moduleIdentifier + "' not found in sandbox '" + sandbox.id + "'!");
 					/*DEBUG*/ }
-					(initializedModules[moduleIdentifier] = Module(moduleIdentifier)).load();
+					(initializedModules[moduleIdentifier] = Module(moduleIdentifier, lastModule)).load();
 				}
+
+				var loadingBundlesCallbacks;
 				if (loadingBundles[moduleIdentifier]) {
 					loadingBundlesCallbacks = loadingBundles[moduleIdentifier];
 					delete loadingBundles[moduleIdentifier];
@@ -341,26 +409,32 @@
 						loadingBundlesCallbacks[i](null, sandbox);
 					}
 				}
+
 				return initializedModules[moduleIdentifier];
 			}
 
             pkg.require.id = function(moduleIdentifier) {
                 if (!/^\//.test(moduleIdentifier)) {
-                    moduleIdentifier = "/" + libPath + moduleIdentifier;
+                    moduleIdentifier = "/" + pkg.libPath + moduleIdentifier;
                 }
                 return (((packageIdentifier !== "")?"/"+packageIdentifier+"/":"") + moduleIdentifier).replace(/\/+/g, "/");
             }
 
 			/*DEBUG*/ pkg.getReport = function() {
 			/*DEBUG*/ 	return {
-			/*DEBUG*/ 		mappings: mappings
+			/*DEBUG*/ 		main: pkg.main,
+			/*DEBUG*/ 		mappings: pkg.mappings,
+			/*DEBUG*/ 		directories: pkg.directories,
+			/*DEBUG*/ 		libPath: pkg.libPath
 			/*DEBUG*/ 	};
 			/*DEBUG*/ }
 
 			if (sandboxOptions.onInitPackage) {
 				sandboxOptions.onInitPackage(pkg, sandbox, {
+					normalizeIdentifier: normalizeIdentifier,
 					finalizeLoad: finalizeLoad,
-					moduleInitializers: moduleInitializers
+					moduleInitializers: moduleInitializers,
+					initializedModules: initializedModules
 				});
 			}
 
@@ -385,7 +459,7 @@
 		// Call the 'main' exported function of the main' module of the program
 		sandbox.main = function() {
 			var exports = sandbox.boot();
-			return ((exports.main)?exports.main.apply(null, arguments):undefined);
+			return ((exports.main)?exports.main.apply(null, arguments):exports);
 		};
 
 		/*DEBUG*/ sandbox.getReport = function() {
@@ -404,9 +478,18 @@
 		/*DEBUG*/ 	for (key in moduleInitializers) {
 		/*DEBUG*/ 		if (initializedModules[key]) {
 		/*DEBUG*/ 			report.modules[key] = initializedModules[key].getReport();
+		/*DEBUG*/ 		} else {
+		/*DEBUG*/ 			report.modules[key] = {};
 		/*DEBUG*/ 		}
 		/*DEBUG*/ 	}
 		/*DEBUG*/ 	return report;
+		/*DEBUG*/ }
+		/*DEBUG*/ sandbox.reset = function() {
+		/*DEBUG*/   moduleInitializers = {};
+		/*DEBUG*/   initializedModules = {};
+		/*DEBUG*/   bundleIdentifiers = {};
+		/*DEBUG*/   packages = {};
+		/*DEBUG*/   loadingBundles = {};
 		/*DEBUG*/ }
 
 		load(".js", "", loadedCallback);
@@ -471,6 +554,14 @@
 		/*DEBUG*/ 		report.sandboxes[key] = sandboxes[key].getReport();
 		/*DEBUG*/ 	}
 		/*DEBUG*/ 	return report;
+		/*DEBUG*/ }
+		/*DEBUG*/ require.reset = function() {
+		/*DEBUG*/ 	for (key in sandboxes) {
+		/*DEBUG*/ 		sandboxes[key].reset();
+		/*DEBUG*/ 	}
+		/*DEBUG*/ 	sandboxes = {};
+		/*DEBUG*/ 	bundleIdentifiers = {};
+		/*DEBUG*/ 	loadedBundles = [];
 		/*DEBUG*/ }
 
 		return require;

@@ -24,6 +24,7 @@
 			"14-NamedBundle",
 			"15-GlobalDependencyFallback",
 			"16-MemoizedDynamic",
+			"17-LoadPackageDependency",
 			"Avoid-SplitBundles"
 		].map(function(name) {
 
