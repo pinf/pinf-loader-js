@@ -452,7 +452,7 @@
 
 		// Get a module and initialize it (statically link its dependencies) if it is not already so
 		sandbox.require = function(moduleIdentifier) {
-			return Package("").require(moduleIdentifier);
+			return Package("").require(moduleIdentifier).exports;
 		}
 
 		// Call the 'main' module of the program
@@ -460,7 +460,7 @@
 			/*DEBUG*/ if (typeof Package("").main !== "string") {
 			/*DEBUG*/ 	throw new Error("No 'main' property declared in '/package.json' in sandbox '" + sandbox.id + "'!");
 			/*DEBUG*/ }
-			return sandbox.require(Package("").main).exports;
+			return sandbox.require(Package("").main);
 		};
 
 		// Call the 'main' exported function of the main' module of the program
