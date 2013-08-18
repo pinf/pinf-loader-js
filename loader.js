@@ -279,9 +279,7 @@
 
 				// Statically link a module and its dependencies
 				module.require = function(identifier) {
-
 					identifier = resolveIdentifier(identifier);
-
 					return identifier[0].require(identifier[1]).exports;
 				};
 
@@ -324,7 +322,7 @@
 
 						var moduleInterface = {
 							id: module.id,
-							exports: undefined
+							exports: {}
 						}
 
 				        if (packageIdentifier === "" && pkg.main === moduleIdentifier) {
@@ -342,7 +340,13 @@
 						}
 
 						var exports = moduleInitializers[moduleIdentifier][1](module.require, module.exports, moduleInterface);
-						if (typeof moduleInterface.exports !== "undefined") {
+						if (
+							typeof moduleInterface.exports !== "undefined" &&
+							(
+								typeof moduleInterface.exports !== "object" ||
+								Object.keys(moduleInterface.exports).length !== 0
+							)
+						) {
 							module.exports = moduleInterface.exports;
 						} else
 						if (typeof exports !== "undefined") {
