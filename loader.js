@@ -393,7 +393,7 @@
 
 				if (moduleIdentifier) {
 	                if (!/^\//.test(moduleIdentifier)) {
-	                    moduleIdentifier = "/" + pkg.libPath + moduleIdentifier;
+	                    moduleIdentifier = "/" + ((moduleIdentifier.substring(0, pkg.libPath.length)===pkg.libPath)?"":pkg.libPath) + moduleIdentifier;
 	                }
 					moduleIdentifier = packageIdentifier + moduleIdentifier;
 				} else {
