@@ -264,7 +264,10 @@
 					if (/^\./.test(identifier)) {
 						var segments = identifier.replace(/^\.\//, "").split("../");
 						identifier = "/" + moduleIdentifierSegment.slice(1, moduleIdentifierSegment.length-segments.length+1).concat(segments[segments.length-1]).join("/");
-						return [pkg, normalizeIdentifier(identifier)];
+						if (identifier === "/.") {
+							return [pkg, ""];
+						}
+						return [pkg, normalizeIdentifier(identifier.replace(/\/\.$/, "/"))];
 					}
 					var splitIdentifier = identifier.split("/");
 					// Check for mapped module path to module within mapped package.
