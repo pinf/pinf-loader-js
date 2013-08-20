@@ -96,7 +96,7 @@
 			}
 		}
 
-		function load(bundleIdentifier, packageIdentifier, loadedCallback) {
+		function load(bundleIdentifier, packageIdentifier, bundleSubPath, loadedCallback) {
 			try {
 	            if (packageIdentifier !== "") {
 	                bundleIdentifier = ("/" + packageIdentifier + "/" + bundleIdentifier).replace(/\/+/g, "/");
@@ -112,7 +112,7 @@
 					} else {
 						// Module is not already loading.
 						loadingBundles[bundleIdentifier] = [];
-						bundleIdentifier = sandboxIdentifier + bundleIdentifier;
+						bundleIdentifier = sandboxIdentifier + bundleSubPath + bundleIdentifier;
 						// Default to our script-injection browser loader.
 						(sandboxOptions.rootBundleLoader || sandboxOptions.load || loadInBrowser)(bundleIdentifier, function(err, cleanupCallback) {
 							if (err) return loadedCallback(err);
@@ -244,7 +244,10 @@
 					if (/^\./.test(identifier)) {
 						var segments = identifier.replace(/^\.\//, "").split("../");
 						identifier = "/" + moduleIdentifierSegment.slice(1, moduleIdentifierSegment.length-segments.length+1).concat(segments[segments.length-1]).join("/");
-						return [pkg, normalizeIdentifier(identifier)];
+						if (identifier === "/.") {
+							return [pkg, ""];
+						}
+						return [pkg, normalizeIdentifier(identifier.replace(/\/\.$/, "/"))];
 					}
 					var splitIdentifier = identifier.split("/");
 					// Check for mapped module path to module within mapped package.
@@ -256,9 +259,7 @@
 
 				// Statically link a module and its dependencies
 				module.require = function(identifier) {
-
 					identifier = resolveIdentifier(identifier);
-
 					return identifier[0].require(identifier[1]).exports;
 				};
 
@@ -273,7 +274,7 @@
 
 				module.require.async = function(identifier, loadedCallback, errorCallback) {
 					identifier = resolveIdentifier(identifier);
-					identifier[0].load(identifier[1], function(err, moduleAPI) {
+					identifier[0].load(identifier[1], moduleInitializers[moduleIdentifier][0], function(err, moduleAPI) {
 						if (err) {
 							if (errorCallback) return errorCallback(err);
 							throw err;
@@ -301,7 +302,9 @@
 
 						var moduleInterface = {
 							id: module.id,
-							exports: undefined
+							// TODO: Should this filename model the original directory structure or the bundle directory structure?
+							filename: module.bundle.replace(/\.js$/, "") + "/" + module.id,
+							exports: {}
 						}
 
 				        if (packageIdentifier === "" && pkg.main === moduleIdentifier) {
@@ -319,7 +322,13 @@
 						}
 
 						var exports = moduleInitializers[moduleIdentifier][1](module.require, module.exports, moduleInterface);
-						if (typeof moduleInterface.exports !== "undefined") {
+						if (
+							typeof moduleInterface.exports !== "undefined" &&
+							(
+								typeof moduleInterface.exports !== "object" ||
+								Object.keys(moduleInterface.exports).length !== 0
+							)
+						) {
 							module.exports = moduleInterface.exports;
 						} else
 						if (typeof exports !== "undefined") {
@@ -338,22 +347,28 @@
 				return module;
 			};
 
-			pkg.load = function(moduleIdentifier, loadedCallback) {
+			pkg.load = function(moduleIdentifier, bundleIdentifier, loadedCallback) {
 				// If module/bundle to be loaded asynchronously is already memoized we skip the load.
 				if (moduleInitializers[moduleIdentifier]) {
 					return loadedCallback(null, pkg.require(moduleIdentifier).exports);
 				}
-                load(((!/^\//.test(moduleIdentifier))?"/"+pkg.libPath:"") + moduleIdentifier, packageIdentifier, function(err) {
-                	if (err) return loadedCallback(err);
-                    loadedCallback(null, pkg.require(moduleIdentifier).exports);
-                });
+				var bundleSubPath = bundleIdentifier.substring(sandboxIdentifier.length);
+                load(
+                	((!/^\//.test(moduleIdentifier))?"/"+pkg.libPath:"") + moduleIdentifier,
+                	packageIdentifier,
+                	bundleSubPath.replace(/\.js$/g, ""),
+                	function(err) {
+	                	if (err) return loadedCallback(err);
+	                    loadedCallback(null, pkg.require(moduleIdentifier).exports);
+	                }
+	            );
 			}
 
 			pkg.require = function(moduleIdentifier) {
 
 				if (moduleIdentifier) {
 	                if (!/^\//.test(moduleIdentifier)) {
-	                    moduleIdentifier = "/" + pkg.libPath + moduleIdentifier;
+	                    moduleIdentifier = "/" + ((moduleIdentifier.substring(0, pkg.libPath.length)===pkg.libPath)?"":pkg.libPath) + moduleIdentifier;
 	                }
 					moduleIdentifier = packageIdentifier + moduleIdentifier;
 				} else {
@@ -400,12 +415,12 @@
 
 		// Get a module and initialize it (statically link its dependencies) if it is not already so
 		sandbox.require = function(moduleIdentifier) {
-			return Package("").require(moduleIdentifier);
+			return Package("").require(moduleIdentifier).exports;
 		}
 
 		// Call the 'main' module of the program
 		sandbox.boot = function() {
-			return sandbox.require(Package("").main).exports;
+			return sandbox.require(Package("").main);
 		};
 
 		// Call the 'main' exported function of the main' module of the program
@@ -415,7 +430,7 @@
 		};
 
 
-		load(".js", "", loadedCallback);
+		load(".js", "", "", loadedCallback);
 
 		return sandbox;
 	};
