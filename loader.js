@@ -115,7 +115,7 @@
 			}
 		}
 
-		function load(bundleIdentifier, packageIdentifier, loadedCallback) {
+		function load(bundleIdentifier, packageIdentifier, bundleSubPath, loadedCallback) {
 			try {
 	            if (packageIdentifier !== "") {
 	                bundleIdentifier = ("/" + packageIdentifier + "/" + bundleIdentifier).replace(/\/+/g, "/");
@@ -131,7 +131,7 @@
 					} else {
 						// Module is not already loading.
 						loadingBundles[bundleIdentifier] = [];
-						bundleIdentifier = sandboxIdentifier + bundleIdentifier;
+						bundleIdentifier = sandboxIdentifier + bundleSubPath + bundleIdentifier;
 						// Default to our script-injection browser loader.
 						(sandboxOptions.rootBundleLoader || sandboxOptions.load || loadInBrowser)(bundleIdentifier, function(err, cleanupCallback) {
 							if (err) return loadedCallback(err);
@@ -297,7 +297,7 @@
 
 				module.require.async = function(identifier, loadedCallback, errorCallback) {
 					identifier = resolveIdentifier(identifier);
-					identifier[0].load(identifier[1], function(err, moduleAPI) {
+					identifier[0].load(identifier[1], moduleInitializers[moduleIdentifier][0], function(err, moduleAPI) {
 						if (err) {
 							if (errorCallback) return errorCallback(err);
 							throw err;
@@ -325,6 +325,8 @@
 
 						var moduleInterface = {
 							id: module.id,
+							// TODO: Should this filename model the original directory structure or the bundle directory structure?
+							filename: module.bundle.replace(/\.js$/, "") + "/" + module.id,
 							exports: {}
 						}
 
@@ -378,15 +380,21 @@
 				return module;
 			};
 
-			pkg.load = function(moduleIdentifier, loadedCallback) {
+			pkg.load = function(moduleIdentifier, bundleIdentifier, loadedCallback) {
 				// If module/bundle to be loaded asynchronously is already memoized we skip the load.
 				if (moduleInitializers[moduleIdentifier]) {
 					return loadedCallback(null, pkg.require(moduleIdentifier).exports);
 				}
-                load(((!/^\//.test(moduleIdentifier))?"/"+pkg.libPath:"") + moduleIdentifier, packageIdentifier, function(err) {
-                	if (err) return loadedCallback(err);
-                    loadedCallback(null, pkg.require(moduleIdentifier).exports);
-                });
+				var bundleSubPath = bundleIdentifier.substring(sandboxIdentifier.length);
+                load(
+                	((!/^\//.test(moduleIdentifier))?"/"+pkg.libPath:"") + moduleIdentifier,
+                	packageIdentifier,
+                	bundleSubPath.replace(/\.js$/g, ""),
+                	function(err) {
+	                	if (err) return loadedCallback(err);
+	                    loadedCallback(null, pkg.require(moduleIdentifier).exports);
+	                }
+	            );
 			}
 
 			pkg.require = function(moduleIdentifier) {
@@ -499,7 +507,7 @@
 		/*DEBUG*/   loadingBundles = {};
 		/*DEBUG*/ }
 
-		load(".js", "", loadedCallback);
+		load(".js", "", "", loadedCallback);
 
 		return sandbox;
 	};
