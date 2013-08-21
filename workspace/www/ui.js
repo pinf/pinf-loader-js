@@ -89,7 +89,7 @@
 		$(document).ready(function() {
 
 			$.get("../../loader.min.js", function(data) {
-				$("#loader-min").html(data);
+				$("#loader-min").html(data.replace(/</g, "&#60;"));
 			}, "text");
 			$.get("loader.min.js-size", function(data) {
 				$("#loader-min-size").html(data);
