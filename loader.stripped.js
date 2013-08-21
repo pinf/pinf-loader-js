@@ -151,20 +151,20 @@
 						moduleInitializers[key][0] = bundleIdentifier;
 						// Only augment (instead of replace existing values).
 						if (typeof moduleInitializers[key][1].main === "undefined") {
-							moduleInitializers[key][1].main = loadedBundles[0][1][key].main;
+							moduleInitializers[key][1].main = loadedBundles[0][1][key][0].main;
 						}
-						if (loadedBundles[0][1][key].mappings) {
+						if (loadedBundles[0][1][key][0].mappings) {
 							if (!moduleInitializers[key][1].mappings) {
 								moduleInitializers[key][1].mappings = {};
 							}
-							for (var alias in loadedBundles[0][1][key].mappings) {
+							for (var alias in loadedBundles[0][1][key][0].mappings) {
 								if (typeof moduleInitializers[key][1].mappings[alias] === "undefined") {
-									moduleInitializers[key][1].mappings[alias] = loadedBundles[0][1][key].mappings[alias];
+									moduleInitializers[key][1].mappings[alias] = loadedBundles[0][1][key][0].mappings[alias];
 								}
 							}
 						}
 					} else {
-						moduleInitializers[key] = [bundleIdentifier, loadedBundles[0][1][key]];
+						moduleInitializers[key] = [bundleIdentifier, loadedBundles[0][1][key][0], loadedBundles[0][1][key][1]];
 					}
 					// Now that we have a [updated] package descriptor, re-initialize it if we have it already in cache.
 					var packageIdentifier = key.split("/").shift();
@@ -175,7 +175,7 @@
 				// Only add modules that don't already exist!
 				// TODO: Log warning in debug mode if module already exists.
 				if (typeof moduleInitializers[key] === "undefined") {
-					moduleInitializers[key] = [bundleIdentifier, loadedBundles[0][1][key]];
+					moduleInitializers[key] = [bundleIdentifier, loadedBundles[0][1][key][0], loadedBundles[0][1][key][1]];
 				}
 			}
 			loadedBundles.shift();
@@ -188,7 +188,7 @@
 
 			var pkg = {
 				id: packageIdentifier,
-				descriptor: null,
+				descriptor: {},
 				main: "/main.js",
 				mappings: {},
 				directories: {},
@@ -198,8 +198,9 @@
 			var parentModule = lastModule;
 
 			pkg.init = function() {
-				var descriptor = (moduleInitializers[packageIdentifier + "/package.json"] && moduleInitializers[packageIdentifier + "/package.json"][1]) || null;
+				var descriptor = (moduleInitializers[packageIdentifier + "/package.json"] && moduleInitializers[packageIdentifier + "/package.json"][1]) || {};
 				if (descriptor) {
+					pkg.descriptor = descriptor;
 					if (typeof descriptor.main === "string") {
 						pkg.main = descriptor.main;
 					}
@@ -302,8 +303,13 @@
 
 						var moduleInterface = {
 							id: module.id,
-							// TODO: Should this filename model the original directory structure or the bundle directory structure?
-							filename: module.bundle.replace(/\.js$/, "") + "/" + module.id,
+							filename: 
+								// The `filename` from the meta info attached to the module.
+								// This is typically where the module was originally found on the filesystem.
+								moduleInitializers[moduleIdentifier][2].filename ||
+								// Fall back to the virtual path of the module in the bundle.
+								// TODO: Insert a delimiter between bundle and module id.
+								(module.bundle.replace(/\.js$/, "") + "/" + module.id).replace(/\/+/g, "/"),
 							exports: {}
 						}
 
@@ -450,8 +456,8 @@
 						req = new Require(uid);
 					delete req.bundle;
 					// Store raw module in loading bundle
-					req.memoize = function(moduleIdentifier, moduleInitializer) {
-						moduleInitializers[moduleIdentifier] = moduleInitializer;
+					req.memoize = function(moduleIdentifier, moduleInitializer, moduleMeta) {
+						moduleInitializers[moduleIdentifier] = [moduleInitializer, moduleMeta || {}];
 					}
 					callback(req);
 					loadedBundles.push([uid, moduleInitializers]);
