@@ -17,5 +17,43 @@
     },
     "scripts": {
         "test": "make test"
+    },
+    "overrides": {
+        "./node_modules/request/node_modules/hawk/node_modules/boom": {
+          "descriptor": {
+            "config": {
+              "pinf/0/bundler/options/0": {
+                "mapParentSiblingPackages": 2
+              }
+            }
+          }
+        },
+        "./node_modules/request/node_modules/hawk/node_modules/sntp": {
+          "descriptor": {
+            "config": {
+              "pinf/0/bundler/options/0": {
+                "mapParentSiblingPackages": 2
+              }
+            }
+          }
+        },
+        "./node_modules/request/node_modules/hawk/node_modules/cryptiles": {
+          "descriptor": {
+            "config": {
+              "pinf/0/bundler/options/0": {
+                "mapParentSiblingPackages": 2
+              }
+            }
+          }
+        },
+        "./node_modules/request/node_modules/form-data": {
+          "descriptor": {
+            "config": {
+              "pinf/0/bundler/options/0": {
+                "mapParentSiblingPackages": 2
+              }
+            }
+          }
+        }
     }
 }
