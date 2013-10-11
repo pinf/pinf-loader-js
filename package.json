@@ -13,7 +13,8 @@
         "request": "~2.16.6",
         "mocha": "~1.9.0",
         "grunt": "~0.4.1",
-        "grunt-mocha": "~0.3.1"
+        "grunt-mocha": "~0.3.1",
+        "grunt-saucelabs": "~4.1.2"
     },
     "scripts": {
         "test": "make test"

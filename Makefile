@@ -7,9 +7,11 @@ install-all:
 
 test:
 	@$(MAKE) install-all
-	@./node_modules/.bin/mocha \
-		--reporter $(REPORTER) \
-		test/*.js
+	@./node_modules/.bin/mocha --reporter $(REPORTER) test/features.js
+
+test-browsers:
+	@$(MAKE) install-all
+	@./node_modules/.bin/mocha --reporter $(REPORTER) test/features.js
 
 run-dev:
 	@$(MAKE) install-all
@@ -25,4 +27,4 @@ publish-www:
 	git checkout master
 	git push origin
 
-.PHONY: install-all test run-dev build publish-www
+.PHONY: install-all test test-browsers run-dev build publish-www
