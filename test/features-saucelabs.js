@@ -32,10 +32,25 @@ describe("features-saucelabs", function() {
                             ],
                             concurrency: 3,
                             browsers: [
+
+
+
+                                {
+                                    browserName: 'firefox',
+                                    platform: 'Windows 7',
+                                    version: '3.6'
+                                }
+
+/*
                                 {
                                     browserName: 'firefox',
                                     platform: 'OS X 10.6',
                                     version: '25'
+                                },
+                                {
+                                    browserName: 'firefox',
+                                    platform: 'OS X 10.6',
+                                    version: '4'
                                 },
                                 {
                                     browserName: 'firefox',
@@ -44,13 +59,23 @@ describe("features-saucelabs", function() {
                                 },
                                 {
                                     browserName: 'firefox',
+                                    platform: 'Linux',
+                                    version: '4'
+                                },
+                                {
+                                    browserName: 'firefox',
                                     platform: 'Windows 8',
                                     version: '25'
                                 },
                                 {
                                     browserName: 'firefox',
                                     platform: 'Windows 8',
-                                    version: '3.0'
+                                    version: '4.0'
+                                },
+                                {
+                                    browserName: 'firefox',
+                                    platform: 'Windows 7',
+                                    version: '3.6'
                                 },
                                 {
                                     browserName: 'chrome',
@@ -102,6 +127,7 @@ describe("features-saucelabs", function() {
                                     platform: 'Windows 7',
                                     version: '5'
                                 }
+*/
                             ]
                         }
                     }
