@@ -17,7 +17,7 @@
         "grunt-saucelabs": "~4.1.2"
     },
     "scripts": {
-        "test": "make test"
+        "test": "make test-browsers"
     },
     "overrides": {
         "./node_modules/request/node_modules/hawk/node_modules/boom": {

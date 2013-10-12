@@ -12,6 +12,8 @@ describe("features-saucelabs", function() {
         return SERVER.main(function(err, info) {
             if (err) return done(err);
 
+            console.log("process.env.TRAVIS", process.env.TRAVIS);
+
             if (process.env.TRAVIS) {
                 console.log("process.env.SAUCE_USERNAME", process.env.SAUCE_USERNAME);
             }
