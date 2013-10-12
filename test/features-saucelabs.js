@@ -12,10 +12,8 @@ describe("features-saucelabs", function() {
         return SERVER.main(function(err, info) {
             if (err) return done(err);
 
-            console.log("process.env.TRAVIS", process.env.TRAVIS);
-
             if (process.env.TRAVIS) {
-                console.log("process.env.SAUCE_USERNAME", process.env.SAUCE_USERNAME);
+                console.log("Using SAUCE_USERNAME: ", process.env.SAUCE_USERNAME);
             }
 
             GRUNT.initConfig({
@@ -24,6 +22,8 @@ describe("features-saucelabs", function() {
                         options: {
                             username: process.env.SAUCE_USERNAME || '',
                             key: process.env.SAUCE_ACCESS_KEY || '',
+                            tags: ['master'],
+                            public: true,
                             urls: [
                                 "http://localhost:" + info.port + "/workspace/www/test.html"
                             ],
