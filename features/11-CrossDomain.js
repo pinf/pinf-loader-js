@@ -12,7 +12,7 @@ PINF.bundle("", function(require)
 			module.log("Hello from 11-CrossDomain!");
 
 		    return Q.all([
-				"https://raw.github.com/pinf/pinf-loader-js/master/features/11-CrossDomain/CrossDomainBundle.js"
+				"http://rawgithub.com/pinf/pinf-loader-js/master/features/11-CrossDomain/CrossDomainBundle.js"
 			].map(function(url) {
 				var result = Q.defer();
 
