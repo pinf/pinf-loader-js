@@ -19,6 +19,15 @@
 		readyStates = { 'loaded': 1, 'interactive': 1, 'complete': 1 },
 		lastModule = null;
 
+	// For older browsers that don't have `Object.keys()` (Firefox 3.6)
+	function keys(obj) {
+		var keys = [];
+		for (var key in obj) {
+			keys.push(key);
+		}
+		return keys;
+	}
+
 	function normalizeSandboxArguments(implementation) {
 		return function(programIdentifier, options, loadedCallback, errorCallback) {
 			/*DEBUG*/ if (typeof options === "function" && typeof loadedCallback === "object") {
@@ -355,7 +364,7 @@
 							typeof moduleInterface.exports !== "undefined" &&
 							(
 								typeof moduleInterface.exports !== "object" ||
-								Object.keys(moduleInterface.exports).length !== 0
+								keys(moduleInterface.exports).length !== 0
 							)
 						) {
 							module.exports = moduleInterface.exports;
