@@ -14,7 +14,7 @@ based **JavaScript module loader** for the browser in only **2143 bytes** *(mini
 
 **Online Demo: [pinf.github.io/pinf-loader-js/workspace/www](http://pinf.github.io/pinf-loader-js/workspace/www/index.html)**
 
-**Examples: [github.com/pinf-it/pinf-it-bundler/tree/master/examples](http://github.com/pinf-it/pinf-it-bundler/tree/master/examples)**
+**Examples: [github.com/pinf-it/pinf-it-bundler/tree/master/examples](http://github.com/pinf-it/pinf-it-bundler/tree/master/examples)** (status: *DEV*)
 
 
 Why
@@ -50,18 +50,19 @@ What
 The `PINF JavaScript Loader` provides a **minimal CommonJS environment** that requests **optimized static JavaScript code files** 
 called **Bundles** from a server via **GET requests** and boots these into sandboxes in the browser identified by the requested URL.
 
-Supported Environments:
+### Supported Environments
 
   * Browser:
-      * Firefox
-      * Google Chrome
-      * Internet Explorer
-        * **BUG** [https://github.com/pinf/pinf-loader-js/issues/1](https://github.com/pinf/pinf-loader-js/issues/1)
-      * Safari
+      * Firefox 3.6+
+      * Google Chrome 
+      * Internet Explorer 6+
+      * Safari 5+
       * Opera
-	    * **BUG:** [https://github.com/pinf/pinf-loader-js/issues/8](https://github.com/spinf/pinf-loader-js/issues/8)
+      * iPad
+      * iPhone
+      * Android
 
-Supported features:
+### Supported Features
 
   * Load bundled JavaScript programs from static URLs
   * Asynchronously load more program code bundles as needed
@@ -116,9 +117,9 @@ Integrate
 
 There are adapters for streamlined integration with other tools:
 
-  * [RequireJS](http://requirejs.org/) plugin: [github.com/pinf/pinf-for-requirejs](https://github.com/pinf/pinf-for-requirejs)
-  * [NodeJS](http://nodejs.org/) package: [github.com/pinf/pinf-for-nodejs](https://github.com/pinf/pinf-for-nodejs)
-  * [jQuery](http://jquery.com/) plugin: [github.com/pinf/pinf-for-jquery](https://github.com/pinf/pinf-for-jquery)
+  * [RequireJS](http://requirejs.org/) plugin: [github.com/pinf/pinf-for-requirejs](https://github.com/pinf/pinf-for-requirejs) (status: *DEV*)
+  * [NodeJS](http://nodejs.org/) package: [github.com/pinf/pinf-for-nodejs](https://github.com/pinf/pinf-for-nodejs) (status: *DEV*)
+  * [jQuery](http://jquery.com/) plugin: [github.com/pinf/pinf-for-jquery](https://github.com/pinf/pinf-for-jquery) (status: *DEV*)
 
 Bundlers
 --------
@@ -126,7 +127,7 @@ Bundlers
 Applications may be *coded directly in the bundle format*. Alternatively the bundle format may be treated as a **compile target** (typical).
 The following tools can generate `PINF JavaScript Loader` compatible bundles:
 
-  * [PINF.it Bundler](https://github.com/pinf-it/pinf-it-bundler)
+  * [PINF.it Bundler](https://github.com/pinf-it/pinf-it-bundler) (status: *DEV*)
     
     Supports:
     
@@ -144,7 +145,7 @@ There are various feature examples that double as tests in `./features`.
 
 For an online demo of the loader features see [pinf.github.io/pinf-loader-js/workspace/www](http://pinf.github.io/pinf-loader-js/workspace/www/index.html).
 
-For end-user examples of common use-cases see [github.com/pinf-it/pinf-it-bundler/tree/master/examples](http://github.com/pinf-it/pinf-it-bundler/tree/master/examples).
+For end-user examples of common use-cases see [github.com/pinf-it/pinf-it-bundler/tree/master/examples](http://github.com/pinf-it/pinf-it-bundler/tree/master/examples).  (status: *DEV*)
 
 
 Tips
