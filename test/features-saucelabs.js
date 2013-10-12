@@ -22,13 +22,15 @@ describe("features-saucelabs", function() {
                         options: {
                             username: process.env.SAUCE_USERNAME || '',
                             key: process.env.SAUCE_ACCESS_KEY || '',
+                            testname: 'github.com/pinf/pinf-loader-js',
                             tags: ['master'],
+                            build: process.env.TRAVIS_JOB_ID || "manual",
                             public: true,
+                            "record-screenshots": false,
                             urls: [
                                 "http://localhost:" + info.port + "/workspace/www/test.html"
                             ],
                             concurrency: 3,
-                            testname: 'github.com/pinf/pinf-loader-js',
                             browsers: [
                                 {
                                     browserName: 'firefox'
