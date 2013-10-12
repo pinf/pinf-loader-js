@@ -33,19 +33,74 @@ describe("features-saucelabs", function() {
                             concurrency: 3,
                             browsers: [
                                 {
-                                    browserName: 'firefox'
+                                    browserName: 'firefox',
+                                    platform: 'OS X 10.6',
+                                    version: '25'
                                 },
                                 {
-                                    browserName: 'chrome'
+                                    browserName: 'firefox',
+                                    platform: 'Linux',
+                                    version: '24'
                                 },
                                 {
-                                    browserName: 'internet explorer'
+                                    browserName: 'firefox',
+                                    platform: 'Windows 8',
+                                    version: '25'
                                 },
                                 {
-                                    browserName: 'opera'
+                                    browserName: 'firefox',
+                                    platform: 'Windows 8',
+                                    version: '3.0'
                                 },
                                 {
-                                    browserName: 'safari'
+                                    browserName: 'chrome',
+                                    platform: 'OS X 10.8',
+                                    version: '27'
+                                },
+                                {
+                                    browserName: 'chrome',
+                                    platform: 'Linux',
+                                    version: '28'
+                                },
+                                {
+                                    browserName: 'chrome',
+                                    platform: 'Windows 8',
+                                    version: '27'
+                                },
+                                {
+                                    browserName: 'internet explorer',
+                                    platform: 'Windows 8',
+                                    version: '10'
+                                },
+                                {
+                                    browserName: 'internet explorer',
+                                    platform: 'Windows 7',
+                                    version: '9'
+                                },
+                                {
+                                    browserName: 'internet explorer',
+                                    platform: 'Windows XP',
+                                    version: '6'
+                                },
+                                {
+                                    browserName: 'opera',
+                                    platform: 'Linux',
+                                    version: '12'
+                                },
+                                {
+                                    browserName: 'opera',
+                                    platform: 'Windows 7',
+                                    version: '12'
+                                },
+                                {
+                                    browserName: 'safari',
+                                    platform: 'OS X 10.8',
+                                    version: '6'
+                                },
+                                {
+                                    browserName: 'safari',
+                                    platform: 'Windows 7',
+                                    version: '5'
                                 }
                             ]
                         }
