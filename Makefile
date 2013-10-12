@@ -8,10 +8,11 @@ install-all:
 test:
 	@$(MAKE) install-all
 	@./node_modules/.bin/mocha --reporter $(REPORTER) test/features.js
+	@if [ -z "$TRAVIS" ]; then @$(MAKE) test-browsers; fi
 
 test-browsers:
 	@$(MAKE) install-all
-	@./node_modules/.bin/mocha --reporter $(REPORTER) test/features.js
+	@./node_modules/.bin/mocha --reporter $(REPORTER) test/features-saucelabs.js
 
 run-dev:
 	@$(MAKE) install-all
