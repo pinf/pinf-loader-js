@@ -32,16 +32,45 @@ describe("features-saucelabs", function() {
                             ],
                             concurrency: 3,
                             browsers: [
-
-
-
                                 {
-                                    browserName: 'firefox',
-                                    platform: 'Windows 7',
-                                    version: '3.6'
-                                }
-
-/*
+                                    browserName: 'iphone',
+                                    platform: 'OS X 10.8',
+                                    version: '6',
+                                    'device-orientation': 'portrait'
+                                },
+                                {
+                                    browserName: 'iphone',
+                                    platform: 'OS X 10.6',
+                                    version: '4',
+                                    'device-orientation': 'portrait'
+                                },
+                                {
+                                    browserName: 'ipad',
+                                    platform: 'OS X 10.8',
+                                    version: '6',
+                                    'device-orientation': 'portrait'
+                                },
+                                {
+                                    browserName: 'ipad',
+                                    platform: 'OS X 10.6',
+                                    version: '4',
+                                    'device-orientation': 'portrait'
+                                },
+/*                                
+                                {
+                                    browserName: 'android',
+                                    platform: 'Linux',
+                                    version: '4.0',
+                                    'device-type': 'tablet',
+                                    'device-orientation': 'portrait'
+                                },
+                                {
+                                    browserName: 'android',
+                                    platform: 'Linux',
+                                    version: '4.0',
+                                    'device-orientation': 'portrait'
+                                },
+*/
                                 {
                                     browserName: 'firefox',
                                     platform: 'OS X 10.6',
@@ -127,7 +156,6 @@ describe("features-saucelabs", function() {
                                     platform: 'Windows 7',
                                     version: '5'
                                 }
-*/
                             ]
                         }
                     }
