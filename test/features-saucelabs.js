@@ -12,6 +12,10 @@ describe("features-saucelabs", function() {
         return SERVER.main(function(err, info) {
             if (err) return done(err);
 
+            if (process.env.TRAVIS) {
+                console.log("process.env.SAUCE_USERNAME", process.env.SAUCE_USERNAME);
+            }
+
             GRUNT.initConfig({
                 "saucelabs-mocha": {
                     all: {
