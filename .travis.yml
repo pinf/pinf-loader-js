@@ -1,6 +1,6 @@
 node_js: 
 - 0.1
-after_success: 
+after_script: 
 - cat workspace/www/coverage/lcov.info | ./node_modules/.bin/coveralls
 language: node_js
 env: 
