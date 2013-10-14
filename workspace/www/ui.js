@@ -7,8 +7,8 @@
 			debug: true
 		};
 
-	    return Q.when(Q.all([
-	  		"01-HelloWorld",
+		var tests = [
+			"01-HelloWorld",
 			"02-ReturnExports",
 			"03-SpecifyMain",
 			"04-PackageLocalDependencies",
@@ -24,9 +24,14 @@
 			"14-NamedBundle",
 			"15-GlobalDependencyFallback",
 			"16-MemoizedDynamic",
-			"17-LoadPackageDependency",
-			"Avoid-SplitBundles"
-		].map(function(name) {
+			"17-LoadPackageDependency"
+		];
+
+		if (!/test.html$/.test(window.location.pathname)) {
+			tests.push("Avoid-SplitBundles");
+		}
+
+	    return Q.when(Q.all(tests.map(function(name) {
 
 			function wrap(test) {
 				if (typeof mocha === "undefined") {

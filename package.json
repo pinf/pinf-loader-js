@@ -15,7 +15,8 @@
     "grunt": "~0.4.1",
     "grunt-mocha": "~0.3.1",
     "grunt-saucelabs": "~4.1.2",
-    "istanbul": "~0.1.44"
+    "istanbul": "~0.1.44",
+    "coveralls": "~2.3.0"
   },
   "scripts": {
     "test": "make test"

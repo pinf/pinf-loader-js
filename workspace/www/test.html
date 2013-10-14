@@ -4,13 +4,11 @@
         <script type="text/javascript" src="q.js"></script>
         <script type="text/javascript" src="jquery.js"></script>
         <script type="text/javascript" src="../../node_modules/mocha/mocha.js"></script>
-        <script type="text/javascript" src="../../loader.js?instrumented=true"></script>
-
+        <script type="text/javascript" src="../../loader.stripped.js?instrumented=true"></script>
         <script type="text/javascript" src="../../node_modules/istanbul/node_modules/esprima/esprima.js"></script>
         <script type="text/javascript" src="../../node_modules/istanbul/node_modules/escodegen/escodegen.browser.js"></script>
         <script type="text/javascript" src="../../node_modules/istanbul/lib/instrumenter.js"></script>
-
-        <script type="text/javascript" src="ui.js"></script>
+        <script type="text/javascript" src="ui.js?scope=stripped"></script>
     </head>
     <body>
 		<div id="mocha"></div>
@@ -23,10 +21,11 @@
                 });
 				mocha.run(function() {
                     $.ajax({
-                        url: "/notify-coverage",
+                        url: "/store-coverage",
                         method: "POST",
-                        data: __coverage__,
-                        json: true
+                        data: JSON.stringify(__coverage__),
+                        dataType: "json",
+                        contentType: "application/json"
                     });
                 });
 			});

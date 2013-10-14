@@ -20,9 +20,7 @@ exports.main = function(callback) {
 
     app.use(EXPRESS.bodyParser());
 
-    app.post(/^\/notify-coverage$/, function(req, res, next) {
-/*
-// NOTE: This currently fails because the coverage data contains a `null` line at [0].
+    app.post(/^\/store-coverage$/, function(req, res, next) {
         var reporter = new REPORTER({
             dir: PATH.join(__dirname, "www/coverage")
         });
@@ -30,7 +28,6 @@ exports.main = function(callback) {
         var coverage = req.body;
         collector.add(coverage);
         reporter.writeReport(collector, true);
-*/
         return res.end();
     });
 
@@ -55,13 +52,31 @@ exports.main = function(callback) {
     });
     app.get(/^\/loader.stripped.js$/, function(req, res) {
         res.setHeader("Content-Type", "text/plain");
-        res.end(BUILD.getStrippedSource());
+        if (req.query.instrumented === "true") {
+            var instrumenter = new INSTRUMENTER({
+                backdoor: {
+                    omitTrackerSuffix: true
+                }
+            });
+            res.end(instrumenter.instrumentSync(BUILD.getStrippedSource(), "loader.stripped.js"));
+        } else {
+            res.end(BUILD.getStrippedSource());
+        }
     });
     app.get(/^\/loader.min.js/, function(req, res, next) {
         res.setHeader("Content-Type", "text/plain");
         return BUILD.getMinifiedSource(function(err, source) {
             if (err) return next(err);
-            res.end(source);
+            if (req.query.instrumented === "true") {
+                var instrumenter = new INSTRUMENTER({
+                    backdoor: {
+                        omitTrackerSuffix: true
+                    }
+                });
+                res.end(instrumenter.instrumentSync(source, "loader.min.js"));
+            } else {
+                res.end(source);
+            }
         });
     });
     app.get(/^\/loader.min.js.gz/, function(req, res, next) {
