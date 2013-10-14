@@ -4,14 +4,31 @@
         <script type="text/javascript" src="q.js"></script>
         <script type="text/javascript" src="jquery.js"></script>
         <script type="text/javascript" src="../../node_modules/mocha/mocha.js"></script>
-        <script type="text/javascript" src="../../loader.js"></script>
+        <script type="text/javascript" src="../../loader.js?instrumented=true"></script>
+
+        <script type="text/javascript" src="../../node_modules/istanbul/node_modules/esprima/esprima.js"></script>
+        <script type="text/javascript" src="../../node_modules/istanbul/node_modules/escodegen/escodegen.browser.js"></script>
+        <script type="text/javascript" src="../../node_modules/istanbul/lib/instrumenter.js"></script>
+
         <script type="text/javascript" src="ui.js"></script>
     </head>
     <body>
 		<div id="mocha"></div>
 		<script>
 			$(document).ready(function() {
-				mocha.run();
+                var instrumenter = new Instrumenter({
+                    backdoor: {
+                        omitTrackerSuffix: true
+                    }
+                });
+				mocha.run(function() {
+                    $.ajax({
+                        url: "/notify-coverage",
+                        method: "POST",
+                        data: __coverage__,
+                        json: true
+                    });
+                });
 			});
 		</script>
     </body>

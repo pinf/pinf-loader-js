@@ -4,6 +4,12 @@ const FS = require("fs-extra");
 const EXPRESS = require("express");
 const BUILD = require("../scripts/build");
 
+const INSTRUMENTER = require("istanbul/lib/instrumenter");
+const STORE = require("istanbul/lib/store/index");
+STORE.loadAll();
+const COLLECTOR = require("istanbul/lib/collector");
+const REPORTER = require("istanbul/lib/report/lcov");
+
 const ROOT_PATH = PATH.dirname(__dirname);
 const PORT = 8080;
 
@@ -11,6 +17,22 @@ const PORT = 8080;
 exports.main = function(callback) {
 
     var app = EXPRESS();
+
+    app.use(EXPRESS.bodyParser());
+
+    app.post(/^\/notify-coverage$/, function(req, res, next) {
+/*
+// NOTE: This currently fails because the coverage data contains a `null` line at [0].
+        var reporter = new REPORTER({
+            dir: PATH.join(__dirname, "www/coverage")
+        });
+        var collector = new COLLECTOR();
+        var coverage = req.body;
+        collector.add(coverage);
+        reporter.writeReport(collector, true);
+*/
+        return res.end();
+    });
 
     app.get(/^\/$/, function(req, res) {
         res.writeHead(302, {
@@ -20,7 +42,16 @@ exports.main = function(callback) {
     });
     app.get(/^\/loader.js$/, function(req, res) {
         res.setHeader("Content-Type", "text/javascript");
-        res.end(BUILD.getRawSource());
+        if (req.query.instrumented === "true") {
+            var instrumenter = new INSTRUMENTER({
+                backdoor: {
+                    omitTrackerSuffix: true
+                }
+            });
+            res.end(instrumenter.instrumentSync(BUILD.getRawSource(), "loader.js"));
+        } else {
+            res.end(BUILD.getRawSource());
+        }
     });
     app.get(/^\/loader.stripped.js$/, function(req, res) {
         res.setHeader("Content-Type", "text/plain");
