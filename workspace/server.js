@@ -11,7 +11,7 @@ const COLLECTOR = require("istanbul/lib/collector");
 const REPORTER = require("istanbul/lib/report/lcov");
 
 const ROOT_PATH = PATH.dirname(__dirname);
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 
 
 exports.main = function(callback) {
