@@ -537,23 +537,32 @@
 
 		var Require = function(bundle) {
 
-				// Address a specific sandbox or currently loading sandbox if initial load.
-				this.bundle = function(uid, callback) {
-					/*DEBUG*/ if (uid && bundleIdentifiers[uid]) {
-					/*DEBUG*/ 	throw new Error("You cannot split require.bundle(UID) calls where UID is constant!");
-					/*DEBUG*/ }
-					/*DEBUG*/ bundleIdentifiers[uid] = true;
-					var moduleInitializers = {},
-						req = new Require(uid);
-					delete req.bundle;
-					// Store raw module in loading bundle
-					req.memoize = function(moduleIdentifier, moduleInitializer, moduleMeta) {
-						moduleInitializers[moduleIdentifier] = [moduleInitializer, moduleMeta || {}];
-					}
-					callback(req);
-					loadedBundles.push([uid, moduleInitializers]);
+			// Address a specific sandbox or currently loading sandbox if initial load.
+			var bundleHandler = function(uid, callback) {
+				/*DEBUG*/ if (uid && bundleIdentifiers[uid]) {
+				/*DEBUG*/ 	throw new Error("You cannot split require.bundle(UID) calls where UID is constant!");
+				/*DEBUG*/ }
+				/*DEBUG*/ bundleIdentifiers[uid] = true;
+				var moduleInitializers = {},
+					req = new Require(uid);
+				delete req.bundle;
+				// Store raw module in loading bundle
+				req.memoize = function(moduleIdentifier, moduleInitializer, moduleMeta) {
+					moduleInitializers[moduleIdentifier] = [moduleInitializer, moduleMeta || {}];
 				}
-			};
+				callback(req);
+				loadedBundles.push([uid, moduleInitializers]);
+			}
+			var activeBundleHandler = bundleHandler;
+			this.bundle = function () {
+				return activeBundleHandler.apply(null, arguments);
+			}
+			this.setActiveBundleHandler = function (handler) {
+				var oldHandler = activeBundleHandler;
+				activeBundleHandler = handler;
+				return oldHandler;
+			}
+		}
 
 		var require = new Require();
 
