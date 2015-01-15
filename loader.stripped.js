@@ -250,21 +250,34 @@
 
 				function resolveIdentifier(identifier) {
 					lastModule = module;
+					// Check for plugin prefix.
+					var plugin = null;
+					if (/^[^!]*!/.test(identifier)) {
+						var m = identifier.match(/^([^!]*)!(.+)$/);
+						identifier = m[2];
+						plugin = m[1];
+					}
+					function pluginify (id) {
+						if (!plugin) return id;
+						id = new String(id);
+						id.plugin = plugin;
+						return id;
+					}
 					// Check for relative module path to module within same package.
 					if (/^\./.test(identifier)) {
 						var segments = identifier.replace(/^\.\//, "").split("../");
 						identifier = "/" + moduleIdentifierSegment.slice(1, moduleIdentifierSegment.length-segments.length+1).concat(segments[segments.length-1]).join("/");
 						if (identifier === "/.") {
-							return [pkg, ""];
+							return [pkg, pluginify("")];
 						}
-						return [pkg, normalizeIdentifier(identifier.replace(/\/\.$/, "/"))];
+						return [pkg, pluginify(normalizeIdentifier(identifier.replace(/\/\.$/, "/")))];
 					}
 					var splitIdentifier = identifier.split("/");
 					// Check for mapped module path to module within mapped package.
 					if (typeof pkg.mappings[splitIdentifier[0]] !== "undefined") {
-						return [Package(pkg.mappings[splitIdentifier[0]]), (splitIdentifier.length > 1)?normalizeIdentifier(splitIdentifier.slice(1).join("/")):""];
+						return [Package(pkg.mappings[splitIdentifier[0]]), pluginify((splitIdentifier.length > 1)?normalizeIdentifier(splitIdentifier.slice(1).join("/")):"")];
 					}
-					return [Package(""), "/" + normalizeIdentifier(identifier)];
+					return [Package(""), pluginify("/" + normalizeIdentifier(identifier))];
 				}
 
 				// Statically link a module and its dependencies
@@ -364,7 +377,7 @@
 
 			pkg.load = function(moduleIdentifier, bundleIdentifier, loadedCallback) {
 				// If module/bundle to be loaded asynchronously is already memoized we skip the load.
-				if (moduleInitializers[moduleIdentifier]) {
+				if (moduleInitializers[packageIdentifier + moduleIdentifier]) {
 					return loadedCallback(null, pkg.require(moduleIdentifier).exports);
 				}
 				var bundleSubPath = bundleIdentifier.substring(sandboxIdentifier.length);
@@ -381,9 +394,11 @@
 
 			pkg.require = function(moduleIdentifier) {
 
+				var plugin = moduleIdentifier.plugin;
+
 				if (moduleIdentifier) {
 	                if (!/^\//.test(moduleIdentifier)) {
-	                    moduleIdentifier = "/" + ((moduleIdentifier.substring(0, pkg.libPath.length)===pkg.libPath)?"":pkg.libPath) + moduleIdentifier;
+	                    moduleIdentifier = ("/" + ((moduleIdentifier.substring(0, pkg.libPath.length)===pkg.libPath)?"":pkg.libPath)).replace(/\/\.\//, "/") + moduleIdentifier;
 	                }
 					moduleIdentifier = packageIdentifier + moduleIdentifier;
 				} else {
@@ -403,7 +418,15 @@
 					}
 				}
 
-				return initializedModules[moduleIdentifier];
+				// TODO: Do this via plugins registered using sandbox options.
+				// TODO: Cache response so we only process files once.
+				var moduleInfo = Object.create(initializedModules[moduleIdentifier]);
+				// RequireJS/AMD international strings plugin using root by default.
+				if (plugin === "i18n") {
+					moduleInfo.exports = moduleInfo.exports.root;
+				}
+
+				return moduleInfo;
 			}
 
             pkg.require.id = function(moduleIdentifier) {
