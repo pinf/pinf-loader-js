@@ -410,7 +410,7 @@
 
 			pkg.load = function(moduleIdentifier, bundleIdentifier, loadedCallback) {
 				// If module/bundle to be loaded asynchronously is already memoized we skip the load.
-				if (moduleInitializers[moduleIdentifier]) {
+				if (moduleInitializers[packageIdentifier + moduleIdentifier]) {
 					return loadedCallback(null, pkg.require(moduleIdentifier).exports);
 				}
 				var bundleSubPath = bundleIdentifier.substring(sandboxIdentifier.length);
