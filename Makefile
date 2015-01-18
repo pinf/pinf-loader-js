@@ -1,6 +1,9 @@
 
 REPORTER ?= list
 
+install:
+	@$(MAKE) install-all
+
 install-all:
 	@if [ ! -d "node_modules" ]; then npm install; fi
 	@if [ ! -d "workspace/node_modules" ]; then cd workspace; npm install; fi
