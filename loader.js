@@ -641,6 +641,9 @@
 	// This is useful in Web Workers where only the loader must be loaded and
 	// sandboxes can then be loaded like this:
 	//    worker.postMessage(URIJS("notify://PINF/sandbox").addSearch("uri", uri).toString())
+	// TODO: Rename notify://PINF/sandbox to something more specific to address this action
+	//       and deprecate `notify://PINF/sandbox`. i.e. `PINF` is too generic of a domain
+	//       and `sandbox` is too vague. An action should be specified.
 	if (typeof global.addEventListener === "function") {
 		global.addEventListener("message", function (event) {
 			var m = null;
