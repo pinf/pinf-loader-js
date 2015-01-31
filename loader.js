@@ -640,16 +640,13 @@
 	// Attach postMessage handler to listen for sandbox load triggers.
 	// This is useful in Web Workers where only the loader must be loaded and
 	// sandboxes can then be loaded like this:
-	//    worker.postMessage(URIJS("notify://PINF/sandbox").addSearch("uri", uri).toString())
-	// TODO: Rename notify://PINF/sandbox to something more specific to address this action
-	//       and deprecate `notify://PINF/sandbox`. i.e. `PINF` is too generic of a domain
-	//       and `sandbox` is too vague. An action should be specified.
+	//    worker.postMessage(URIJS("notify://pinf-loader-js/sandbox/load").addSearch("uri", uri).toString())
 	if (typeof global.addEventListener === "function") {
 		global.addEventListener("message", function (event) {
 			var m = null;
 			if (
 				typeof event.data === "string" &&
-				(m = event.data.match(/^notify:\/\/PINF\/sandbox\?uri=(.+)$/)) &&
+				(m = event.data.match(/^notify:\/\/pinf-loader-js\/sandbox\/load\?uri=(.+)$/)) &&
 				(m = decodeURIComponent(m[1])) &&
 				// SECURITY: Only allow URIs that begin with `/` so that scripts may NOT
 				//           be loaded cross-domain this way. If this was allowed one could
@@ -657,7 +654,10 @@
 				/^\//.test(m)
 			) {
 				return PINF.sandbox(m, function (sandbox) {
-		            return sandbox.main();
+		            sandbox.main();
+					if (typeof global.postMessage === "function") {
+						global.postMessage(event.data.replace("/load?", "/loaded?"));
+					}
 		        }, function (err) {
 		        	// TODO: Post error back to main frame instead of throwing?
 		        	throw err;
