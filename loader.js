@@ -269,6 +269,9 @@
 					};
 
 				function resolveIdentifier(identifier) {
+					if (/\/$/.test(identifier)) {
+						identifier += "index";
+					}
 					lastModule = module;
 					// Check for plugin prefix.
 					var plugin = null;
@@ -436,6 +439,13 @@
 					moduleIdentifier = packageIdentifier + moduleIdentifier;
 				} else {
 					moduleIdentifier = pkg.main;
+				}
+
+				if (
+					!moduleInitializers[moduleIdentifier] &&
+					moduleInitializers[moduleIdentifier.replace(/\.js$/, "/index.js")]
+				) {
+					moduleIdentifier = moduleIdentifier.replace(/\.js$/, "/index.js");
 				}
 
 				if (!initializedModules[moduleIdentifier]) {
