@@ -562,7 +562,7 @@
 
 
 	// The global `require` for the 'external' (to the loader) environment.
-	var Loader = function() {
+	var Loader = function (bundleGlobal) {
 
 		var 
 			/*DEBUG*/ bundleIdentifiers = {},
@@ -583,7 +583,7 @@
 				req.memoize = function(moduleIdentifier, moduleInitializer, moduleMeta) {
 					moduleInitializers[moduleIdentifier] = [moduleInitializer, moduleMeta || {}];
 				}
-				callback(req);
+				callback(req, bundleGlobal || null);
 				loadedBundles.push([uid, moduleInitializers]);
 			}
 			var activeBundleHandler = bundleHandler;
@@ -616,7 +616,9 @@
 				loadedCallback(sandbox);
 			});
 		});
-		
+
+		require.Loader = Loader;
+
 		/*DEBUG*/ require.getReport = function() {
 		/*DEBUG*/ 	var report = {
 		/*DEBUG*/ 			sandboxes: {}
