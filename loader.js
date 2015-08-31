@@ -678,4 +678,4 @@
 		}, false);
 	}
 
-}(this));
+}(window));
