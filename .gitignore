@@ -1,4 +1,5 @@
 .sm/
+/.sm.*
 node_modules/
 npm-debug.log
 sauce_connect*.log
