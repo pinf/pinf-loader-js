@@ -452,10 +452,18 @@
 					moduleIdentifier = moduleIdentifier.replace(/\.js$/, "/index.js");
 				}
 
+				// Use a specifically formatted module for requested plugin if available
+				if (
+					plugin &&
+					moduleInitializers[moduleIdentifier + ":" + plugin]
+				) {
+					moduleIdentifier += ":" + plugin;
+				}
+
 				if (!initializedModules[moduleIdentifier]) {
 					/*DEBUG*/ if (!moduleInitializers[moduleIdentifier]) {
 					/*DEBUG*/ 	console.error("[pinf-loader-js]", "moduleInitializers", moduleInitializers);
-					/*DEBUG*/ 	throw new Error("Module '" + moduleIdentifier + "' not found in sandbox '" + sandbox.id + "'!");
+					/*DEBUG*/ 	throw new Error("Module '" + moduleIdentifier + "' " + (plugin?"for format '" + plugin + "' ":"") + "not found in sandbox '" + sandbox.id + "'!");
 					/*DEBUG*/ }
 					(initializedModules[moduleIdentifier] = Module(moduleIdentifier, lastModule)).load();
 				}
@@ -585,7 +593,16 @@
 				delete req.bundle;
 				// Store raw module in loading bundle
 				req.memoize = function(moduleIdentifier, moduleInitializer, moduleMeta) {
-					moduleInitializers[moduleIdentifier] = [moduleInitializer, moduleMeta || {}];
+					moduleInitializers[
+						moduleIdentifier +
+						// NOTE: This feature may be elevated to a new function argument to 'memoize' if it proves to be prevalent.
+						(
+							(
+								moduleMeta &&
+								moduleMeta.variation
+							) ? ":" + moduleMeta.variation : ""
+						)
+					] = [moduleInitializer, moduleMeta || {}];
 				}
 				callback(req, bundleGlobal || null);
 				loadedBundles.push([uid, moduleInitializers]);
