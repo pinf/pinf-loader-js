@@ -2,8 +2,4 @@
 node_modules/
 npm-debug.log
 /workspace/
-/Makefile
 /.travis.yml
-/scripts/
-/features/
-/test/
