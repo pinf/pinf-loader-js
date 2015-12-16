@@ -2,9 +2,9 @@ Optimized JavaScript Bundle Loader
 ==================================
 
 *Status: BETA*
+[![Circle CI](https://circleci.com/gh/pinf/pinf-loader-js.svg?style=svg)](https://circleci.com/gh/pinf/pinf-loader-js)
 [![Build Status](https://secure.travis-ci.org/pinf/pinf-loader-js.png)](http://travis-ci.org/pinf/pinf-loader-js)
 [![Coverage Status](https://coveralls.io/repos/pinf/pinf-loader-js/badge.png)](https://coveralls.io/r/pinf/pinf-loader-js)
-
 [![Selenium Test Status](https://saucelabs.com/browser-matrix/pinf-loader-js.svg)](https://saucelabs.com/u/pinf-loader-js)
 
 The `PINF JavaScript Loader` is an optimized *(intended for production use)* **CommonJS package mappings** 
