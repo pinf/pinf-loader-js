@@ -11,8 +11,6 @@ Optimized JavaScript Bundle Loader
 The `PINF JavaScript Loader` is an optimized *(intended for production use)* **CommonJS package mappings** 
 based **JavaScript module loader** for the browser in only **2590 bytes** *(minified and zipped)*.
 
-  * Code License: [UNLICENSE](http://unlicense.org/)
-  * Docs License: [Creative Commons Attribution-NonCommercial-ShareAlike 3.0](http://creativecommons.org/licenses/by-nc-sa/3.0/)
   * Mailing list: [groups.google.com/group/pinf](http://groups.google.com/group/pinf)
 
 **Online Demo: [pinf.github.io/pinf-loader-js/workspace/www](http://pinf.github.io/pinf-loader-js/workspace/www/index.html)**
@@ -272,3 +270,9 @@ generated every time `./loader.js` changes.
 You can also build these from the command-line:
 
     make build
+
+
+Provenance
+==========
+
+Original source logic under [Free Public License](https://opensource.org/licenses/FPL-1.0.0) by [Christoph Dorn](http://christophdorn.com)
