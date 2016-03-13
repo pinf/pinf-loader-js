@@ -8,7 +8,8 @@ Optimized JavaScript Bundle Loader
 
 [![Selenium Test Status](https://saucelabs.com/browser-matrix/pinf-loader-js.svg)](https://saucelabs.com/u/pinf-loader-js)
 
-The `PINF JavaScript Loader` is an optimized *(intended for production use)* **CommonJS package mappings** 
+The `PINF JavaScript Loader` is part of the [PINF Platform for JavaScript](http://pinf.js.org/)
+and is an optimized *(intended for production use)* **CommonJS package mappings** 
 based **JavaScript module loader** for the browser in only **2590 bytes** *(minified and zipped)*.
 
   * Mailing list: [groups.google.com/group/pinf](http://groups.google.com/group/pinf)
