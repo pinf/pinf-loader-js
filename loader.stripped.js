@@ -5,7 +5,7 @@
 
 /**
  * Author: Christoph Dorn <christoph@christophdorn.com>
- * [UNLICENSE](http://unlicense.org/)
+ * [Free Public License 1.0.0](https://opensource.org/licenses/FPL-1.0.0)
  */
 
 
