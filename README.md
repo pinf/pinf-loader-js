@@ -244,7 +244,7 @@ Test & Development
 
 Requirements:
 
-  * [NodeJS](http://nodejs.org/)
+  * [NodeJS 5](http://nodejs.org/)
 
 Run tests:
 
