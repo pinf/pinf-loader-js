@@ -567,7 +567,7 @@
 		/*DEBUG*/   loadingBundles = {};
 		/*DEBUG*/ }
 
-		load(".js", "", "", loadedCallback);
+		load((sandboxIdentifier.indexOf("?") === -1) ? ".js" : "", "", "", loadedCallback);
 
 		return sandbox;
 	};
