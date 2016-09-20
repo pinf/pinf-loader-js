@@ -5,7 +5,7 @@ install:
 	@$(MAKE) install-all
 
 install-all:
-	@if [ ! -d "node_modules" ]; then npm install; fi
+	@if [ ! -d "node_modules" ]; then npm install; pushd "node_modules/escodegen"; npm install; npm run-script build; popd; fi
 	@if [ ! -d "workspace/node_modules" ]; then cd workspace; npm install; fi
 
 test:

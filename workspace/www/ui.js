@@ -38,7 +38,7 @@
 				if (typeof mocha === "undefined") {
 					return test();
 				}
-				it(name, function(done) {
+				window.it(name, function(done) {
 					return Q.when(test(), function() {
 						return done();
 					}, done);
@@ -86,8 +86,13 @@
 	}
 
 	if (typeof mocha !== "undefined") {
-		mocha.setup("tdd");
-	    describe("run-all", function() {
+
+			mocha.setup("tdd");
+
+			window.describe = Mocha.describe;
+			window.it = Mocha.it;
+
+	    window.describe("run-all", function() {
 	    	this.timeout(10 * 1000);
 	    	run();
 	    });
