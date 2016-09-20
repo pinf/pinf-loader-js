@@ -150,11 +150,12 @@
 							if (err) return loadedCallback(err);
 						    // The rootBundleLoader is only applicable for the first load.
 	                        delete sandboxOptions.rootBundleLoader;
-							finalizeLoad(bundleIdentifier);
-							loadedCallback(null, sandbox);
-							if (cleanupCallback) {
-								cleanupCallback();
-							}
+							finalizeLoad(bundleIdentifier, function () {
+                loadedCallback(null, sandbox);
+  							if (cleanupCallback) {
+  								cleanupCallback();
+  							}
+							});
 						});
 					}
 				}
@@ -165,19 +166,46 @@
 
 		// Called after a bundle has been loaded. Takes the top bundle off the *loading* stack
 		// and makes the new modules available to the sandbox.
-		function finalizeLoad(bundleIdentifier)
+		function finalizeLoad(bundleIdentifier, loadFinalized)
 		{
+
+      var pending = 0;
+      function finalize () {
+        if (pending !== 0) {
+          return;
+        }
+        loadFinalized();
+      }
+
+      pending += 1;
+
 			// Assume a consistent statically linked set of modules has been memoized.
 			/*DEBUG*/ bundleIdentifiers[bundleIdentifier] = loadedBundles[0][0];
 			var key;
 			for (key in loadedBundles[0][1]) {
 				// If we have a package descriptor add it or merge it on top.
 				if (/^[^\/]*\/package.json$/.test(key)) {
+
+          // Load all dependent resources
+          if (loadedBundles[0][1][key][0].mappings) {
+            for (var alias in loadedBundles[0][1][key][0].mappings) {
+              if (!/^\/\//.test(loadedBundles[0][1][key][0].mappings[alias])) {
+                continue;
+              }
+              pending += 1;
+              loadInBrowser(loadedBundles[0][1][key][0].mappings[alias], function () {
+                  pending -= 1;
+                  finalize();
+              });
+            }
+          }
+
 					// NOTE: Not quite sure if we should allow agumenting package descriptors.
 					//       When doing nested requires using same package we can either add all
 					//		 mappings (included mappings not needed until further down the tree) to
 					//       the first encounter of the package descriptor or add more mappings as
 					//       needed down the road. We currently support both.
+
 					if (moduleInitializers[key]) {
 						// TODO: Keep array of bundle identifiers instead of overwriting existing one?
 						//		 Overwriting may change subsequent bundeling behaviour?
@@ -212,6 +240,11 @@
 				}
 			}
 			loadedBundles.shift();
+
+      pending -= 1;
+      finalize();
+
+      return;
 		}
 
 		var Package = function(packageIdentifier) {
@@ -355,7 +388,7 @@
 
 						var moduleInterface = {
 							id: module.id,
-							filename: 
+							filename:
 								// The `filename` from the meta info attached to the module.
 								// This is typically where the module was originally found on the filesystem.
 								moduleInitializers[moduleIdentifier][2].filename ||
@@ -576,7 +609,7 @@
 	// The global `require` for the 'external' (to the loader) environment.
 	var Loader = function (bundleGlobal) {
 
-		var 
+		var
 			/*DEBUG*/ bundleIdentifiers = {},
 			sandboxes = {};
 

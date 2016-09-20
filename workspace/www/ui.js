@@ -24,7 +24,8 @@
 			"14-NamedBundle",
 			"15-GlobalDependencyFallback",
 			"16-MemoizedDynamic",
-			"17-LoadPackageDependency"
+			"17-LoadPackageDependency",
+			"18-MappedScriptURI"
 		];
 
 		if (!/test.html$/.test(window.location.pathname)) {
