@@ -1,7 +1,7 @@
 {
   "uid": "https://github.com/pinf/pinf-loader-js/",
   "name": "pinf-loader-js",
-  "version": "0.4.13",
+  "version": "0.4.14",
   "pm": "npm",
   "publish": true,
   "main": "./loader.js",
