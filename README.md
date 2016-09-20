@@ -10,7 +10,7 @@ Optimized JavaScript Bundle Loader
 
 The `PINF JavaScript Loader` is part of the [PINF Platform for JavaScript](http://pinf.js.org/)
 and is an optimized *(intended for production use)* **CommonJS package mappings** 
-based **JavaScript module loader** for the browser in only **2590 bytes** *(minified and zipped)*.
+based **JavaScript module loader** for the browser in only **2658 bytes** *(minified and zipped)*.
 
   * Mailing list: [groups.google.com/group/pinf](http://groups.google.com/group/pinf)
 
