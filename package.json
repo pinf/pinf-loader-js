@@ -1,68 +1,68 @@
 {
-  "uid": "https://github.com/pinf/pinf-loader-js/",
-  "name": "pinf-loader-js",
-  "version": "0.4.15",
-  "pm": "npm",
-  "publish": true,
-  "main": "./loader.js",
-  "directories": {
-    "lib": "./"
-  },
-  "devDependencies": {
-    "coveralls": "^2.11.14",
-    "escodegen": "https://github.com/estools/escodegen/tarball/1.8.1",
-    "fs-extra": "~0.28.0",
-    "grunt": "^1.0.1",
-    "grunt-mocha": "^1.0.2",
-    "grunt-saucelabs": "~8.6.2",
-    "istanbul": "^0.4.5",
-    "mocha": "^2.5.3",
-    "request": "~2.72.0"
-  },
-  "scripts": {
-    "test": "make test"
-  },
-  "overrides": {
-    "./node_modules/request/node_modules/hawk/node_modules/boom": {
-      "descriptor": {
-        "config": {
-          "pinf/0/bundler/options/0": {
-            "mapParentSiblingPackages": 2
-          }
-        }
-      }
+    "uid": "https://github.com/pinf/pinf-loader-js/",
+    "name": "pinf-loader-js",
+    "version": "0.4.16",
+    "pm": "npm",
+    "publish": true,
+    "main": "./loader.js",
+    "directories": {
+        "lib": "./"
     },
-    "./node_modules/request/node_modules/hawk/node_modules/sntp": {
-      "descriptor": {
-        "config": {
-          "pinf/0/bundler/options/0": {
-            "mapParentSiblingPackages": 2
-          }
-        }
-      }
+    "devDependencies": {
+        "coveralls": "^2.11.14",
+        "escodegen": "https://github.com/estools/escodegen/tarball/1.8.1",
+        "fs-extra": "~0.28.0",
+        "grunt": "^1.0.1",
+        "grunt-mocha": "^1.0.2",
+        "grunt-saucelabs": "~8.6.2",
+        "istanbul": "^0.4.5",
+        "mocha": "^2.5.3",
+        "request": "~2.72.0"
     },
-    "./node_modules/request/node_modules/hawk/node_modules/cryptiles": {
-      "descriptor": {
-        "config": {
-          "pinf/0/bundler/options/0": {
-            "mapParentSiblingPackages": 2
-          }
-        }
-      }
+    "scripts": {
+        "test": "make test"
     },
-    "./node_modules/request/node_modules/form-data": {
-      "descriptor": {
-        "config": {
-          "pinf/0/bundler/options/0": {
-            "mapParentSiblingPackages": 2
-          }
+    "overrides": {
+        "./node_modules/request/node_modules/hawk/node_modules/boom": {
+            "descriptor": {
+                "config": {
+                    "pinf/0/bundler/options/0": {
+                        "mapParentSiblingPackages": 2
+                    }
+                }
+            }
+        },
+        "./node_modules/request/node_modules/hawk/node_modules/sntp": {
+            "descriptor": {
+                "config": {
+                    "pinf/0/bundler/options/0": {
+                        "mapParentSiblingPackages": 2
+                    }
+                }
+            }
+        },
+        "./node_modules/request/node_modules/hawk/node_modules/cryptiles": {
+            "descriptor": {
+                "config": {
+                    "pinf/0/bundler/options/0": {
+                        "mapParentSiblingPackages": 2
+                    }
+                }
+            }
+        },
+        "./node_modules/request/node_modules/form-data": {
+            "descriptor": {
+                "config": {
+                    "pinf/0/bundler/options/0": {
+                        "mapParentSiblingPackages": 2
+                    }
+                }
+            }
         }
-      }
+    },
+    "config": {
+        "pio.deploy.converter": {
+            "name": "nodejs-lib"
+        }
     }
-  },
-  "config": {
-    "pio.deploy.converter": {
-      "name": "nodejs-lib"
-    }
-  }
 }
