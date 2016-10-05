@@ -174,7 +174,7 @@
         if (pending !== 0) {
           return;
         }
-        loadFinalized();
+        if (loadFinalized) loadFinalized();
       }
 
       pending += 1;
