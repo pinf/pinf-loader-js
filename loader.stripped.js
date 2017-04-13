@@ -610,7 +610,7 @@
 	}
 
 	// Set `PINF` gloabl.
-	global.PINF = PINF = Loader(global);
+	var PINF = global.PINF = Loader(global);
 
 	// Export `require` for CommonJS if `module` and `exports` globals exists.
 	if (typeof module === "object" && typeof exports === "object") {
