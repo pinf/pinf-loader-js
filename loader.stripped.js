@@ -25,7 +25,8 @@
 	var loadedBundles = [],
 		// @see https://github.com/unscriptable/curl/blob/62caf808a8fd358ec782693399670be6806f1845/src/curl.js#L69
 		readyStates = { 'loaded': 1, 'interactive': 1, 'complete': 1 },
-		lastModule = null;
+		lastModule = null,
+		headTag = null;
 
 	// For older browsers that don't have `Object.keys()` (Firefox 3.6)
 	function keys(obj) {
@@ -53,61 +54,60 @@
 		};
 	}
 
+	// @credit https://github.com/unscriptable/curl/blob/62caf808a8fd358ec782693399670be6806f1845/src/curl.js#L319-360
+	function loadInBrowser (uri, loadedCallback) {
+		try {
+			// See if we are in a web worker.
+			if (typeof importScripts !== "undefined") {
+				importScripts(uri.replace(/^\/?\{host\}/, ""));
+				return loadedCallback(null);
+			}
+			var document = global.document;
+			var location = document.location;
+			if (/^\/?\{host\}\//.test(uri)) {
+				uri = location.protocol + "//" + location.host + uri.replace(/^\/?\{host\}/, "");
+			} else
+			if (/^\/\//.test(uri)) {
+				uri = location.protocol + "/" + uri;
+			}
+			if (!headTag) {
+				headTag = document.getElementsByTagName("head")[0];
+			}
+			var element = document.createElement("script");
+			element.type = "text/javascript";
+			element.onload = element.onreadystatechange = function(ev) {
+				ev = ev || global.event;
+				if (ev.type === "load" || readyStates[this.readyState]) {
+					this.onload = this.onreadystatechange = this.onerror = null;
+					loadedCallback(null, function() {
+						element.parentNode.removeChild(element);
+					});
+				}
+			}
+			element.onerror = function(err) {
+				return loadedCallback(new Error("Error loading '" + uri + "'"));
+			}
+			element.charset = "utf-8";
+			element.async = true;
+			element.src = uri;
+			element = headTag.insertBefore(element, headTag.firstChild);
+		} catch(err) {
+			loadedCallback(err);
+		}
+	}
+
 	// A set of modules working together.
-	var Sandbox = function(sandboxIdentifier, sandboxOptions, loadedCallback) {
+	var Sandbox = function (sandboxIdentifier, sandboxOptions, loadedCallback) {
 
 		var moduleInitializers = {},
 			initializedModules = {},
 			packages = {},
-			headTag,
 			loadingBundles = {};
 
 		var sandbox = {
 				id: sandboxIdentifier
 			};
 
-
-		// @credit https://github.com/unscriptable/curl/blob/62caf808a8fd358ec782693399670be6806f1845/src/curl.js#L319-360
-		function loadInBrowser(uri, loadedCallback) {
-			try {
-			    // See if we are in a web worker.
-			    if (typeof importScripts !== "undefined") {
-			        importScripts(uri.replace(/^\/?\{host\}/, ""));
-			        return loadedCallback(null);
-			    }
-			    var document = global.document;
-			    var location = document.location;
-	            if (/^\/?\{host\}\//.test(uri)) {
-	                uri = location.protocol + "//" + location.host + uri.replace(/^\/?\{host\}/, "");
-	            } else
-	            if (/^\/\//.test(uri)) {
-	                uri = location.protocol + "/" + uri;
-	            }
-				if (!headTag) {
-					headTag = document.getElementsByTagName("head")[0];
-				}
-				var element = document.createElement("script");
-				element.type = "text/javascript";
-				element.onload = element.onreadystatechange = function(ev) {
-					ev = ev || global.event;
-					if (ev.type === "load" || readyStates[this.readyState]) {
-						this.onload = this.onreadystatechange = this.onerror = null;
-						loadedCallback(null, function() {
-							element.parentNode.removeChild(element);
-						});
-					}
-				}
-				element.onerror = function(err) {
-					return loadedCallback(new Error("Error loading '" + uri + "'"));
-				}
-				element.charset = "utf-8";
-				element.async = true;
-				element.src = uri;
-				element = headTag.insertBefore(element, headTag.firstChild);
-			} catch(err) {
-				loadedCallback(err);
-			}
-		}
 
 		function load(bundleIdentifier, packageIdentifier, bundleSubPath, loadedCallback) {
 			try {
@@ -155,7 +155,7 @@
         if (pending !== 0) {
           return;
         }
-        loadFinalized();
+        if (loadFinalized) loadFinalized();
       }
 
       pending += 1;
@@ -579,6 +579,20 @@
 		// Create a new environment to memoize modules to.
 		// If relative, the `programIdentifier` is resolved against the URI of the owning page (this is only for the global require).
 		require.sandbox = normalizeSandboxArguments(function(programIdentifier, options, loadedCallback, errorCallback) {
+			if (typeof programIdentifier === "function") {
+				options = options || {};
+				var bundle = programIdentifier;
+				var fallbackLoad = options.load || loadInBrowser;
+				options.load = function (uri, loadedCallback) {
+					if (uri === (programIdentifier + ".js")) {
+						require.bundle("", bundle);
+						loadedCallback(null);
+						return;
+					}
+					return fallbackLoad(uri, loadedCallback);
+				}
+				programIdentifier = "#pinf:" + Math.random().toString(36).substr(2, 9);
+			}
 			var sandboxIdentifier = programIdentifier.replace(/\.js$/, "");
 			return sandboxes[sandboxIdentifier] = Sandbox(sandboxIdentifier, options, function(err, sandbox) {
 				if (err) {
