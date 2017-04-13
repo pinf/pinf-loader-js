@@ -25,7 +25,8 @@
 			"15-GlobalDependencyFallback",
 			"16-MemoizedDynamic",
 			"17-LoadPackageDependency",
-			"18-MappedScriptURI"
+			"18-MappedScriptURI",
+			"19-SandboxParentMemoize"
 		];
 
 		if (!/test.html$/.test(window.location.pathname)) {
