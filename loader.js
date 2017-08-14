@@ -7,7 +7,7 @@
 
 // Combat pollution when used via <script> tag.
 // Don't touch any globals except for `exports` and `PINF`.
-;(function (global) {
+(function (global) {
 
 	if (!global || typeof global !== "object") {
 		throw new Error("No root object scope provided!");
@@ -689,15 +689,14 @@
 		/*DEBUG*/ require.getReport = function() {
 		/*DEBUG*/ 	var report = {
 		/*DEBUG*/ 			sandboxes: {}
-		/*DEBUG*/ 		},
-		/*DEBUG*/ 		key;
-		/*DEBUG*/ 	for (key in sandboxes) {
+		/*DEBUG*/ 		};
+		/*DEBUG*/ 	for (var key in sandboxes) {
 		/*DEBUG*/ 		report.sandboxes[key] = sandboxes[key].getReport();
 		/*DEBUG*/ 	}
 		/*DEBUG*/ 	return report;
 		/*DEBUG*/ }
 		/*DEBUG*/ require.reset = function() {
-		/*DEBUG*/ 	for (key in sandboxes) {
+		/*DEBUG*/ 	for (var key in sandboxes) {
 		/*DEBUG*/ 		sandboxes[key].reset();
 		/*DEBUG*/ 	}
 		/*DEBUG*/ 	sandboxes = {};
@@ -713,7 +712,7 @@
 
 	// Export `require` for CommonJS if `module` and `exports` globals exists.
 	if (typeof module === "object" && typeof exports === "object") {
-		module.exports = PINF;
+		module.exports = global = PINF;
 	}
 
 	// Attach postMessage handler to listen for sandbox load triggers.
@@ -746,12 +745,12 @@
 	}
 
 }(
-	typeof window !== "undefined" ?
-		// Used in the browser
-		window :
-		typeof exports !== "undefined" ?
-			// Used on the server
-			exports :
+	typeof exports !== "undefined" ?
+		// Used on the server
+		exports :
+		typeof window !== "undefined" ?
+			// Used in the browser
+			window :
 			// No root scope variable found
 			undefined
 ));
