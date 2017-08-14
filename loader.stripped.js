@@ -68,7 +68,7 @@
 				uri = location.protocol + "//" + location.host + uri.replace(/^\/?\{host\}/, "");
 			} else
 			if (/^\/\//.test(uri)) {
-				uri = location.protocol + "/" + uri;
+				uri = location.protocol + uri;
 			}
 			if (!headTag) {
 				headTag = document.getElementsByTagName("head")[0];
