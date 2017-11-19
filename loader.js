@@ -61,7 +61,10 @@
 				importScripts(uri.replace(/^\/?\{host\}/, ""));
 				return loadedCallback(null);
 			}
-			var document = global.document;
+			var document = global.document || PINF.document;
+			/*DEBUG*/ if (!document) {
+			/*DEBUG*/ 	throw new Error("Unable to get reference to 'document'!");
+			/*DEBUG*/ }
 			var location = document.location;
 			if (/^\/?\{host\}\//.test(uri)) {
 				uri = location.protocol + "//" + location.host + uri.replace(/^\/?\{host\}/, "");
@@ -127,6 +130,13 @@
 		/*DEBUG*/ 	}
 		/*DEBUG*/ }
 
+		function rebaseUri (uri) {
+			if (!sandboxOptions.baseUrl) {
+				return uri;
+			}
+			return sandboxOptions.baseUrl + "/" + uri;
+		}
+
 		function load(bundleIdentifier, packageIdentifier, bundleSubPath, loadedCallback) {
 			try {
 	            if (packageIdentifier !== "") {
@@ -145,17 +155,20 @@
 						loadingBundles[bundleIdentifier] = [];
 						bundleIdentifier = sandboxIdentifier + bundleSubPath + bundleIdentifier;
 						// Default to our script-injection browser loader.
-						(sandboxOptions.rootBundleLoader || sandboxOptions.load || loadInBrowser)(bundleIdentifier, function(err, cleanupCallback) {
-							if (err) return loadedCallback(err);
-						    // The rootBundleLoader is only applicable for the first load.
-	                        delete sandboxOptions.rootBundleLoader;
-							finalizeLoad(bundleIdentifier, function () {
-                loadedCallback(null, sandbox);
-  							if (cleanupCallback) {
-  								cleanupCallback();
-  							}
-							});
-						});
+						(sandboxOptions.rootBundleLoader || sandboxOptions.load || loadInBrowser)(
+							rebaseUri(bundleIdentifier),
+							function(err, cleanupCallback) {
+								if (err) return loadedCallback(err);
+								// The rootBundleLoader is only applicable for the first load.
+								delete sandboxOptions.rootBundleLoader;
+								finalizeLoad(bundleIdentifier, function () {
+									loadedCallback(null, sandbox);
+									if (cleanupCallback) {
+										cleanupCallback();
+									}
+								});
+							}
+						);
 					}
 				}
 			} catch(err) {
@@ -168,36 +181,42 @@
 		function finalizeLoad(bundleIdentifier, loadFinalized)
 		{
 
-      var pending = 0;
-      function finalize () {
-        if (pending !== 0) {
-          return;
-        }
-        if (loadFinalized) loadFinalized();
-      }
+			var pending = 0;
+			function finalize () {
+				if (pending !== 0) {
+					return;
+				}
+				if (loadFinalized) loadFinalized();
+			}
 
-      pending += 1;
+			pending += 1;
 
 			// Assume a consistent statically linked set of modules has been memoized.
+			/*DEBUG*/ if (!loadedBundles[0]) {
+			/*DEBUG*/     throw new Error("No bundle memoized for '" + bundleIdentifier + "'! Check the file to ensure it contains JavaScript and that a bundle is memoized against the correct loader instance.");
+			/*DEBUG*/ }
 			/*DEBUG*/ bundleIdentifiers[bundleIdentifier] = loadedBundles[0][0];
 			var key;
 			for (key in loadedBundles[0][1]) {
 				// If we have a package descriptor add it or merge it on top.
 				if (/^[^\/]*\/package.json$/.test(key)) {
 
-          // Load all dependent resources
-          if (loadedBundles[0][1][key][0].mappings) {
-            for (var alias in loadedBundles[0][1][key][0].mappings) {
-              if (!/^\/\//.test(loadedBundles[0][1][key][0].mappings[alias])) {
-                continue;
-              }
-              pending += 1;
-              loadInBrowser(loadedBundles[0][1][key][0].mappings[alias], function () {
-                  pending -= 1;
-                  finalize();
-              });
-            }
-          }
+					// Load all dependent resources
+					if (loadedBundles[0][1][key][0].mappings) {
+						for (var alias in loadedBundles[0][1][key][0].mappings) {
+							if (!/^\/\//.test(loadedBundles[0][1][key][0].mappings[alias])) {
+								continue;
+							}
+							pending += 1;
+							loadInBrowser(
+								rebaseUri(loadedBundles[0][1][key][0].mappings[alias]),
+								function () {
+									pending -= 1;
+									finalize();
+								}
+							);
+						}
+					}
 
 					// NOTE: Not quite sure if we should allow agumenting package descriptors.
 					//       When doing nested requires using same package we can either add all
@@ -240,10 +259,10 @@
 			}
 			loadedBundles.shift();
 
-      pending -= 1;
-      finalize();
+			pending -= 1;
+			finalize();
 
-      return;
+			return;
 		}
 
 		var Package = function(packageIdentifier) {
@@ -712,6 +731,7 @@
 
 	// Export `require` for CommonJS if `module` and `exports` globals exists.
 	if (typeof module === "object" && typeof exports === "object") {
+		PINF.document = global.document;
 		module.exports = global = PINF;
 	}
 

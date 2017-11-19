@@ -26,7 +26,8 @@
 			"16-MemoizedDynamic",
 			"17-LoadPackageDependency",
 			"18-MappedScriptURI",
-			"19-SandboxParentMemoize"
+			"19-SandboxParentMemoize",
+			"20-SandboxRebase"
 		];
 
 		if (!/test.html$/.test(window.location.pathname)) {
