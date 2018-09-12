@@ -12,7 +12,7 @@ PINF.bundle("", function (require) {
 				var url = "SandboxedExtraBundle.js";
 
 				require.sandbox(url, {
-					baseUrl: "/features/20-SandboxRebase",
+					baseUrl: "../../features/20-SandboxRebase",
 					onInitModule: function (moduleInterface, moduleObj) {
 
 						moduleInterface.log = function () {
