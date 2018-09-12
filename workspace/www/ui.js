@@ -3,7 +3,7 @@
 
 	function run(callback) {
 
-		return window.fetch("../../.features.json").then(function (response) {
+		return window.fetch(".features.json").then(function (response) {
 			return response.json();
 		}).then(function (features) {
 

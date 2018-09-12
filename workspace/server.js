@@ -66,7 +66,7 @@ exports.main = async function (options) {
         res.end();
     });
 
-    app.get(/^\/\.features.json$/, function (req, res, next) { 
+    app.get(/^\/workspace\/www\/\.features.json$/, function (req, res, next) { 
         const featuresBaseDir = PATH.join(__dirname, "..", "features");
         const features = FS.readdirSync(featuresBaseDir).filter(function (filename) {
             return FS.statSync(PATH.join(featuresBaseDir, filename)).isFile();
