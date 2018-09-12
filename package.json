@@ -32,6 +32,6 @@
         "dev": "node workspace/server",
         "build": "node workspace/build",
         "release": "release-it",
-        "publish-www": "git checkout gh-pages; git merge master; git push origin; git checkout master; git push origin"
+        "publish-www": "git checkout gh-pages; git merge master; git push origin; git checkout master"
     }
 }
