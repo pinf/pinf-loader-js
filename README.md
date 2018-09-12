@@ -254,9 +254,6 @@ Launch development workspace (via [puppeteer](https://github.com/GoogleChrome/pu
 
 Then make changes to source code and browser page will reload.
 
-Release
--------
-
 To make a release use:
 
     npm run release
