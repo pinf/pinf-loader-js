@@ -1,7 +1,6 @@
 Optimized JavaScript Bundle Loader
 ==================================
 
-*Status: BETA*
 [![Circle CI](https://circleci.com/gh/pinf/pinf-loader-js.svg?style=svg)](https://circleci.com/gh/pinf/pinf-loader-js)
 [![Build Status](https://secure.travis-ci.org/pinf/pinf-loader-js.svg)](http://travis-ci.org/pinf/pinf-loader-js)
 
