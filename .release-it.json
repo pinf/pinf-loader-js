@@ -1,10 +1,7 @@
 {
     "buildCommand": "npm run build",
     "src": {
-      "tagName": "v%s"
-    },
-    "npm": {
-        "tag": "beta"
+        "tagName": "v%s"
     },
     "github": {
         "preRelease": true
