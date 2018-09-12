@@ -3,14 +3,17 @@ jobs:
   build:
     working_directory: ~/tmp
     docker:
-      - image: circleci/node:10.0.0
+      - image: circleci/node:10.10.0-browsers-legacy
     steps:
       - checkout
+      - run:
+          name: update-npm
+          command: 'sudo npm install -g npm@latest'
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       - run:
           name: install-npm
-          command: npm ci
+          command: npm install
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
