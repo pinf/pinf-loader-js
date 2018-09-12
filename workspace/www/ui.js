@@ -3,7 +3,7 @@
 
 	function run(callback) {
 
-		return window.fetch("../../_features.json").then(function (response) {
+		return window.fetch("../../.features.json").then(function (response) {
 			return response.json();
 		}).then(function (features) {
 
@@ -73,13 +73,13 @@
 			$.get("../../loader.min.js", function(data) {
 				$("#loader-min").html(data.replace(/</g, "&#60;"));
 			}, "text");
-			$.get("_loader.min.js-size", function(data) {
+			$.get(".loader.min.js-size", function(data) {
 				$("#loader-min-size").html(data);
 			}, "text");
-		    $.get("_loader.min.js.gz-size", function(data) {
+		    $.get(".loader.min.js.gz-size", function(data) {
 		        $("#loader-min-gz-size").html(data);
 		    }, "text");
-		    $.get("_loader.min.js.br-size", function(data) {
+		    $.get(".loader.min.js.br-size", function(data) {
 		        $("#loader-min-br-size").html(data);
 		    }, "text");
 

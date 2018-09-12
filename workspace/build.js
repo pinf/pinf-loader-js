@@ -44,8 +44,8 @@ exports.getMinifiedSource = async function () {
 	var sourceHash = CRYPTO.createHash("md5").update(source).digest("hex");
 	var fileHash = false;
 	
-	if (FS.existsSync(ROOT_PATH + "/workspace/www/_loader.stripped.js.md5")) {
-		fileHash = FS.readFileSync(ROOT_PATH + "/workspace/www/_loader.stripped.js.md5").toString();
+	if (FS.existsSync(ROOT_PATH + "/workspace/www/.loader.stripped.js.md5")) {
+		fileHash = FS.readFileSync(ROOT_PATH + "/workspace/www/.loader.stripped.js.md5").toString();
 	}
 
 	if (sourceHash != fileHash && minifying === false) {
@@ -69,7 +69,7 @@ exports.getMinifiedSource = async function () {
 
 		FS.writeFileSync(ROOT_PATH + "/loader.min.js", minResult.src, "utf8");
 		FS.writeFileSync(ROOT_PATH + "/loader.min.js.map", minResult.sourceMap, "utf8");
-		FS.writeFileSync(ROOT_PATH + "/workspace/www/_loader.min.js-size", ""+minResult.src.length, "utf8");
+		FS.writeFileSync(ROOT_PATH + "/workspace/www/.loader.min.js-size", ""+minResult.src.length, "utf8");
 
 		const zipResult = await new Promise(function (resolve, reject) {
 			return ZLIB.gzip(Buffer.from(minResult.src), function (err, result) {
@@ -79,18 +79,18 @@ exports.getMinifiedSource = async function () {
 		});
 
 		FS.writeFileSync(ROOT_PATH + "/loader.min.js.gz", zipResult);
-		FS.writeFileSync(ROOT_PATH + "/workspace/www/_loader.min.js.gz-size", ""+zipResult.length, "utf8");
+		FS.writeFileSync(ROOT_PATH + "/workspace/www/.loader.min.js.gz-size", ""+zipResult.length, "utf8");
 
 		const brotliResult = BROTLI.compress(Buffer.from(minResult.src));
 
 		FS.writeFileSync(ROOT_PATH + "/loader.min.js.br", brotliResult);
-		FS.writeFileSync(ROOT_PATH + "/workspace/www/_loader.min.js.br-size", ""+brotliResult.length, "utf8");
+		FS.writeFileSync(ROOT_PATH + "/workspace/www/.loader.min.js.br-size", ""+brotliResult.length, "utf8");
 
 		var readme = FS.readFileSync(ROOT_PATH + "/README.md").toString();
 		readme = readme.replace(/\*\*\d* bytes\*\* \*\(\.min\.br\)\*/, "**" + brotliResult.length + " bytes** *(.min.br)*");
 		FS.writeFileSync(ROOT_PATH + "/README.md", readme, "utf8");
 
-		FS.writeFileSync(ROOT_PATH + "/workspace/www/_loader.stripped.js.md5", sourceHash, "utf8");
+		FS.writeFileSync(ROOT_PATH + "/workspace/www/.loader.stripped.js.md5", sourceHash, "utf8");
 
 		console.log(COLORS.green(`[build] Minified loader.js successfully!`));
 
