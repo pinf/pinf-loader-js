@@ -1,12 +1,20 @@
 {
     "buildCommand": "npm run build",
     "src": {
-        "tagName": "v%s"
+        "tagName": "v%s",
+        "afterReleaseCommand": "echo 'RUN PUBLISH'"
     },
     "github": {
         "preRelease": true
     },
-    "dist": {
-        "afterReleaseCommand": "echo 'RUN PUBLISH'"
+    "prompt": {
+        "src": {
+            "status": false,
+            "commit": false,
+            "tag": false,
+            "push": false,
+            "release": false,
+            "publish": false
+        }
     }
 }
