@@ -1,0 +1,15 @@
+{
+    "buildCommand": "npm run build",
+    "src": {
+      "tagName": "v%s"
+    },
+    "npm": {
+        "tag": "beta"
+    },
+    "github": {
+        "preRelease": true
+    },
+    "dist": {
+        "afterReleaseCommand": "echo 'RUN PUBLISH'"
+    }
+}

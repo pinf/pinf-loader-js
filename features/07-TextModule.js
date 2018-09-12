@@ -1,16 +1,15 @@
 
-PINF.bundle("", function(require)
-{
-	require.memoize("/main.js", function(require, exports, module)
-	{
+PINF.bundle("", function (require) {
+
+	require.memoize("/main.js", function (require, exports, module) {
+
 		var TEXT = require("./hello.txt");
 
-		exports.main = function(options)
-		{
+		exports.main = function (options) {
+
 			TEXT = TEXT.replace(" \\ \" 0 - _ . ! ~ * ' ( ) ; , / ? : @ & = + $", "")
 
-			if (TEXT.length != 5)
-			{
+			if (TEXT.length != 5) {
 				throw new Error("Text was not decoded properly!");
 			}
 

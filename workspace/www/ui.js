@@ -3,88 +3,57 @@
 
 	function run(callback) {
 
-		var options = {
-			debug: true
-		};
+		return window.fetch("../../.features.json").then(function (response) {
+			return response.json();
+		}).then(function (features) {
 
-		var tests = [
-			"01-HelloWorld",
-			"02-ReturnExports",
-			"03-SpecifyMain",
-			"04-PackageLocalDependencies",
-			"05-CrossPackageDependencies",
-			"06-JsonModule",
-			"07-TextModule",
-			"08-ResourceURI",
-			"09-LoadBundle",
-			"10-Sandbox",
-			"11-CrossDomain",
-			"12-Environment",
-			"13-AssignExports",
-			"14-NamedBundle",
-			"15-GlobalDependencyFallback",
-			"16-MemoizedDynamic",
-			"17-LoadPackageDependency",
-			"18-MappedScriptURI",
-			"19-SandboxParentMemoize",
-			"20-SandboxRebase"
-		];
+			return Promise.all(features.map(function(name) {
 
-		if (!/test.html$/.test(window.location.pathname)) {
-			tests.push("Avoid-SplitBundles");
-		}
-
-	    return Q.when(Q.all(tests.map(function(name) {
-
-			function wrap(test) {
-				if (typeof mocha === "undefined") {
-					return test();
+				function wrap(test) {
+					if (typeof mocha === "undefined") {
+						return test();
+					}
+					window.it(name, function(done) {
+						return Promise.resolve(test()).then(function() {
+							return done();
+						}, done);
+					});
 				}
-				window.it(name, function(done) {
-					return Q.when(test(), function() {
-						return done();
-					}, done);
-				});
-			}
-
-			return wrap(function() {
-				var result = Q.defer();
-
-				PINF.sandbox("../../features/" + name + ".js", {
-					onInitModule: function(moduleInterface, moduleObj) {
-						moduleObj.require.API = {
-							Q: Q,
-							FETCH: function(uri, callback) {
-								return $.get(uri).done(function(data, textStatus, jqXHR) {
-									return callback(null, data);
-								}).fail(function(jqXHR, textStatus, errorThrown) {
-									return callback(new Error((errorThrown && errorThrown.message) || textStatus));
-								});
+	
+				return wrap(function() {
+	
+					return new Promise(function (resolve, reject) {
+	
+						PINF.sandbox("../../features/" + name + ".js", {
+							onInitModule: function(moduleInterface, moduleObj) {
+								moduleObj.require.API = {
+									FETCH: function(uri, callback) {
+										return window.fetch(uri).then(function (response) {
+											return response.text();
+										});
+									}
+								};
+								moduleInterface.log = function() {
+									logToOutput(moduleObj, arguments);
+								};
+								moduleInterface.logForModule = function(moduleObj, arguments) {
+									logToOutput(moduleObj, arguments);
+								};
 							}
-						};
-						moduleInterface.log = function() {
-							logToOutput(moduleObj, arguments);
-						};
-						moduleInterface.logForModule = function(moduleObj, arguments) {
-							logToOutput(moduleObj, arguments);
-						};
-					}
-				}, function(sandbox) {
-					try {
-						return Q.when(sandbox.main(options), result.resolve, result.reject);
-					} catch(err) {
-						return result.reject(err);
-					}
-				}, result.reject);
+						}, function(sandbox) {
+							try {
+								return Promise.resolve(sandbox.main({})).then(resolve, reject);
+							} catch(err) {
+								return reject(err);
+							}
+						}, reject);
+					});
+				});
 
-				return result.promise;
-			});
-
-	    })), function() {
-			if (callback) return callback(null);
-		}, function(err) {
-			if (callback) return callback(err);
-		});
+			}));			
+		}).then(function () {
+			callback(null);
+		}, callback);
 	}
 
 	if (typeof mocha !== "undefined") {
@@ -104,11 +73,14 @@
 			$.get("../../loader.min.js", function(data) {
 				$("#loader-min").html(data.replace(/</g, "&#60;"));
 			}, "text");
-			$.get("loader.min.js-size", function(data) {
+			$.get(".loader.min.js-size", function(data) {
 				$("#loader-min-size").html(data);
 			}, "text");
-		    $.get("loader.min.js.gz-size", function(data) {
+		    $.get(".loader.min.js.gz-size", function(data) {
 		        $("#loader-min-gz-size").html(data);
+		    }, "text");
+		    $.get(".loader.min.js.br-size", function(data) {
+		        $("#loader-min-br-size").html(data);
 		    }, "text");
 
 			run(function(err) {

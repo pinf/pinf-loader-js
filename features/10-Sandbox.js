@@ -1,36 +1,30 @@
 
-PINF.bundle("", function(require)
-{
-	require.memoize("/main.js", function(require, exports, module)
-	{
-		var Q;
+PINF.bundle("", function (require) {
 
-		exports.main = function(options)
-		{
-			Q = require.API.Q;
-			
-			var result = Q.defer();
+	require.memoize("/main.js", function (require, exports, module) {
+
+		exports.main = function (options) {
 
 			module.log("Hello from 10-Sandbox!");
 
-			var url = "." + require.id("./SandboxedExtraBundle");
+			return new Promise(function (resolve, reject) {
 
-			require.sandbox(url, {
-				onInitModule: function(moduleInterface, moduleObj)
-				{
-					moduleInterface.log = function()
-					{
-						module.logForModule(moduleObj, arguments);
+				var url = "." + require.id("./SandboxedExtraBundle");
+
+				require.sandbox(url, {
+					onInitModule: function (moduleInterface, moduleObj) {
+
+						moduleInterface.log = function () {
+							module.logForModule(moduleObj, arguments);
+						}
 					}
-				}
-			}, function(sandbox)
-			{
-				sandbox.main();
+				}, function (sandbox) {
 
-				result.resolve();
-			}, result.reject);
-
-			return result.promise;
+					sandbox.main();
+	
+					resolve();
+				}, reject);	
+			});
 		}
 	});
 });

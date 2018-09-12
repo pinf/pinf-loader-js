@@ -1,0 +1,23 @@
+[
+    "01-HelloWorld",
+    "02-ReturnExports",
+    "03-SpecifyMain",
+    "04-PackageLocalDependencies",
+    "05-CrossPackageDependencies",
+    "06-JsonModule",
+    "07-TextModule",
+    "08-ResourceURI",
+    "09-LoadBundle",
+    "10-Sandbox",
+    "11-CrossDomain",
+    "12-Environment",
+    "13-AssignExports",
+    "14-NamedBundle",
+    "15-GlobalDependencyFallback",
+    "16-MemoizedDynamic",
+    "17-LoadPackageDependency",
+    "18-MappedScriptURI",
+    "19-SandboxParentMemoize",
+    "20-SandboxRebase",
+    "21-Avoid-SplitBundles"
+]

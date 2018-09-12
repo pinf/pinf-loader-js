@@ -1,12 +1,12 @@
 
-PINF.bundle("", function(require)
-{
-	require.memoize("/main.js", function(require, exports, module)
-	{
+PINF.bundle("", function (require) {
+
+	require.memoize("/main.js", function (require, exports, module) {
+
 		var WORD = require("./word").word;
 
-		exports.main = function(options)
-		{
+		exports.main = function (options) {
+
 			module.log(WORD + " from 06-JsonModule!");
 		}
 	});

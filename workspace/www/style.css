@@ -27,7 +27,10 @@ H1 > SPAN.plain {
 	padding: 10px;
 	margin: 10px;
 	font-family: Monaco;
-	font-size: 9px;
+	font-size: 8px;
+}
+#output {
+	font-size: 10px;
 }
 #output.success {
 	border: 5px solid #00FF00;

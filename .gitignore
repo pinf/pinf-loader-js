@@ -6,3 +6,4 @@ sauce_connect*.log
 /workspace/www/coverage/lcov-report
 /.pio.cache/
 /.installed*
+/.~*

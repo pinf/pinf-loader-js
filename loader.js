@@ -1,6 +1,6 @@
 /**
  * Author: Christoph Dorn <christoph@christophdorn.com>
- * [Free Public License 1.0.0](https://opensource.org/licenses/FPL-1.0.0)
+ * License: Free Public License 1.0.0 - https://opensource.org/licenses/FPL-1.0.0
  */
 
 // NOTE: Remove lines marked /*DEBUG*/ when compiling loader for 'min' release!

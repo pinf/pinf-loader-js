@@ -4,19 +4,14 @@ Optimized JavaScript Bundle Loader
 *Status: BETA*
 [![Circle CI](https://circleci.com/gh/pinf/pinf-loader-js.svg?style=svg)](https://circleci.com/gh/pinf/pinf-loader-js)
 [![Build Status](https://secure.travis-ci.org/pinf/pinf-loader-js.svg)](http://travis-ci.org/pinf/pinf-loader-js)
-[![Coverage Status](https://coveralls.io/repos/pinf/pinf-loader-js/badge.svg)](https://coveralls.io/r/pinf/pinf-loader-js)
-
-[![Selenium Test Status](https://saucelabs.com/browser-matrix/pinf-loader-js.svg)](https://saucelabs.com/u/pinf-loader-js)
 
 The `PINF JavaScript Loader` is part of the [PINF Platform for JavaScript](http://pinf.js.org/)
 and is an optimized *(intended for production use)* **CommonJS package mappings** 
-based **JavaScript module loader** for the browser in only **2762 bytes** *(minified and zipped)*.
+based **JavaScript module loader** for the browser in only **2260 bytes** *(.min.br)*.
 
   * Mailing list: [groups.google.com/group/pinf](http://groups.google.com/group/pinf)
 
 **Online Demo: [pinf.github.io/pinf-loader-js/workspace/www](http://pinf.github.io/pinf-loader-js/workspace/www/index.html)**
-
-**Examples: [github.com/pinf-it/pinf-it-bundler/tree/master/examples](http://github.com/pinf-it/pinf-it-bundler/tree/master/examples)** (status: *DEV*)
 
 
 Why
@@ -147,14 +142,12 @@ There are various feature examples that double as tests in `./features`.
 
 For an online demo of the loader features see [pinf.github.io/pinf-loader-js/workspace/www](http://pinf.github.io/pinf-loader-js/workspace/www/index.html).
 
-For end-user examples of common use-cases see [github.com/pinf-it/pinf-it-bundler/tree/master/examples](http://github.com/pinf-it/pinf-it-bundler/tree/master/examples).  (status: *DEV*)
-
 
 Tips
 ====
 
   * When testing an application use the `./loader.js` file to get all error messages.
-  * When deploying an application us the `./loader.min.gz` file for optimum performance.
+  * When deploying a standalone loader us the `./loader.min.gz` or `./loader.min.br` files for optimum performance.
   * When using a different loader during development make sure only supported API features
     of this loader are used. Load extra features along with your application by
     [augmenting a sandbox](https://github.com/pinf/pinf-loader-js/blob/master/features/10-Sandbox.js).
@@ -244,36 +237,43 @@ Test & Development
 
 Requirements:
 
-  * [NodeJS 5](http://nodejs.org/)
+  * [nvm](https://github.com/creationix/nvm)
+
+Install:
+
+    nvm use
+    npm install
 
 Run tests:
 
-    make test
+    npm test
 
-Launch development workspace:
+Launch development workspace (via [puppeteer](https://github.com/GoogleChrome/puppeteer)):
 
-    make run-dev
-    open http://localhost:8080/
+    npm run dev
 
-Build
------
+Then make changes to source code and browser page will reload.
 
-When running the development workspace the following files are automatically
-generated every time `./loader.js` changes.
+Release
+-------
+
+To make a release use:
+
+    npm run release
+
+This will first build the following files (via `npm run build`):
 
   * `./loader.min.js`
+  * `./loader.min.js.map`
   * `./loader.min.js.gz`
+  * `./loader.min.js.br`
   * `./loader.stripped.js`
-  * `./workspace/www/loader.min.js-size`
-  * `./workspace/www/loader.min.js.gz-size`
-  * `./workspace/www/loader.stripped.js.md5`
+  * `./workspace/www/.*`
 
-You can also build these from the command-line:
-
-    make build
+and then increment, tag, push and publish.
 
 
 Provenance
 ==========
 
-Original source logic under [Free Public License](https://opensource.org/licenses/FPL-1.0.0) by [Christoph Dorn](http://christophdorn.com)
+Original source logic under [Free Public License](https://opensource.org/licenses/FPL-1.0.0) by [Christoph Dorn](http://christophdorn.com) since 2011.

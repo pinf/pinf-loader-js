@@ -1,32 +1,26 @@
 
-PINF.bundle("", function(require)
-{
-	require.memoize("/main.js", function(require, exports, module)
-	{
-		var Q;
+PINF.bundle("", function (require) {
 
-		exports.main = function(options)
-		{
-			Q = require.API.Q;
-			
-			var result = Q.defer();
+	require.memoize("/main.js", function (require, exports, module) {
+
+		exports.main = function (options) {
 
 			module.log("Hello from 09-LoadBundle!");
 
-			var extraBundleID = "./ExtraBundle";
+			return new Promise(function (resolve, reject) {
 
-			require.async(extraBundleID, function(EXTRA_BUNDLE)
-			{
-				EXTRA_BUNDLE.init();
+				var extraBundleID = "./ExtraBundle";
 
-				result.resolve();
-			}, result.reject);
+				require.async(extraBundleID, function (EXTRA_BUNDLE) {
 
-			return result.promise;
+					EXTRA_BUNDLE.init();
+	
+					resolve();
+				}, reject);
+			});
 		}
 		
-		exports.getExtraBundleGreeting = function()
-		{
+		exports.getExtraBundleGreeting = function () {
 			return "Hello from 09-LoadBundle/ExtraBundle!";
 		}
 	});

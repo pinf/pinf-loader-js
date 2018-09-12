@@ -1,32 +1,26 @@
 
-PINF.bundle("", function(require)
-{
-	require.memoize("/main.js", function(require, exports, module)
-	{
-		var Q;
+PINF.bundle("", function (require) {
 
-		exports.main = function(options)
-		{
-			Q = require.API.Q;
-			
-			var result = Q.defer();
+	require.memoize("/main.js", function (require, exports, module) {
+
+		exports.main = function (options) {
 
 			module.log("Hello from 17-LoadPackageDependency!");
 
-			var extraModuleID = "ExtraPackageAlias/ExtraModule";
+			return new Promise(function (resolve, reject) {
 
-			require.async(extraModuleID, function(EXTRA_MODULE)
-			{
-				EXTRA_MODULE.init();
+				var extraModuleID = "ExtraPackageAlias/ExtraModule";
 
-				result.resolve();
-			}, result.reject);
+				require.async(extraModuleID, function (EXTRA_MODULE) {
 
-			return result.promise;
+					EXTRA_MODULE.init();
+
+					resolve();
+				}, reject);
+			});
 		}
 		
-		exports.getExtraModuleGreeting = function()
-		{
+		exports.getExtraModuleGreeting = function () {
 			return "Hello from 17-LoadPackageDependency/ExtraPackageID/ExtraModule!";
 		}
 	});

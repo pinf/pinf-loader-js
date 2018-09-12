@@ -1,10 +1,6 @@
+sudo: required
+addons:
+  chrome: stable
 node_js: 
-- 0.1
-after_script: 
-- cat workspace/www/coverage/lcov.info | ./node_modules/.bin/coveralls
+  - 10
 language: node_js
-env: 
-  global: 
-  - secure: QP7mb2Zepn9/BNCtFe3BKJcOGmw6K7Dl30sW7VcfndI10xL8RiUq2qr38HR9FK88q5rrVifXuW/m4YbcBnaeiRZor0jbddDQKOnEMmOM+wwUy9mTXa3mxXQBE2YvXVczeQyJP8/CD/sf7z9uD60bbfrgWnNaKTMzAAXVRfB0cBo=
-  - secure: YxySFBk3kMTnC/w4a7CQfM0NUUbBtH5DJ0Ta1Q1rkiJN1OhFlam1ZKZxN8Z96hFtbzsnFCXU7mcSJBsDjpRgtp0D3A//G8t2vnV0tDWd6vurvdlWqtFCRTOMIW+zNnkFVaHp4+Ivkovggka3HBJNdBi/q9KY4BbhllzJ7qUiyrQ=
-  - secure: A3s1vGpinATH4sgjzriyL9LAkxTmlZw8OtlQIwSCw8U5rR/ynxD2vTx6HZkSHMTZUhFbERVWe8JMK8qR0H7KkuXNSQ8g4hzWMAAT3xYcIcs1JKRvnO+ZKAfSA5+36jYrghTJTj4N1wC8wakDYEXTOVTWR8fGJVfjxM1kiVKiP8M=
