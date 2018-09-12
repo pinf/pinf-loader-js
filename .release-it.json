@@ -2,7 +2,7 @@
     "buildCommand": "npm run build",
     "src": {
         "tagName": "v%s",
-        "afterReleaseCommand": "echo 'RUN PUBLISH'"
+        "afterReleaseCommand": "npm run publish-www"
     },
     "github": {
         "preRelease": true
