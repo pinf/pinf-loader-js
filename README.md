@@ -89,24 +89,33 @@ called **Bundles** from a server via **GET requests** and boots these into sandb
 Usage
 =====
 
-`http://localhost/index.html`
+**http://localhost/index.html**
+```
+<script src="loader.js"></script>
+<script>
+    PINF.sandbox("app.js", function (sandbox) {
+        sandbox.main();
+    });
+</script>
+```
 
-	<script src="loader.js"></script>
-	<script>
-		PINF.sandbox("app.js", function(sandbox) {
-			sandbox.main();
-		});
-	</script>
+**http://localhost/app.js**
+```
+PINF.bundle("", function (require) {
+    require.memoize("/main.js", function (require, exports, module) {
+        exports.main = function () {
+            console.log("HelloWorld!");
+        }
+    });
+});
+```
 
-`http://localhost/app.js`
+Examples
+--------
 
-	PINF.bundle("", function(require) {
-		require.memoize("/main.js", function(require, exports, module) {
-			exports.main = function(options) {
-				console.log("HelloWorld!");
-			}
-		});
-	});
+There are various feature examples that double as tests in `./features`.
+
+For an online demo of these loader features see [pinf.github.io/pinf-loader-js/workspace/www](http://pinf.github.io/pinf-loader-js/workspace/www/index.html).
 
 Integrate
 ---------
@@ -132,14 +141,6 @@ The following tools can generate `PINF JavaScript Loader` compatible bundles:
       * [Asynchronous Module Definition (AMD)](https://github.com/amdjs/amdjs-api/wiki/AMD)
       * Plain old JavaScript
       * Various other formats
-
-
-Examples
-========
-
-There are various feature examples that double as tests in `./features`.
-
-For an online demo of the loader features see [pinf.github.io/pinf-loader-js/workspace/www](http://pinf.github.io/pinf-loader-js/workspace/www/index.html).
 
 
 Tips
