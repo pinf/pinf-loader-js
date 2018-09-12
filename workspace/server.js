@@ -15,7 +15,8 @@ async function runDevWorkspace (url) {
 
     const browser = await PUPPETEER.launch({
         headless: false,
-        devtools: false
+        devtools: false,
+        defaultViewport: null
     });
 
     const page = await browser.newPage();
@@ -65,14 +66,14 @@ exports.main = async function (options) {
         res.end();
     });
 
-    app.get(/^\/\.features.json$/, function (req, res, next) { 
+    app.get(/^\/_features.json$/, function (req, res, next) { 
         const featuresBaseDir = PATH.join(__dirname, "..", "features");
         const features = FS.readdirSync(featuresBaseDir).filter(function (filename) {
             return FS.statSync(PATH.join(featuresBaseDir, filename)).isFile();
         }).map(function (filename) {
             return filename.replace(/\.js$/, "");
         });
-        FS.writeFile(PATH.join(__dirname, "www", ".features.json"), JSON.stringify(features, null, 4));
+        FS.writeFile(PATH.join(__dirname, "www", "_features.json"), JSON.stringify(features, null, 4));
 
         res.writeHead(200, {
             "Content-Type": "application/javascript",
