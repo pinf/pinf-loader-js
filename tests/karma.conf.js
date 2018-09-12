@@ -161,6 +161,13 @@ module.exports = function (config) {
         });
 
     } else
+    if (process.env.CIRCLECI) {
+
+        config.set({
+            browsers: ['Chrome', 'Firefox', 'ChromeHeadlessNoSandbox'],
+        });
+
+    } else
     if (config.saucelabs) {
         // @see https://github.com/karma-runner/karma-sauce-launcher
 
