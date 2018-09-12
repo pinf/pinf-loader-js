@@ -15,6 +15,14 @@
             "push": false,
             "release": false,
             "publish": false
+        },
+        "dist": {
+            "status": false,
+            "commit": false,
+            "tag": false,
+            "push": false,
+            "release": false,
+            "publish": false
         }
     }
 }

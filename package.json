@@ -31,7 +31,7 @@
         "test": "karma start tests/karma.conf.js",
         "dev": "node workspace/server",
         "build": "node workspace/build",
-        "release": "release-it --dry-run",
+        "release": "release-it",
         "publish-www": "git checkout gh-pages; git merge master; git checkout master; git push origin"
     }
 }
