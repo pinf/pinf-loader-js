@@ -5,7 +5,7 @@ PINF.bundle("", function (require) {
 
 		exports.main = function (options) {
 
-			module.log("Hello from 19-SandboxParentMemoize!");
+			module.log("Hello from 19-SandboxMemoize!");
 
 			return new Promise(function (resolve, reject) {
 
@@ -14,7 +14,7 @@ PINF.bundle("", function (require) {
 					require.memoize("/main.js", function (require, exports, module) {
 
 						exports.main = function (options) {
-							module.log("Hello from sandboxed 19-SandboxParentMemoize!");
+							module.log("Hello from sandboxed 19-SandboxMemoize!");
 						}
 					});
 				}, {

@@ -17,7 +17,7 @@
     "16-MemoizedDynamic",
     "17-LoadPackageDependency",
     "18-MappedScriptURI",
-    "19-SandboxParentMemoize",
+    "19-SandboxMemoize",
     "20-SandboxRebase",
     "21-Avoid-SplitBundles"
 ]
