@@ -8,7 +8,7 @@ PINF.bundle("", function (require) {
 			module.log("Hello from 11-CrossDomain!");
 
 		    return Promise.all([
-				"http://rawgithub.com/pinf/pinf-loader-js/master/features/11-CrossDomain/CrossDomainBundle.js"
+				"//rawgithub.com/pinf/pinf-loader-js/master/features/11-CrossDomain/CrossDomainBundle.js"
 			].map(function (url) {
 
 				return new Promise(function (resolve, reject) {
