@@ -1,9 +1,9 @@
 
 var features = null;
 
-describe("features", function() {
+describe("Features", function () {
 
-    it("init", function (done) {
+    it("Init", function (done) {
 
         window.fetch('/features.json?t=' + Date.now()).then(function (response) {
             return response.json();
@@ -14,9 +14,9 @@ describe("features", function() {
         });        
     });
 
-    it('setup', function () {
+    it('Setup', function () {
         
-        describe("features", function() {
+        describe("features", function () {
     
             features.forEach(function (name) {
 
@@ -36,7 +36,7 @@ describe("features", function() {
                     }
 
                     PINF.sandbox("../../features/" + name + ".js", {
-                        onInitModule: function(moduleInterface, moduleObj) {
+                        onInitModule: function (moduleInterface, moduleObj) {
                             moduleObj.require.API = {
                                 FETCH: function (uri) {
                                     return window.fetch(uri).then(function (response) {
@@ -44,14 +44,14 @@ describe("features", function() {
                                     });
                                 }
                             };
-                            moduleInterface.log = function() {
+                            moduleInterface.log = function () {
                                 logToOutput(moduleObj, arguments);
                             };
-                            moduleInterface.logForModule = function(moduleObj, arguments) {
+                            moduleInterface.logForModule = function (moduleObj, arguments) {
                                 logToOutput(moduleObj, arguments);
                             };
                         }
-                    }, function(sandbox) {
+                    }, function (sandbox) {
                         try {
                             return Promise.resolve(sandbox.main({})).then(function () {
 
