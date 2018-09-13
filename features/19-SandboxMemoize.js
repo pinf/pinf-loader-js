@@ -14,7 +14,7 @@ PINF.bundle("", function (require) {
 					require.memoize("/main.js", function (require, exports, module) {
 
 						exports.main = function (options) {
-							module.log("Hello from sandboxed 19-SandboxMemoize!");
+							module.log("Hello from 19-SandboxMemoize sandboxed module!");
 						}
 					});
 				}, {
