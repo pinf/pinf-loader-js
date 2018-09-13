@@ -10,7 +10,7 @@ based **JavaScript module loader** for the browser in only **2260 bytes** *(.min
 
   * Mailing list: [groups.google.com/group/pinf](http://groups.google.com/group/pinf)
 
-**Online Demo: [pinf.github.io/pinf-loader-js/workspace/www](http://pinf.github.io/pinf-loader-js/workspace/www/index.html)**
+**Online Demo: [pinf.js.org/pinf-loader-js/](https://pinf.js.org/pinf-loader-js/)**
 
 
 Why
@@ -115,7 +115,7 @@ Examples
 
 There are various feature examples that double as tests in `./features`.
 
-For an online demo of these loader features see [pinf.github.io/pinf-loader-js/workspace/www](http://pinf.github.io/pinf-loader-js/workspace/www/index.html).
+For an online demo of these loader features see [pinf.js.org/pinf-loader-js/](https://pinf.js.org/pinf-loader-js/).
 
 Integrate
 ---------
