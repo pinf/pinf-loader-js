@@ -645,7 +645,7 @@
 				// SECURITY: Only allow URIs that begin with `/` so that scripts may NOT
 				//           be loaded cross-domain this way. If this was allowed one could
 				//           load malicious code simply by posting a message to this window.
-				/^\//.test(m)
+				/^\/[^\/]/.test(m)
 			) {
 				return PINF.sandbox(m, function (sandbox) {
 		            sandbox.main();
@@ -667,6 +667,9 @@
 		typeof exports !== "undefined" ?
 			// Used on the server
 			exports :
-			// No root scope variable found
-			{}
+			typeof self !== "undefined" ?
+				// Used in web worker
+				self :
+				// No root scope variable found
+				{}
 ));
