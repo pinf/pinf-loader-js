@@ -9,8 +9,8 @@ PINF.bundle("", function (require) {
 
 						return new Promise(function (resolve, reject) {
 
-								var loaderUrl = "../../../loader.js";
 								var bundleUrl = window.location.pathname.replace(/\/[^\/]*$/, "/") + require.sandbox.id + require.id("./WorkerBundle");
+								var loaderUrl = bundleUrl.replace(/\/features\/.+$/, "/loader.js");
 
 								// Adjustment for tests
 								if (window.location.pathname.split("/").length <= 2) {
