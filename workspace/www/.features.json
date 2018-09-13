@@ -19,5 +19,6 @@
     "18-MappedScriptURI",
     "19-SandboxMemoize",
     "20-SandboxRebase",
-    "21-Avoid-SplitBundles"
+    "21-Avoid-SplitBundles",
+    "22-WebWorker"
 ]

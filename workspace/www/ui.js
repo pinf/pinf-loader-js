@@ -108,7 +108,7 @@
 		}
 		$("#output").append([
 			"<div><div class=\"from\">",
-			moduleObj.require.sandbox.id + " : " + moduleObj.id,
+			moduleObj.filename || (moduleObj.require.sandbox.id + " : " + moduleObj.id),
 			"</div><div class=\"message\">",
 			args.join(", "),
 			"</div></div>"
