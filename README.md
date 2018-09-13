@@ -57,6 +57,7 @@ called **Bundles** from a server using **SCRIPT injection (GET requests)** and b
       * iPad
       * iPhone
       * Android
+  * Web Worker
 
 ### Supported Features
 
