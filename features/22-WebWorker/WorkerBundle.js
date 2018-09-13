@@ -5,7 +5,7 @@ PINF.bundle("", function (require) {
 
 		exports.main = function (options) {
 
-			module.log("Hello from 11-CrossDomain/CrossDomainBundle!");
+			postMessage(["log", module, "Hello from 22-WebWorker/WorkerBundle!"]);
 		}
 	});
 });
