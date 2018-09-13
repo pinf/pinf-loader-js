@@ -44,7 +44,7 @@ What
 ====
 
 The `PINF JavaScript Loader` provides a **minimal CommonJS environment** that requests **optimized static JavaScript code files** 
-called **Bundles** from a server via **GET requests** and boots these into sandboxes in the browser identified by the requested URL.
+called **Bundles** from a server using **SCRIPT injection (GET requests)** and boots these into sandboxes in the browser identified by the requested URL.
 
 ### Supported Environments
 
@@ -152,7 +152,7 @@ Tips
     of this loader are used. Load extra features along with your application by
     [augmenting a sandbox](https://github.com/pinf/pinf-loader-js/blob/master/features/10-Sandbox.js).
   * When writing or generating bundles make sure one consistent set of statically linked modules
-    is contained in each bundle file. Dynamic links to other modules or bundles must be made via
+    is contained in each bundle file. Dynamic links to other modules or bundles must be made using
     `require.async()` or `require.sandbox()` respectively. The hierarchy of how your application nests
     these dynamic links will determine which modules must be included in subsequently loaded bundles
     to avoid sending the same modules twice.
@@ -248,7 +248,7 @@ Run tests:
 
     npm test
 
-Launch development workspace (via [puppeteer](https://github.com/GoogleChrome/puppeteer)):
+Launch development workspace (uses [puppeteer](https://github.com/GoogleChrome/puppeteer)):
 
     npm run dev
 

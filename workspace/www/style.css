@@ -13,6 +13,10 @@ H1 > SPAN.plain {
 	font-size: 14px;
 	font-weight: normal;
 }
+H1 > SPAN.plain.right {
+	float: right;
+	padding-right: 10px;
+}
 #forkme {
     border: 0 none;
     position: absolute;
