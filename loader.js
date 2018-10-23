@@ -33,8 +33,15 @@
 		return keys;
 	}
 
-	function normalizeSandboxArguments(implementation) {
-		return function(programIdentifier, options, loadedCallback, errorCallback) {
+	// TODO: Use 'Object.create()` in modern browsers
+	function create (proto) {
+		function F() {}
+		F.prototype = proto;
+		return new F();
+	};
+
+	function normalizeSandboxArguments (implementation) {
+		return function (programIdentifier, options, loadedCallback, errorCallback) {
 			/*DEBUG*/ if (typeof options === "function" && typeof loadedCallback === "object") {
 			/*DEBUG*/     throw new Error("Callback before options for `require.sandbox(programIdentifier, options, loadedCallback)`");
 			/*DEBUG*/ }
@@ -77,16 +84,16 @@
 			}
 			var element = document.createElement("script");
 			element.type = "text/javascript";
-			element.onload = element.onreadystatechange = function(ev) {
+			element.onload = element.onreadystatechange = function (ev) {
 				ev = ev || global.event;
 				if (ev.type === "load" || readyStates[this.readyState]) {
 					this.onload = this.onreadystatechange = this.onerror = null;
-					loadedCallback(null, function() {
+					loadedCallback(null, function () {
 						element.parentNode.removeChild(element);
 					});
 				}
 			}
-			element.onerror = function(err) {
+			element.onerror = function (err) {
 				/*DEBUG*/ console.error(err);
 				return loadedCallback(new Error("Error loading '" + uri + "'"));
 			}
@@ -137,11 +144,31 @@
 			return sandboxOptions.baseUrl + "/" + uri;
 		}
 
-		function load(bundleIdentifier, packageIdentifier, bundleSubPath, loadedCallback) {
+		function load (bundleIdentifier, packageIdentifier, bundleSubPath, loadedCallback) {
+
+			var loadSandboxIdentifier = sandboxIdentifier;
+			var finalBundleIdentifier = null;
+			var moduleIdentifierPrefix = "";
+			var finalPackageIdentifier = "";
+
 			try {
 	            if (packageIdentifier !== "") {
-	                bundleIdentifier = ("/" + packageIdentifier + "/" + bundleIdentifier).replace(/\/+/g, "/");
-	            }
+
+					if (/^@bundle:/.test(packageIdentifier)) {
+						var absPackageIdentifier = packageIdentifier;
+						if (/^@bundle:\./.test(absPackageIdentifier)) {
+							absPackageIdentifier = absPackageIdentifier.replace(/^(@bundle:)\./, "$1" + sandboxIdentifier + "/.");
+						}
+						moduleIdentifierPrefix = packageIdentifier;
+						finalPackageIdentifier = packageIdentifier;
+						bundleIdentifier = absPackageIdentifier.replace(/^@bundle:/, "") + ".js";
+						loadSandboxIdentifier = "";
+						finalBundleIdentifier = "@bundle:" + packageIdentifier.replace(/^@bundle:/, "") + ".js";
+					} else {
+		                bundleIdentifier = ("/" + packageIdentifier + "/" + bundleIdentifier).replace(/\/+/g, "/");
+					}
+				}
+
 				if (initializedModules[bundleIdentifier]) {
 					// Module is already loaded and initialized.
 					loadedCallback(null, sandbox);
@@ -153,15 +180,23 @@
 					} else {
 						// Module is not already loading.
 						loadingBundles[bundleIdentifier] = [];
-						bundleIdentifier = sandboxIdentifier + bundleSubPath + bundleIdentifier;
+
+						bundleIdentifier = (loadSandboxIdentifier + bundleSubPath + bundleIdentifier).replace(/\/$/, ".js");
+
+						bundleIdentifier = bundleIdentifier.replace(/\.php\.js$/, ".php");
+
+						if (!finalBundleIdentifier) {
+							finalBundleIdentifier = bundleIdentifier;
+						}
+
 						// Default to our script-injection browser loader.
 						(sandboxOptions.rootBundleLoader || sandboxOptions.load || loadInBrowser)(
 							rebaseUri(bundleIdentifier),
-							function(err, cleanupCallback) {
+							function (err, cleanupCallback) {
 								if (err) return loadedCallback(err);
 								// The rootBundleLoader is only applicable for the first load.
 								delete sandboxOptions.rootBundleLoader;
-								finalizeLoad(bundleIdentifier, function () {
+								finalizeLoad(moduleIdentifierPrefix, finalBundleIdentifier, finalPackageIdentifier, function () {
 									loadedCallback(null, sandbox);
 									if (cleanupCallback) {
 										cleanupCallback();
@@ -178,9 +213,7 @@
 
 		// Called after a bundle has been loaded. Takes the top bundle off the *loading* stack
 		// and makes the new modules available to the sandbox.
-		function finalizeLoad(bundleIdentifier, loadFinalized)
-		{
-
+		function finalizeLoad (moduleIdentifierPrefix, bundleIdentifier, packageIdentifier, loadFinalized) {
 			var pending = 0;
 			function finalize () {
 				if (pending !== 0) {
@@ -198,23 +231,29 @@
 			/*DEBUG*/ bundleIdentifiers[bundleIdentifier] = loadedBundles[0][0];
 			var key;
 			for (key in loadedBundles[0][1]) {
+
+				var memoizeKey = moduleIdentifierPrefix + key;
+
 				// If we have a package descriptor add it or merge it on top.
 				if (/^[^\/]*\/package.json$/.test(key)) {
+
+					if (sandboxOptions.rewritePackageDescriptor) {
+						loadedBundles[0][1][key][0] = sandboxOptions.rewritePackageDescriptor(loadedBundles[0][1][key][0], memoizeKey);
+					}
 
 					// Load all dependent resources
 					if (loadedBundles[0][1][key][0].mappings) {
 						for (var alias in loadedBundles[0][1][key][0].mappings) {
-							if (!/^\/\//.test(loadedBundles[0][1][key][0].mappings[alias])) {
-								continue;
+							if (/^@script:\/\//.test(loadedBundles[0][1][key][0].mappings[alias])) {
+								pending += 1;
+								loadInBrowser(
+									rebaseUri(loadedBundles[0][1][key][0].mappings[alias].replace(/^@script:/, "")),
+									function () {
+										pending -= 1;
+										finalize();
+									}
+								);
 							}
-							pending += 1;
-							loadInBrowser(
-								rebaseUri(loadedBundles[0][1][key][0].mappings[alias]),
-								function () {
-									pending -= 1;
-									finalize();
-								}
-							);
 						}
 					}
 
@@ -224,38 +263,38 @@
 					//       the first encounter of the package descriptor or add more mappings as
 					//       needed down the road. We currently support both.
 
-					if (moduleInitializers[key]) {
+					if (moduleInitializers[memoizeKey]) {
 						// TODO: Keep array of bundle identifiers instead of overwriting existing one?
 						//		 Overwriting may change subsequent bundeling behaviour?
-						moduleInitializers[key][0] = bundleIdentifier;
+						moduleInitializers[memoizeKey][0] = bundleIdentifier;
 						// Only augment (instead of replace existing values).
-						if (typeof moduleInitializers[key][1].main === "undefined") {
-							moduleInitializers[key][1].main = loadedBundles[0][1][key][0].main;
+						if (typeof moduleInitializers[memoizeKey][1].main === "undefined") {
+							moduleInitializers[memoizeKey][1].main = loadedBundles[0][1][key][0].main;
 						}
 						if (loadedBundles[0][1][key][0].mappings) {
-							if (!moduleInitializers[key][1].mappings) {
-								moduleInitializers[key][1].mappings = {};
+							if (!moduleInitializers[memoizeKey][1].mappings) {
+								moduleInitializers[memoizeKey][1].mappings = {};
 							}
 							for (var alias in loadedBundles[0][1][key][0].mappings) {
-								if (typeof moduleInitializers[key][1].mappings[alias] === "undefined") {
-									moduleInitializers[key][1].mappings[alias] = loadedBundles[0][1][key][0].mappings[alias];
+								if (typeof moduleInitializers[memoizeKey][1].mappings[alias] === "undefined") {
+									moduleInitializers[memoizeKey][1].mappings[alias] = loadedBundles[0][1][key][0].mappings[alias];
 								}
 							}
 						}
 					} else {
-						moduleInitializers[key] = [bundleIdentifier, loadedBundles[0][1][key][0], loadedBundles[0][1][key][1]];
+						moduleInitializers[memoizeKey] = [bundleIdentifier, loadedBundles[0][1][key][0], loadedBundles[0][1][key][1]];
 					}
 					// Now that we have a [updated] package descriptor, re-initialize it if we have it already in cache.
-					var packageIdentifier = key.split("/").shift();
+					var packageIdentifier = packageIdentifier || key.split("/").shift();
 					if (packages[packageIdentifier]) {
 						packages[packageIdentifier].init();
 					}
 				}
 				// Only add modules that don't already exist!
 				// TODO: Log warning in debug mode if module already exists.
-				if (typeof moduleInitializers[key] === "undefined") {
-					moduleInitializers[key] = [bundleIdentifier, loadedBundles[0][1][key][0], loadedBundles[0][1][key][1]];
-				}
+				if (typeof moduleInitializers[memoizeKey] === "undefined") {
+					moduleInitializers[memoizeKey] = [bundleIdentifier, loadedBundles[0][1][key][0], loadedBundles[0][1][key][1]];
+				}				
 			}
 			loadedBundles.shift();
 
@@ -265,7 +304,7 @@
 			return;
 		}
 
-		var Package = function(packageIdentifier) {
+		var Package = function (packageIdentifier) {
 			if (packages[packageIdentifier]) {
 				return packages[packageIdentifier];
 			}
@@ -281,7 +320,7 @@
 
 			var parentModule = lastModule;
 
-			pkg.init = function() {
+			pkg.init = function () {
 				var descriptor = (moduleInitializers[packageIdentifier + "/package.json"] && moduleInitializers[packageIdentifier + "/package.json"][1]) || {};
 				if (descriptor) {
 					pkg.descriptor = descriptor;
@@ -298,7 +337,7 @@
 			}
 			pkg.init();
 
-			function normalizeIdentifier(identifier) {
+			function normalizeIdentifier (identifier) {
 			    // If we have a period (".") in the basename we want an absolute path from
 			    // the root of the package. Otherwise a relative path to the "lib" directory.
 			    if (identifier.split("/").pop().indexOf(".") === -1) {
@@ -312,10 +351,16 @@
                 return identifier;
 			}
 
-			var Module = function(moduleIdentifier, parentModule) {
+			var Module = function (moduleIdentifier, parentModule) {
 
-				var moduleIdentifierSegment = moduleIdentifier.replace(/\/[^\/]*$/, "").split("/"),
-					module = {
+				var moduleIdentifierSegment = null;
+				if (/^@bundle:/.test(moduleIdentifier)) {
+					moduleIdentifierSegment = moduleIdentifier.replace(packageIdentifier, "").replace(/\/[^\/]*$/, "").split("/");
+				} else {
+					moduleIdentifierSegment = moduleIdentifier.replace(/\/[^\/]*$/, "").split("/");
+				}
+
+				var module = {
 						id: moduleIdentifier,
 						exports: {},
 						parentModule: parentModule,
@@ -323,7 +368,7 @@
 						pkg: packageIdentifier
 					};
 
-				function resolveIdentifier(identifier) {
+				function resolveIdentifier (identifier) {
 					if (/\/$/.test(identifier)) {
 						identifier += "index";
 					}
@@ -362,7 +407,7 @@
 				}
 
 				// Statically link a module and its dependencies
-				module.require = function(identifier) {
+				module.require = function (identifier) {
 					identifier = resolveIdentifier(identifier);
 					return identifier[0].require(identifier[1]).exports;
 				};
@@ -371,14 +416,18 @@
 		            "ucjs-pinf-0"
 		        ];
 
-				module.require.id = function(identifier) {
+				module.require.id = function (identifier) {
 					identifier = resolveIdentifier(identifier);
 					return identifier[0].require.id(identifier[1]);
 				};
 
-				module.require.async = function(identifier, loadedCallback, errorCallback) {
-					identifier = resolveIdentifier(identifier);
-					identifier[0].load(identifier[1], moduleInitializers[moduleIdentifier][0], function(err, moduleAPI) {
+				module.require.async = function (identifier, loadedCallback, errorCallback) {
+					identifier = resolveIdentifier(identifier);					
+					var mi = moduleIdentifier;
+					if (/^\//.test(identifier[0].id)) {
+						mi = "/main.js";
+					}
+					identifier[0].load(identifier[1], module.bundle, function (err, moduleAPI) {
 						if (err) {
 							if (errorCallback) return errorCallback(err);
 							throw err;
@@ -387,7 +436,7 @@
 					});
 				};
 
-				module.require.sandbox = normalizeSandboxArguments(function(programIdentifier, options, loadedCallback, errorCallback) {
+				module.require.sandbox = normalizeSandboxArguments (function (programIdentifier, options, loadedCallback, errorCallback) {
 					options.load = options.load || sandboxOptions.load;
 	                // If the `programIdentifier` is relative it is resolved against the URI of the owning sandbox (not the owning page).
 					if (/^\./.test(programIdentifier))
@@ -400,7 +449,7 @@
 				});
 				module.require.sandbox.id = sandboxIdentifier;
 
-				module.load = function() {
+				module.load = function () {
 					module.bundle = moduleInitializers[moduleIdentifier][0];
 					if (typeof moduleInitializers[moduleIdentifier][1] === "function") {
 
@@ -452,7 +501,7 @@
 					}
 				};
 
-				/*DEBUG*/ module.getReport = function() {
+				/*DEBUG*/ module.getReport = function () {
 				/*DEBUG*/ 	var exportsCount = 0,
 				/*DEBUG*/ 		key;
 				/*DEBUG*/ 	for (key in module.exports) {
@@ -466,9 +515,10 @@
 				return module;
 			};
 
-			pkg.load = function(moduleIdentifier, bundleIdentifier, loadedCallback) {
+			pkg.load = function (moduleIdentifier, bundleIdentifier, loadedCallback) {
+
 				// If module/bundle to be loaded asynchronously is already memoized we skip the load.
-				if (moduleInitializers[packageIdentifier + moduleIdentifier]) {
+				if (moduleInitializers[packageIdentifier + (moduleIdentifier || pkg.main)]) {
 					return loadedCallback(null, pkg.require(moduleIdentifier).exports);
 				}
 				var bundleSubPath = bundleIdentifier.substring(sandboxIdentifier.length);
@@ -476,14 +526,14 @@
                 	((!/^\//.test(moduleIdentifier))?"/"+pkg.libPath:"") + moduleIdentifier,
                 	packageIdentifier,
                 	bundleSubPath.replace(/\.js$/g, ""),
-                	function(err) {
+                	function (err) {
 	                	if (err) return loadedCallback(err);
 	                    loadedCallback(null, pkg.require(moduleIdentifier).exports);
 	                }
 	            );
 			}
 
-			pkg.require = function(moduleIdentifier) {
+			pkg.require = function (moduleIdentifier) {
 
 				var plugin = moduleIdentifier.plugin;
 
@@ -493,7 +543,7 @@
 	                }
 					moduleIdentifier = packageIdentifier + moduleIdentifier;
 				} else {
-					moduleIdentifier = pkg.main;
+					moduleIdentifier = packageIdentifier + pkg.main;
 				}
 
 				if (
@@ -530,7 +580,8 @@
 
 				// TODO: Do this via plugins registered using sandbox options.
 				// TODO: Cache response so we only process files once.
-				var moduleInfo = Object.create(initializedModules[moduleIdentifier]);
+
+				var moduleInfo = create(initializedModules[moduleIdentifier]);
 				// RequireJS/AMD international strings plugin using root by default.
 				if (plugin === "i18n") {
 					moduleInfo.exports = moduleInfo.exports.root;
@@ -539,14 +590,14 @@
 				return moduleInfo;
 			}
 
-            pkg.require.id = function(moduleIdentifier) {
+            pkg.require.id = function (moduleIdentifier) {
                 if (!/^\//.test(moduleIdentifier)) {
                     moduleIdentifier = "/" + pkg.libPath + moduleIdentifier;
                 }
                 return (((packageIdentifier !== "")?"/"+packageIdentifier+"/":"") + moduleIdentifier).replace(/\/+/g, "/");
             }
 
-			/*DEBUG*/ pkg.getReport = function() {
+			/*DEBUG*/ pkg.getReport = function () {
 			/*DEBUG*/ 	return {
 			/*DEBUG*/ 		main: pkg.main,
 			/*DEBUG*/ 		mappings: pkg.mappings,
@@ -570,12 +621,12 @@
 		}
 
 		// Get a module and initialize it (statically link its dependencies) if it is not already so
-		sandbox.require = function(moduleIdentifier) {
+		sandbox.require = function (moduleIdentifier) {
 			return Package("").require(moduleIdentifier).exports;
 		}
 
 		// Call the 'main' module of the program
-		sandbox.boot = function() {
+		sandbox.boot = function () {
 			/*DEBUG*/ if (typeof Package("").main !== "string") {
 			/*DEBUG*/ 	throw new Error("No 'main' property declared in '/package.json' in sandbox '" + sandbox.id + "'!");
 			/*DEBUG*/ }
@@ -583,12 +634,12 @@
 		};
 
 		// Call the 'main' exported function of the main' module of the program
-		sandbox.main = function() {
+		sandbox.main = function () {
 			var exports = sandbox.boot();
 			return ((exports.main)?exports.main.apply(null, arguments):exports);
 		};
 
-		/*DEBUG*/ sandbox.getReport = function() {
+		/*DEBUG*/ sandbox.getReport = function () {
 		/*DEBUG*/ 	var report = {
 		/*DEBUG*/ 			bundles: {},
 		/*DEBUG*/ 			packages: {},
@@ -610,7 +661,7 @@
 		/*DEBUG*/ 	}
 		/*DEBUG*/ 	return report;
 		/*DEBUG*/ }
-		/*DEBUG*/ sandbox.reset = function() {
+		/*DEBUG*/ sandbox.reset = function () {
 		/*DEBUG*/   moduleInitializers = {};
 		/*DEBUG*/   initializedModules = {};
 		/*DEBUG*/   bundleIdentifiers = {};
@@ -631,10 +682,10 @@
 			/*DEBUG*/ bundleIdentifiers = {},
 			sandboxes = {};
 
-		var Require = function(bundle) {
+		var Require = function (bundle) {
 
 			// Address a specific sandbox or currently loading sandbox if initial load.
-			var bundleHandler = function(uid, callback) {
+			var bundleHandler = function (uid, callback) {
 				/*DEBUG*/ if (uid && bundleIdentifiers[uid]) {
 				/*DEBUG*/ 	throw new Error("You cannot split require.bundle(UID) calls where UID is constant!");
 				/*DEBUG*/ }
@@ -643,7 +694,7 @@
 					req = new Require(uid);
 				delete req.bundle;
 				// Store raw module in loading bundle
-				req.memoize = function(moduleIdentifier, moduleInitializer, moduleMeta) {
+				req.memoize = function (moduleIdentifier, moduleInitializer, moduleMeta) {
 					moduleInitializers[
 						moduleIdentifier +
 						// NOTE: This feature may be elevated to a new function argument to 'memoize' if it proves to be prevalent.
@@ -678,7 +729,7 @@
 
 		// Create a new environment to memoize modules to.
 		// If relative, the `programIdentifier` is resolved against the URI of the owning page (this is only for the global require).
-		require.sandbox = normalizeSandboxArguments(function(programIdentifier, options, loadedCallback, errorCallback) {
+		require.sandbox = normalizeSandboxArguments(function (programIdentifier, options, loadedCallback, errorCallback) {
 			if (typeof programIdentifier === "function") {
 				options = options || {};
 				var bundle = programIdentifier;
@@ -691,10 +742,10 @@
 					}
 					return fallbackLoad(uri, loadedCallback);
 				}
-				programIdentifier = "#pinf:" + Math.random().toString(36).substr(2, 9);
+				programIdentifier = bundle.uri || "#pinf:" + Math.random().toString(36).substr(2, 9);
 			}
 			var sandboxIdentifier = programIdentifier.replace(/\.js$/, "");
-			return sandboxes[sandboxIdentifier] = Sandbox(sandboxIdentifier, options, function(err, sandbox) {
+			return sandboxes[sandboxIdentifier] = Sandbox(sandboxIdentifier, options, function (err, sandbox) {
 				if (err) {
 					if (errorCallback) return errorCallback(err);
 					throw err;
@@ -705,7 +756,7 @@
 
 		require.Loader = Loader;
 
-		/*DEBUG*/ require.getReport = function() {
+		/*DEBUG*/ require.getReport = function () {
 		/*DEBUG*/ 	var report = {
 		/*DEBUG*/ 			sandboxes: {}
 		/*DEBUG*/ 		};
@@ -714,7 +765,7 @@
 		/*DEBUG*/ 	}
 		/*DEBUG*/ 	return report;
 		/*DEBUG*/ }
-		/*DEBUG*/ require.reset = function() {
+		/*DEBUG*/ require.reset = function () {
 		/*DEBUG*/ 	for (var key in sandboxes) {
 		/*DEBUG*/ 		sandboxes[key].reset();
 		/*DEBUG*/ 	}

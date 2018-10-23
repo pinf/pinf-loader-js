@@ -28,7 +28,7 @@ describe("Features", function () {
 
                     function logToOutput (moduleObj, arguments) {
 
-//                        console.log("log", moduleObj.bundle, arguments[0]);
+                        //console.log("log", moduleObj.bundle, arguments[0]);
                         
                         if (re1.test(moduleObj.bundle) && re2.test(arguments[0])) {
                             welcomeMessageLogged = true;

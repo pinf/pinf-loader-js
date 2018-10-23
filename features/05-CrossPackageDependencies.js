@@ -83,7 +83,7 @@ PINF.bundle("", function (require) {
 	});
 
 	require.memoize("packageD/package.json", {
-		main: "packageD/o.js"
+		main: "/o.js"
 	});
 
 });
