@@ -16,9 +16,10 @@
     "15-GlobalDependencyFallback",
     "16-MemoizedDynamic",
     "17-LoadPackageDependency",
-    "18-MappedScriptURI",
+    "18-MappedScriptURL",
     "19-SandboxMemoize",
     "20-SandboxRebase",
     "21-Avoid-SplitBundles",
-    "22-WebWorker"
+    "22-WebWorker",
+    "23-MappedPackageURL"
 ]

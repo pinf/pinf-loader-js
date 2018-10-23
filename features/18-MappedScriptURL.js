@@ -6,7 +6,7 @@ PINF.bundle("", function (require) {
 				exports.main = function (options) {
 
 						if (window.EventEmitter) {
-								module.log("Hello from 18-MappedScriptURI!");
+								module.log("Hello from 18-MappedScriptURL!");
 								return;
 						}
 
@@ -17,7 +17,7 @@ PINF.bundle("", function (require) {
 		require.memoize("/package.json", {
 				main: "/main.js",
 				mappings: {
-						"EventEmitter": "//cdnjs.cloudflare.com/ajax/libs/EventEmitter/5.1.0/EventEmitter.min.js"
+						"EventEmitter": "@script://cdnjs.cloudflare.com/ajax/libs/EventEmitter/5.1.0/EventEmitter.min.js"
 				}
 		});
 });
