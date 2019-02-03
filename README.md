@@ -10,7 +10,7 @@ based **JavaScript module loader** for the browser in only **2468 bytes** *(.min
 
   * Mailing list: [groups.google.com/group/pinf](http://groups.google.com/group/pinf)
 
-**Online Demo: [pinf.js.org/pinf-loader-js/](https://pinf.js.org/pinf-loader-js/)**
+**Online Demo: [pinf.js.org/pinf-loader-js/](https://pinf.js.org/pinf-loader-js/)** ([Code Coverage](https://pinf.js.org/pinf-loader-js/workspace/www/coverage/headlesschrome/))
 
 
 Why
