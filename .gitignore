@@ -8,3 +8,4 @@ sauce_connect*.log
 /.pio.cache/
 /.installed*
 /.~*
+.DS_Store
