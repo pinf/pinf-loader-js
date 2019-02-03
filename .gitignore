@@ -1,9 +1,11 @@
 .sm/
 /.sm.*
 node_modules/
+/package-lock.json
 npm-debug.log
 sauce_connect*.log
 /workspace/www/coverage/lcov-report
 /.pio.cache/
 /.installed*
 /.~*
+.DS_Store

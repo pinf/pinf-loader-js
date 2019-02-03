@@ -37,7 +37,7 @@ PINF.bundle("", function (require) {
 	require.memoize("/package.json", {
 		main: "/main.js",
 		mappings: {
-			"pkg": "@bundle:/features/23-MappedPackageURL/PackageBundle"
+			"pkg": "@bundle:" + require.sandbox.id + "/PackageBundle"
 		}
 	});
 });

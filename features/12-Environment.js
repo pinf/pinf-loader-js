@@ -6,9 +6,9 @@ if (! (PINF.supports.indexOf("ucjs-pinf-0") >= 0)) {
 // Value of `require.sandbox.id` is unspecified.
 
 PINF.bundle("", function (require) {
-
-	if (require.sandbox) {
-		throw new Error("`require.sandbox` may not be set here!");
+	
+	if (typeof require.sandbox.id !== 'string') {
+		throw new Error("`require.sandbox.id` is nto a string!");
 	}
 
 	require.memoize("/main.js", function (require, exports, module) {

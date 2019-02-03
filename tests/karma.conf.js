@@ -47,13 +47,10 @@ module.exports = function (config) {
 
         coverageReporter: {
             type: 'html',
-            dir: 'workspace/www/',
-            reporters: [
-                {
-                    type: 'html',
-                    subdir: 'coverage'
-                }
-            ],
+            dir: 'workspace/www/coverage',
+            subdir: function (browser) {
+                return browser.toLowerCase().split(/[ /-]/)[0];
+            },
             instrumenterOptions: {
                 istanbul: {
                     noCompact: true

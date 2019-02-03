@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>Code coverage report for pinf-loader-js/loader.js</title>
+    <title>Code coverage report for loader.js/loader.js</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -16,13 +16,13 @@
 <div class='wrapper'>
   <div class='pad1'>
     <h1>
-      <a href="../index.html">all files</a> / <a href="index.html">pinf-loader-js/</a> loader.js
+      <a href="../index.html">all files</a> / <a href="index.html">loader.js/</a> loader.js
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">72.22% </span>
+        <span class="strong">72.75% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>286/396</span>
+        <span class='fraction'>291/400</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">62.84% </span>
@@ -30,14 +30,14 @@
         <span class='fraction'>164/261</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">78.57% </span>
+        <span class="strong">78.95% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>44/56</span>
+        <span class='fraction'>45/57</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">73.01% </span>
+        <span class="strong">73.54% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>284/389</span>
+        <span class='fraction'>289/393</span>
       </div>
     </div>
   </div>
@@ -873,7 +873,14 @@
 828
 829
 830
-831</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+831
+832
+833
+834
+835
+836
+837
+838</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1032,7 +1039,7 @@
 <span class="cline-any cline-yes">2×</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">1×</span>
@@ -1104,6 +1111,9 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">30×</span>
+<span class="cline-any cline-yes">30×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">30×</span>
 <span class="cline-any cline-yes">30×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1558,6 +1568,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">31×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">31×</span>
@@ -1566,7 +1577,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">30×</span>
 <span class="cline-any cline-yes">30×</span>
+<span class="cline-any cline-yes">30×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30×</span>
 <span class="cline-any cline-yes">30×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">30×</span>
@@ -1583,6 +1596,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">30×</span>
 <span class="cline-any cline-yes">30×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">31×</span>
 <span class="cline-any cline-yes">31×</span>
@@ -1861,8 +1875,8 @@
 &nbsp;
 					if (/^@bundle:/.test(packageIdentifier)) {
 						var absPackageIdentifier = packageIdentifier;
-						<span class="missing-if-branch" title="if path not taken" >I</span>if (/^@bundle:\./.test(absPackageIdentifier)) {
-<span class="cstat-no" title="statement not covered" >							absPackageIdentifier = absPackageIdentifier.replace(/^(@bundle:)\./, "$1" + sandboxIdentifier + "/.");</span>
+						<span class="missing-if-branch" title="else path not taken" >E</span>if (/^@bundle:\./.test(absPackageIdentifier)) {
+							absPackageIdentifier = absPackageIdentifier.replace(/^(@bundle:)\./, "$1" + sandboxIdentifier + "/.");
 						}
 						moduleIdentifierPrefix = packageIdentifier;
 						finalPackageIdentifier = packageIdentifier;
@@ -1934,8 +1948,11 @@
 			/*DEBUG*/     <span class="cstat-no" title="statement not covered" >throw new Error("No bundle memoized for '" + bundleIdentifier + "'! Check the file to ensure it contains JavaScript and that a bundle is memoized against the correct loader instance.");</span>
 			/*DEBUG*/ }
 			/*DEBUG*/ bundleIdentifiers[bundleIdentifier] = loadedBundles[0][0];
+			var loadedModuleInitializers = loadedBundles[0][1]({
+				id: sandboxIdentifier
+			});
 			var key;
-			for (key in loadedBundles[0][1]) {
+			for (key in loadedModuleInitializers) {
 &nbsp;
 				var memoizeKey = moduleIdentifierPrefix + key;
 &nbsp;
@@ -1943,16 +1960,16 @@
 				if (/^[^\/]*\/package.json$/.test(key)) {
 &nbsp;
 					<span class="missing-if-branch" title="if path not taken" >I</span>if (sandboxOptions.rewritePackageDescriptor) {
-<span class="cstat-no" title="statement not covered" >						loadedBundles[0][1][key][0] = sandboxOptions.rewritePackageDescriptor(loadedBundles[0][1][key][0], memoizeKey);</span>
+<span class="cstat-no" title="statement not covered" >						loadedModuleInitializers[key][0] = sandboxOptions.rewritePackageDescriptor(loadedModuleInitializers[key][0], memoizeKey);</span>
 					}
 &nbsp;
 					// Load all dependent resources
-					if (loadedBundles[0][1][key][0].mappings) {
-						for (var alias in loadedBundles[0][1][key][0].mappings) {
-							if (/^@script:\/\//.test(loadedBundles[0][1][key][0].mappings[alias])) {
+					if (loadedModuleInitializers[key][0].mappings) {
+						for (var alias in loadedModuleInitializers[key][0].mappings) {
+							if (/^@script:\/\//.test(loadedModuleInitializers[key][0].mappings[alias])) {
 								pending += 1;
 								loadInBrowser(
-									rebaseUri(loadedBundles[0][1][key][0].mappings[alias].replace(/^@script:/, "")),
+									rebaseUri(loadedModuleInitializers[key][0].mappings[alias].replace(/^@script:/, "")),
 									function () {
 										pending -= 1;
 										finalize();
@@ -1974,20 +1991,20 @@
 <span class="cstat-no" title="statement not covered" >						moduleInitializers[memoizeKey][0] = bundleIdentifier;</span>
 						// Only augment (instead of replace existing values).
 <span class="cstat-no" title="statement not covered" >						if (typeof moduleInitializers[memoizeKey][1].main === "undefined") {</span>
-<span class="cstat-no" title="statement not covered" >							moduleInitializers[memoizeKey][1].main = loadedBundles[0][1][key][0].main;</span>
+<span class="cstat-no" title="statement not covered" >							moduleInitializers[memoizeKey][1].main = loadedModuleInitializers[key][0].main;</span>
 						}
-<span class="cstat-no" title="statement not covered" >						if (loadedBundles[0][1][key][0].mappings) {</span>
+<span class="cstat-no" title="statement not covered" >						if (loadedModuleInitializers[key][0].mappings) {</span>
 <span class="cstat-no" title="statement not covered" >							if (!moduleInitializers[memoizeKey][1].mappings) {</span>
 <span class="cstat-no" title="statement not covered" >								moduleInitializers[memoizeKey][1].mappings = {};</span>
 							}
-<span class="cstat-no" title="statement not covered" >							for (var alias in loadedBundles[0][1][key][0].mappings) {</span>
+<span class="cstat-no" title="statement not covered" >							for (var alias in loadedModuleInitializers[key][0].mappings) {</span>
 <span class="cstat-no" title="statement not covered" >								if (typeof moduleInitializers[memoizeKey][1].mappings[alias] === "undefined") {</span>
-<span class="cstat-no" title="statement not covered" >									moduleInitializers[memoizeKey][1].mappings[alias] = loadedBundles[0][1][key][0].mappings[alias];</span>
+<span class="cstat-no" title="statement not covered" >									moduleInitializers[memoizeKey][1].mappings[alias] = loadedModuleInitializers[key][0].mappings[alias];</span>
 								}
 							}
 						}
 					} else {
-						moduleInitializers[memoizeKey] = [bundleIdentifier, loadedBundles[0][1][key][0], loadedBundles[0][1][key][1]];
+						moduleInitializers[memoizeKey] = [bundleIdentifier, loadedModuleInitializers[key][0], loadedModuleInitializers[key][1]];
 					}
 					// Now that we have a [updated] package descriptor, re-initialize it if we have it already in cache.
 					var packageIdentifier = packageIdentifier || key.split("/").shift();
@@ -1998,7 +2015,7 @@
 				// Only add modules that don't already exist!
 				// TODO: Log warning in debug mode if module already exists.
 				if (typeof moduleInitializers[memoizeKey] === "undefined") {
-					moduleInitializers[memoizeKey] = [bundleIdentifier, loadedBundles[0][1][key][0], loadedBundles[0][1][key][1]];
+					moduleInitializers[memoizeKey] = [bundleIdentifier, loadedModuleInitializers[key][0], loadedModuleInitializers[key][1]];
 				}				
 			}
 			loadedBundles.shift();
@@ -2388,6 +2405,7 @@
 			sandboxes = {};
 &nbsp;
 		var Require = function (bundle) {
+			var self = this;
 &nbsp;
 			// Address a specific sandbox or currently loading sandbox if initial load.
 			var bundleHandler = function (uid, callback) {
@@ -2395,24 +2413,27 @@
 				/*DEBUG*/ 	throw new Error("You cannot split require.bundle(UID) calls where UID is constant!");
 				/*DEBUG*/ }
 				/*DEBUG*/ bundleIdentifiers[uid] = true;
-				var moduleInitializers = {},
-					req = new Require(uid);
-				delete req.bundle;
-				// Store raw module in loading bundle
-				req.memoize = function (moduleIdentifier, moduleInitializer, moduleMeta) {
-					moduleInitializers[
-						moduleIdentifier +
-						// NOTE: This feature may be elevated to a new function argument to 'memoize' if it proves to be prevalent.
-						(
+				loadedBundles.push([uid, function (sandbox) {
+					var moduleInitializers = {},
+						req = new Require(uid);
+					delete req.bundle;
+					req.sandbox = sandbox;
+					// Store raw module in loading bundle
+					req.memoize = function (moduleIdentifier, moduleInitializer, moduleMeta) {
+						moduleInitializers[
+							moduleIdentifier +
+							// NOTE: This feature may be elevated to a new function argument to 'memoize' if it proves to be prevalent.
 							(
-								moduleMeta &amp;&amp;
-<span class="branch-1 cbranch-no" title="branch not covered" >								moduleMeta.variation</span>
-							) ? <span class="branch-0 cbranch-no" title="branch not covered" >":" + moduleMeta.variation </span>: ""
-						)
-					] = [moduleInitializer, moduleMeta || {}];
-				}
-				callback(req, bundleGlobal || <span class="branch-1 cbranch-no" title="branch not covered" >null)</span>;
-				loadedBundles.push([uid, moduleInitializers]);
+								(
+									moduleMeta &amp;&amp;
+<span class="branch-1 cbranch-no" title="branch not covered" >									moduleMeta.variation</span>
+								) ? <span class="branch-0 cbranch-no" title="branch not covered" >":" + moduleMeta.variation </span>: ""
+							)
+						] = [moduleInitializer, moduleMeta || {}];
+					}
+					callback(req, bundleGlobal || <span class="branch-1 cbranch-no" title="branch not covered" >null)</span>;
+					return moduleInitializers;
+				}]);
 			}
 			var activeBundleHandler = bundleHandler;
 			this.bundle = function () {
@@ -2539,7 +2560,7 @@
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Oct 22 2018 22:59:04 GMT-0700 (Pacific Daylight Time)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sat Feb 02 2019 17:02:59 GMT-0800 (Pacific Standard Time)
 </div>
 </div>
 <script src="../prettify.js"></script>
