@@ -204,8 +204,11 @@
 			pending += 1;
 
 			// Assume a consistent statically linked set of modules has been memoized.
+			var loadedModuleInitializers = loadedBundles[0][1]({
+				id: sandboxIdentifier
+			});
 			var key;
-			for (key in loadedBundles[0][1]) {
+			for (key in loadedModuleInitializers) {
 
 				var memoizeKey = moduleIdentifierPrefix + key;
 
@@ -213,16 +216,16 @@
 				if (/^[^\/]*\/package.json$/.test(key)) {
 
 					if (sandboxOptions.rewritePackageDescriptor) {
-						loadedBundles[0][1][key][0] = sandboxOptions.rewritePackageDescriptor(loadedBundles[0][1][key][0], memoizeKey);
+						loadedModuleInitializers[key][0] = sandboxOptions.rewritePackageDescriptor(loadedModuleInitializers[key][0], memoizeKey);
 					}
 
 					// Load all dependent resources
-					if (loadedBundles[0][1][key][0].mappings) {
-						for (var alias in loadedBundles[0][1][key][0].mappings) {
-							if (/^@script:\/\//.test(loadedBundles[0][1][key][0].mappings[alias])) {
+					if (loadedModuleInitializers[key][0].mappings) {
+						for (var alias in loadedModuleInitializers[key][0].mappings) {
+							if (/^@script:\/\//.test(loadedModuleInitializers[key][0].mappings[alias])) {
 								pending += 1;
 								loadInBrowser(
-									rebaseUri(loadedBundles[0][1][key][0].mappings[alias].replace(/^@script:/, "")),
+									rebaseUri(loadedModuleInitializers[key][0].mappings[alias].replace(/^@script:/, "")),
 									function () {
 										pending -= 1;
 										finalize();
@@ -244,20 +247,20 @@
 						moduleInitializers[memoizeKey][0] = bundleIdentifier;
 						// Only augment (instead of replace existing values).
 						if (typeof moduleInitializers[memoizeKey][1].main === "undefined") {
-							moduleInitializers[memoizeKey][1].main = loadedBundles[0][1][key][0].main;
+							moduleInitializers[memoizeKey][1].main = loadedModuleInitializers[key][0].main;
 						}
-						if (loadedBundles[0][1][key][0].mappings) {
+						if (loadedModuleInitializers[key][0].mappings) {
 							if (!moduleInitializers[memoizeKey][1].mappings) {
 								moduleInitializers[memoizeKey][1].mappings = {};
 							}
-							for (var alias in loadedBundles[0][1][key][0].mappings) {
+							for (var alias in loadedModuleInitializers[key][0].mappings) {
 								if (typeof moduleInitializers[memoizeKey][1].mappings[alias] === "undefined") {
-									moduleInitializers[memoizeKey][1].mappings[alias] = loadedBundles[0][1][key][0].mappings[alias];
+									moduleInitializers[memoizeKey][1].mappings[alias] = loadedModuleInitializers[key][0].mappings[alias];
 								}
 							}
 						}
 					} else {
-						moduleInitializers[memoizeKey] = [bundleIdentifier, loadedBundles[0][1][key][0], loadedBundles[0][1][key][1]];
+						moduleInitializers[memoizeKey] = [bundleIdentifier, loadedModuleInitializers[key][0], loadedModuleInitializers[key][1]];
 					}
 					// Now that we have a [updated] package descriptor, re-initialize it if we have it already in cache.
 					var packageIdentifier = packageIdentifier || key.split("/").shift();
@@ -268,7 +271,7 @@
 				// Only add modules that don't already exist!
 				// TODO: Log warning in debug mode if module already exists.
 				if (typeof moduleInitializers[memoizeKey] === "undefined") {
-					moduleInitializers[memoizeKey] = [bundleIdentifier, loadedBundles[0][1][key][0], loadedBundles[0][1][key][1]];
+					moduleInitializers[memoizeKey] = [bundleIdentifier, loadedModuleInitializers[key][0], loadedModuleInitializers[key][1]];
 				}				
 			}
 			loadedBundles.shift();
@@ -600,27 +603,31 @@
 			sandboxes = {};
 
 		var Require = function (bundle) {
+			var self = this;
 
 			// Address a specific sandbox or currently loading sandbox if initial load.
 			var bundleHandler = function (uid, callback) {
-				var moduleInitializers = {},
-					req = new Require(uid);
-				delete req.bundle;
-				// Store raw module in loading bundle
-				req.memoize = function (moduleIdentifier, moduleInitializer, moduleMeta) {
-					moduleInitializers[
-						moduleIdentifier +
-						// NOTE: This feature may be elevated to a new function argument to 'memoize' if it proves to be prevalent.
-						(
+				loadedBundles.push([uid, function (sandbox) {
+					var moduleInitializers = {},
+						req = new Require(uid);
+					delete req.bundle;
+					req.sandbox = sandbox;
+					// Store raw module in loading bundle
+					req.memoize = function (moduleIdentifier, moduleInitializer, moduleMeta) {
+						moduleInitializers[
+							moduleIdentifier +
+							// NOTE: This feature may be elevated to a new function argument to 'memoize' if it proves to be prevalent.
 							(
-								moduleMeta &&
-								moduleMeta.variation
-							) ? ":" + moduleMeta.variation : ""
-						)
-					] = [moduleInitializer, moduleMeta || {}];
-				}
-				callback(req, bundleGlobal || null);
-				loadedBundles.push([uid, moduleInitializers]);
+								(
+									moduleMeta &&
+									moduleMeta.variation
+								) ? ":" + moduleMeta.variation : ""
+							)
+						] = [moduleInitializer, moduleMeta || {}];
+					}
+					callback(req, bundleGlobal || null);
+					return moduleInitializers;
+				}]);
 			}
 			var activeBundleHandler = bundleHandler;
 			this.bundle = function () {
