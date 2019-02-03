@@ -1,7 +1,7 @@
 {
     "uid": "github.com/pinf/pinf-loader-js",
     "name": "pinf-loader-js",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "pm": {
         "publish": "npm"
     },
@@ -29,6 +29,7 @@
     },
     "scripts": {
         "test": "karma start tests/karma.conf.js",
+        "test-all": "BROWSERS=all karma start tests/karma.conf.js",
         "dev": "node workspace/server",
         "build": "node workspace/build",
         "release": "release-it",
