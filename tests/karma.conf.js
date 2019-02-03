@@ -151,7 +151,10 @@ module.exports = function (config) {
         ]    
     });
 
-    if (process.env.TRAVIS) {
+    if (
+        process.env.BROWSERS !== 'all' ||
+        process.env.TRAVIS
+    ) {
 
         config.set({
             browsers: ['ChromeHeadlessNoSandbox']

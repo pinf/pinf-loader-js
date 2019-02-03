@@ -247,7 +247,11 @@ Install:
 
 Run tests:
 
+    # Headless Chrome
     npm test
+
+    # Firefox, Chrome, Safari
+    npm run test-all
 
 Launch development workspace (uses [puppeteer](https://github.com/GoogleChrome/puppeteer)):
 
