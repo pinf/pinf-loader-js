@@ -17,7 +17,7 @@ module.exports = function (config) {
         // list of files / patterns to load in the browser
         files: [
             'tests/features.js',
-            'loader.js',
+            'dist/loader-full.browser.js',
             {
                 pattern: 'features/**/*.*',
                 watched: true,
@@ -35,7 +35,7 @@ module.exports = function (config) {
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
-            'loader.js': ['coverage']            
+            'dist/loader-full.browser.js': ['coverage']            
         },
 
 
@@ -164,7 +164,7 @@ module.exports = function (config) {
     if (process.env.CIRCLECI) {
 
         config.set({
-            browsers: ['Chrome', 'Firefox', 'ChromeHeadlessNoSandbox'],
+            browsers: ['ChromeHeadlessNoSandbox', 'Chrome', 'Firefox'],
         });
 
     } else

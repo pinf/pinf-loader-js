@@ -10,12 +10,13 @@ PINF.bundle("", function (require) {
 						return new Promise(function (resolve, reject) {
 
 								var bundleUrl = window.location.pathname.replace(/\/[^\/]*$/, "/") + require.sandbox.id + require.id("./WorkerBundle");
-								var loaderUrl = bundleUrl.replace(/\/features\/.+$/, "/loader.js");
+								var loaderUrl = bundleUrl.replace(/\/features\/.+$/, "/dist/loader-full.browser.js");
 
 								// Adjustment for tests
 								if (window.location.pathname.split("/").length <= 2) {
-										loaderUrl = "/base/loader.js";
-										bundleUrl = bundleUrl.replace(/^\/\.\.\/\.\./, "");
+									// TODO: Get loader URL from 'PINF'
+									loaderUrl = "/base/dist/loader-full.browser.js";
+									bundleUrl = bundleUrl.replace(/^\/\.\.\/\.\./, "");
 								}
 
 								var worker = new Worker(loaderUrl);

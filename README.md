@@ -5,12 +5,12 @@ Optimized JavaScript Bundle Loader
 [![Build Status](https://secure.travis-ci.org/pinf/pinf-loader-js.svg)](http://travis-ci.org/pinf/pinf-loader-js)
 
 The `PINF JavaScript Loader` is part of the [PINF Platform for JavaScript](http://pinf.js.org/)
-and is an optimized *(intended for production use)* **CommonJS package mappings** 
-based **JavaScript module loader** for the browser in only **2468 bytes** *(.min.br)*.
+and is a tiny optimized *(intended for production use)* **CommonJS package mappings** 
+based **JavaScript module loader** for the browser.
 
   * Mailing list: [groups.google.com/group/pinf](http://groups.google.com/group/pinf)
 
-**Online Demo: [pinf.js.org/pinf-loader-js/](https://pinf.js.org/pinf-loader-js/)** ([Code Coverage](https://pinf.js.org/pinf-loader-js/workspace/www/coverage/headlesschrome/))
+**Online Demo: [pinf.js.org/pinf-loader-js/](https://pinf.js.org/pinf-loader-js/)** ([Code Coverage](https://pinf.js.org/pinf-loader-js/workspace/www/coverage/firefox/dist/loader-full.browser.js.html))
 
 
 Why
@@ -92,7 +92,7 @@ Usage
 
 **http://localhost/index.html**
 ```
-<script src="loader.js"></script>
+<script src="dist/loader-core.js"></script>
 <script>
     PINF.sandbox("app.js", function (sandbox) {
         sandbox.main();
@@ -147,8 +147,8 @@ The following tools can generate `PINF JavaScript Loader` compatible bundles:
 Tips
 ====
 
-  * When testing an application use the `./loader.js` file to get all error messages.
-  * When deploying a standalone loader us the `./loader.min.gz` or `./loader.min.br` files for optimum performance.
+  * When testing an application use the `./dist/loader-full.browser.js` file to get all error messages.
+  * When deploying a standalone loader us the `./loader-core.browser.min.gz` or `./loader-core.browser.min.br` files for optimum performance.
   * When using a different loader during development make sure only supported API features
     of this loader are used. Load extra features along with your application by
     [augmenting a sandbox](https://github.com/pinf/pinf-loader-js/blob/master/features/10-Sandbox.js).
@@ -263,19 +263,10 @@ To make a release use:
 
     npm run release
 
-This will first build the following files (via `npm run build`):
-
-  * `./loader.min.js`
-  * `./loader.min.js.map`
-  * `./loader.min.js.gz`
-  * `./loader.min.js.br`
-  * `./loader.stripped.js`
-  * `./workspace/www/.*`
-
-and then increment, tag, push and publish.
+This will first build the `dist/` files (via `npm run build`) and then increment, tag, push and publish.
 
 
 Provenance
 ==========
 
-Original source logic under [Free Public License](https://opensource.org/licenses/FPL-1.0.0) by [Christoph Dorn](http://christophdorn.com) since 2011.
+Original source logic under [Zero-Clause BSD](https://opensource.org/licenses/0BSD) by [Christoph Dorn](http://christophdorn.com) since 2011.

@@ -32,9 +32,6 @@ var Loader = function (global) {
 
 	function normalizeSandboxArguments (implementation) {
 		return function (programIdentifier, options, loadedCallback, errorCallback) {
-			/*DEBUG*/ if (typeof options === "function" && typeof loadedCallback === "object") {
-			/*DEBUG*/     throw new Error("Callback before options for `require.sandbox(programIdentifier, options, loadedCallback)`");
-			/*DEBUG*/ }
 			if (typeof options === "function" && !loadedCallback && !errorCallback) {
 				loadedCallback = options;
 				options = {};
@@ -59,9 +56,6 @@ var Loader = function (global) {
 				return loadedCallback(null);
 			}
 			var document = global.document;
-			/*DEBUG*/ if (!document) {
-			/*DEBUG*/ 	throw new Error("Unable to get reference to 'document'!");
-			/*DEBUG*/ }
 			var location = document.location;
 			if (/^\/?\{host\}\//.test(uri)) {
 				uri = location.protocol + "//" + location.host + uri.replace(/^\/?\{host\}/, "");
@@ -84,7 +78,6 @@ var Loader = function (global) {
 				}
 			}
 			element.onerror = function (err) {
-				/*DEBUG*/ console.error(err);
 				return loadedCallback(new Error("Error loading '" + uri + "'"));
 			}
 			element.charset = "utf-8";
@@ -101,7 +94,6 @@ var Loader = function (global) {
 
 		var moduleInitializers = {},
 			initializedModules = {},
-			/*DEBUG*/ bundleIdentifiers = {},
 			packages = {},
 			loadingBundles = {};
 
@@ -109,23 +101,6 @@ var Loader = function (global) {
 				id: sandboxIdentifier
 			};
 
-		/*DEBUG*/ function logDebug() {
-		/*DEBUG*/ 	if (sandboxOptions.debug !== true) return;
-		/*DEBUG*/ 	// NOTRE: This does not work in google chrome.
-		/*DEBUG*/ 	//console.log.apply(null, arguments);
-		/*DEBUG*/ 	if (arguments.length === 1) {
-		/*DEBUG*/ 		console.log(arguments[0]);
-		/*DEBUG*/ 	} else
-		/*DEBUG*/ 	if (arguments.length === 2) {
-		/*DEBUG*/ 		console.log(arguments[0], arguments[1]);
-		/*DEBUG*/ 	} else
-		/*DEBUG*/ 	if (arguments.length === 3) {
-		/*DEBUG*/ 		console.log(arguments[0], arguments[1], arguments[2]);
-		/*DEBUG*/ 	} else
-		/*DEBUG*/ 	if (arguments.length === 4) {
-		/*DEBUG*/ 		console.log(arguments[0], arguments[1], arguments[2], arguments[3]);
-		/*DEBUG*/ 	}
-		/*DEBUG*/ }
 
 		function rebaseUri (uri) {
 			if (!sandboxOptions.baseUrl) {
@@ -215,10 +190,6 @@ var Loader = function (global) {
 			pending += 1;
 
 			// Assume a consistent statically linked set of modules has been memoized.
-			/*DEBUG*/ if (!loadedBundles[0]) {
-			/*DEBUG*/     throw new Error("No bundle memoized for '" + bundleIdentifier + "'! Check the file to ensure it contains JavaScript and that a bundle is memoized against the correct loader instance.");
-			/*DEBUG*/ }
-			/*DEBUG*/ bundleIdentifiers[bundleIdentifier] = loadedBundles[0][0];
 			var loadedModuleInitializers = loadedBundles[0][1]({
 				id: sandboxIdentifier
 			});
@@ -393,9 +364,6 @@ var Loader = function (global) {
 					if (typeof pkg.mappings[splitIdentifier[0]] !== "undefined") {
 						return [Package(pkg.mappings[splitIdentifier[0]]), pluginify((splitIdentifier.length > 1)?normalizeIdentifier(splitIdentifier.slice(1).join("/")):"")];
 					}
-					/*DEBUG*/ if (!moduleInitializers["/" + normalizeIdentifier(identifier)]) {
-					/*DEBUG*/     throw new Error("Descriptor for package '" + pkg.id + "' in sandbox '" + sandbox.id + "' does not declare 'mappings[\"" + splitIdentifier[0] + "\"]' property nor does sandbox have module memoized at '" + "/" + normalizeIdentifier(identifier) + "' needed to satisfy module path '" + identifier + "' in module '" + moduleIdentifier + "'!");
-					/*DEBUG*/ }
 					return [Package(""), pluginify("/" + normalizeIdentifier(identifier))];
 				}
 
@@ -494,16 +462,6 @@ var Loader = function (global) {
 					}
 				};
 
-				/*DEBUG*/ module.getReport = function () {
-				/*DEBUG*/ 	var exportsCount = 0,
-				/*DEBUG*/ 		key;
-				/*DEBUG*/ 	for (key in module.exports) {
-				/*DEBUG*/ 		exportsCount++;
-				/*DEBUG*/ 	}
-				/*DEBUG*/ 	return {
-				/*DEBUG*/ 		exports: exportsCount
-				/*DEBUG*/ 	};
-				/*DEBUG*/ };
 
 				return module;
 			};
@@ -555,10 +513,6 @@ var Loader = function (global) {
 				}
 
 				if (!initializedModules[moduleIdentifier]) {
-					/*DEBUG*/ if (!moduleInitializers[moduleIdentifier]) {
-					/*DEBUG*/ 	console.error("[pinf-loader-js]", "moduleInitializers", moduleInitializers);
-					/*DEBUG*/ 	throw new Error("Module '" + moduleIdentifier + "' " + (plugin?"for format '" + plugin + "' ":"") + "not found in sandbox '" + sandbox.id + "'!");
-					/*DEBUG*/ }
 					(initializedModules[moduleIdentifier] = Module(moduleIdentifier, lastModule)).load();
 				}
 
@@ -590,14 +544,6 @@ var Loader = function (global) {
 				return (((packageIdentifier !== "")?"/"+packageIdentifier+"/":"") + moduleIdentifier).replace(/\/+/g, "/");
 			}
 
-			/*DEBUG*/ pkg.getReport = function () {
-			/*DEBUG*/ 	return {
-			/*DEBUG*/ 		main: pkg.main,
-			/*DEBUG*/ 		mappings: pkg.mappings,
-			/*DEBUG*/ 		directories: pkg.directories,
-			/*DEBUG*/ 		libPath: pkg.libPath
-			/*DEBUG*/ 	};
-			/*DEBUG*/ }
 
 			if (sandboxOptions.onInitPackage) {
 				sandboxOptions.onInitPackage(pkg, sandbox, {
@@ -620,9 +566,6 @@ var Loader = function (global) {
 
 		// Call the 'main' module of the program
 		sandbox.boot = function () {
-			/*DEBUG*/ if (typeof Package("").main !== "string") {
-			/*DEBUG*/ 	throw new Error("No 'main' property declared in '/package.json' in sandbox '" + sandbox.id + "'!");
-			/*DEBUG*/ }
 			return sandbox.require(Package("").main);
 		};
 
@@ -632,35 +575,6 @@ var Loader = function (global) {
 			return ((exports.main)?exports.main.apply(null, arguments):exports);
 		};
 
-		/*DEBUG*/ sandbox.getReport = function () {
-		/*DEBUG*/ 	var report = {
-		/*DEBUG*/ 			bundles: {},
-		/*DEBUG*/ 			packages: {},
-		/*DEBUG*/ 			modules: {}
-		/*DEBUG*/ 		},
-		/*DEBUG*/ 		key;
-		/*DEBUG*/ 	for (key in bundleIdentifiers) {
-		/*DEBUG*/ 		report.bundles[key] = bundleIdentifiers[key];
-		/*DEBUG*/ 	}
-		/*DEBUG*/ 	for (key in packages) {
-		/*DEBUG*/ 		report.packages[key] = packages[key].getReport();
-		/*DEBUG*/ 	}
-		/*DEBUG*/ 	for (key in moduleInitializers) {
-		/*DEBUG*/ 		if (initializedModules[key]) {
-		/*DEBUG*/ 			report.modules[key] = initializedModules[key].getReport();
-		/*DEBUG*/ 		} else {
-		/*DEBUG*/ 			report.modules[key] = {};
-		/*DEBUG*/ 		}
-		/*DEBUG*/ 	}
-		/*DEBUG*/ 	return report;
-		/*DEBUG*/ }
-		/*DEBUG*/ sandbox.reset = function () {
-		/*DEBUG*/   moduleInitializers = {};
-		/*DEBUG*/   initializedModules = {};
-		/*DEBUG*/   bundleIdentifiers = {};
-		/*DEBUG*/   packages = {};
-		/*DEBUG*/   loadingBundles = {};
-		/*DEBUG*/ }
 
 		load((sandboxIdentifier.indexOf("?") === -1) ? ".js" : "", "", "", loadedCallback);
 
@@ -668,7 +582,6 @@ var Loader = function (global) {
 	};
 
 	var
-		/*DEBUG*/ bundleIdentifiers = {},
 		sandboxes = {};
 
 	var Require = function (bundle) {
@@ -676,10 +589,6 @@ var Loader = function (global) {
 
 		// Address a specific sandbox or currently loading sandbox if initial load.
 		var bundleHandler = function (uid, callback) {
-			/*DEBUG*/ if (uid && bundleIdentifiers[uid]) {
-			/*DEBUG*/ 	throw new Error("You cannot split require.bundle(UID) calls where UID is constant!");
-			/*DEBUG*/ }
-			/*DEBUG*/ bundleIdentifiers[uid] = true;
 			loadedBundles.push([uid, function (sandbox) {
 				var moduleInitializers = {},
 					req = new Require(uid);
@@ -749,23 +658,6 @@ var Loader = function (global) {
 
 	PINF.Loader = Loader;
 
-	/*DEBUG*/ PINF.getReport = function () {
-	/*DEBUG*/ 	var report = {
-	/*DEBUG*/ 			sandboxes: {}
-	/*DEBUG*/ 		};
-	/*DEBUG*/ 	for (var key in sandboxes) {
-	/*DEBUG*/ 		report.sandboxes[key] = sandboxes[key].getReport();
-	/*DEBUG*/ 	}
-	/*DEBUG*/ 	return report;
-	/*DEBUG*/ }
-	/*DEBUG*/ PINF.reset = function () {
-	/*DEBUG*/ 	for (var key in sandboxes) {
-	/*DEBUG*/ 		sandboxes[key].reset();
-	/*DEBUG*/ 	}
-	/*DEBUG*/ 	sandboxes = {};
-	/*DEBUG*/ 	bundleIdentifiers = {};
-	/*DEBUG*/ 	loadedBundles = [];
-	/*DEBUG*/ }
 
 	return PINF;
 }
