@@ -38,7 +38,7 @@ async function runDevWorkspace (url) {
             PATH.join(__dirname, "www/ui.js"),
             PATH.join(__dirname, "www/style.css"),
             PATH.join(__dirname, "www/index.html")
-        ],        
+        ],
         ext: 'js,json'
     });
     

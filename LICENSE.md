@@ -1,4 +1,4 @@
-Free Public License 1.0.0
+Zero-Clause BSD
 
 Permission to use, copy, modify, and/or distribute this software for
 any purpose with or without fee is hereby granted.
@@ -11,4 +11,4 @@ DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN
 AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT
 OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-For more information, please refer to https://opensource.org/licenses/FPL-1.0.0
+For more information, please refer to https://opensource.org/licenses/0BSD

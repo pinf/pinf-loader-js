@@ -70,18 +70,23 @@
 	} else {
 		$(document).ready(function() {
 
-			$.get("../../loader.min.js", function(data) {
+			$.get("../../exports.json", function (data) {
+
+				var meta = JSON.parse(data);
+
+				$("#loader-core-min-size").html(meta['js.min'].Loader.core.size);
+		        $("#loader-core-min-gz-size").html(meta['js.min.gz'].Loader.core.size);
+		        $("#loader-core-min-br-size").html(meta['js.min.br'].Loader.core.size);
+
+				$("#loader-core-browser-min-size").html(meta['js.browser.min'].PINF.core.size);
+		        $("#loader-core-browser-min-gz-size").html(meta['js.browser.min.gz'].PINF.core.size);
+		        $("#loader-core-browser-min-br-size").html(meta['js.browser.min.br'].PINF.core.size);
+
+			}, "text");
+
+			$.get("../../dist/loader-core.min.js", function (data) {
 				$("#loader-min").html(data.replace(/</g, "&#60;"));
 			}, "text");
-			$.get(".loader.min.js-size", function(data) {
-				$("#loader-min-size").html(data);
-			}, "text");
-		    $.get(".loader.min.js.gz-size", function(data) {
-		        $("#loader-min-gz-size").html(data);
-		    }, "text");
-		    $.get(".loader.min.js.br-size", function(data) {
-		        $("#loader-min-br-size").html(data);
-		    }, "text");
 
 			run(function(err) {
 				if (err) {
