@@ -9,6 +9,10 @@
                 "size": 22906,
                 "hash": "sha1:c19d51bad2a32b31c25f0bca90c4bb7e7f266e14"
             }
+        },
+        "babel-regenerator-runtime": {
+            "size": 16131,
+            "hash": "sha1:dd3426e220bb6a2b8d393243d94297b83a1a409c"
         }
     },
     "js.min": {

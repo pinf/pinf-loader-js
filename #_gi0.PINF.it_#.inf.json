@@ -11,6 +11,11 @@
     ":brotli:": "gi0.PINF.it/wrappers/brotli/#_gi0.PINF.it_#.",
     ":gzip:": "gi0.PINF.it/wrappers/gzip/#_gi0.PINF.it_#.",
 
+    "# stderr": "/dist/babel-regenerator-runtime.js",
+    "gi0.PINF.it @ # :browserify: write() /dist/babel-regenerator-runtime.js": {
+        "src": "regenerator-runtime"
+    },
+
     "# stderr": "/dist/loader-core.js",
     "gi0.PINF.it @ # :strip-debug: write() /dist/loader-core.js": {
         "source": "./loader.js"
@@ -68,6 +73,8 @@
     "gi0.PINF.it @ # :closure-compiler: write() /dist/loader-full.browser.min.js": {
         "source": "./dist/loader-full.browser.js"
     },
+
+    "gi0.Sourcemint.org @ /exports.json # set() js/babel-regenerator-runtime": "gi0.PINF.it @ # meta() /dist/babel-regenerator-runtime.js",
 
     "gi0.Sourcemint.org @ /exports.json # set() js/Loader/core": "gi0.PINF.it @ # meta() /dist/loader-core.js",
     "gi0.Sourcemint.org @ /exports.json # set() js.min/Loader/core": "gi0.PINF.it @ # meta() /dist/loader-core.min.js",

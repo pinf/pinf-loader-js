@@ -23,7 +23,8 @@
         "nodemon": "^1.18.4",
         "puppeteer": "^1.8.0",
         "release-it": "^7.6.1",
-        "serve-static": "^1.13.2"
+        "serve-static": "^1.13.2",
+        "regenerator-runtime": "^0.13.2"
     },
     "scripts": {
         "test": "karma start tests/karma.conf.js",
