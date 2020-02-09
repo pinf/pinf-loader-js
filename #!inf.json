@@ -1,0 +1,90 @@
+#!/usr/bin/env inf
+{
+    "#": "gi0.PINF.it/core/v0",
+
+    "#": {
+        "browserify": "it.pinf.org.browserify",
+        "sm.exports": "gi0.Sourcemint.org/exports.json"
+    },
+
+    ":build:": "browserify @ build/v0",
+    ":copy:": "browserify @ copy/v0",
+    ":strip-debug:": "browserify @ strip-debug/v0",
+    ":closure-compiler:": "browserify @ closure-compiler/v0",
+    ":gzip:": "browserify @ gzip/v0",
+    ":brotli:": "browserify @ brotli/v0",
+
+    ":exports:": "sm.exports @ exports/v0",
+
+
+    "gi0.PINF.it/core/v0 @ # :build: write() /dist/babel-regenerator-runtime.js": {
+        "src": "regenerator-runtime"
+    },
+
+    "gi0.PINF.it/core/v0 @ # :strip-debug: write() /dist/loader-core.js": {
+        "source": "./loader.js"
+    },
+    "gi0.PINF.it/core/v0 @ # :closure-compiler: write() /dist/loader-core.min.js": {
+        "source": "./dist/loader-core.js"
+    },
+    "gi0.PINF.it/core/v0 @ # :gzip: write() /dist/loader-core.min.js.gz": {
+        "source": "./dist/loader-core.min.js"
+    },
+    "gi0.PINF.it/core/v0 @ # :brotli: write() /dist/loader-core.min.js.br": {
+        "source": "./dist/loader-core.min.js"
+    },
+
+    "gi0.PINF.it/core/v0 @ # :copy: write() /dist/loader-full.js": {
+        "source": "./loader.js"
+    },
+    "gi0.PINF.it/core/v0 @ # :closure-compiler: write() /dist/loader-full.min.js": {
+        "source": "./dist/loader-full.js"
+    },
+
+    "gi0.PINF.it/core/v0 @ # :build: :strip-debug: write() /dist/loader-core.browser.js": {
+        "src": "./loader.browser.js",
+        "expose": {
+            "window": "PINF"
+        }
+    },
+    "gi0.PINF.it/core/v0 @ # :closure-compiler: write() /dist/loader-core.browser.min.js": {
+        "source": "./dist/loader-core.browser.js"
+    },
+    "gi0.PINF.it/core/v0 @ # :gzip: write() /dist/loader-core.browser.min.js.gz": {
+        "source": "./dist/loader-core.browser.min.js"
+    },
+    "gi0.PINF.it/core/v0 @ # :brotli: write() /dist/loader-core.browser.min.js.br": {
+        "source": "./dist/loader-core.browser.min.js"
+    },
+
+    "gi0.PINF.it/core/v0 @ # :build: write() /dist/loader-full.browser.js": {
+        "src": "./loader.browser.js",
+        "expose": {
+            "window": "PINF"
+        }
+    },
+    "gi0.PINF.it/core/v0 @ # :closure-compiler: write() /dist/loader-full.browser.min.js": {
+        "source": "./dist/loader-full.browser.js"
+    },
+
+
+    "gi0.PINF.it/core/v0 @ # :exports: set() js/babel-regenerator-runtime": "/dist/babel-regenerator-runtime.js",
+
+    "gi0.PINF.it/core/v0 @ # :exports: set() js/Loader/core": "/dist/loader-core.js",
+    "gi0.PINF.it/core/v0 @ # :exports: set() js.min/Loader/core": "/dist/loader-core.min.js",
+    "gi0.PINF.it/core/v0 @ # :exports: set() js.min.gz/Loader/core": "/dist/loader-core.min.js.gz",
+    "gi0.PINF.it/core/v0 @ # :exports: set() js.min.br/Loader/core": "/dist/loader-core.min.js.br",
+
+    "gi0.PINF.it/core/v0 @ # :exports: set() js/Loader/full": "/dist/loader-full.js",
+    "gi0.PINF.it/core/v0 @ # :exports: set() js.min/Loader/full": "/dist/loader-full.min.js",
+
+    "gi0.PINF.it/core/v0 @ # :exports: set() js.browser/PINF/core": "/dist/loader-core.browser.js",
+    "gi0.PINF.it/core/v0 @ # :exports: set() js.browser.min/PINF/core": "/dist/loader-core.browser.min.js",
+    "gi0.PINF.it/core/v0 @ # :exports: set() js.browser.min.gz/PINF/core": "/dist/loader-core.browser.min.js.gz",
+    "gi0.PINF.it/core/v0 @ # :exports: set() js.browser.min.br/PINF/core": "/dist/loader-core.browser.min.js.br",
+
+    "gi0.PINF.it/core/v0 @ # :exports: set() js.browser/PINF/full": "/dist/loader-full.browser.js",
+    "gi0.PINF.it/core/v0 @ # :exports: set() js.browser.min/PINF/full": "/dist/loader-full.browser.min.js",
+
+    "gi0.PINF.it/core/v0 @ # :exports: write() /exports.json": ""
+}

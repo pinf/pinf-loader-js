@@ -1,18 +1,18 @@
 {
     "js": {
-        "Loader": {
-            "full": {
-                "size": 27610,
-                "hash": "sha1:c9805c5ce2e1807cd855fc107c8e701a0bc31804"
-            },
-            "core": {
-                "size": 22906,
-                "hash": "sha1:c19d51bad2a32b31c25f0bca90c4bb7e7f266e14"
-            }
-        },
         "babel-regenerator-runtime": {
             "size": 16131,
             "hash": "sha1:dd3426e220bb6a2b8d393243d94297b83a1a409c"
+        },
+        "Loader": {
+            "core": {
+                "size": 22906,
+                "hash": "sha1:c19d51bad2a32b31c25f0bca90c4bb7e7f266e14"
+            },
+            "full": {
+                "size": 27610,
+                "hash": "sha1:c9805c5ce2e1807cd855fc107c8e701a0bc31804"
+            }
         }
     },
     "js.min": {
@@ -24,6 +24,22 @@
             "full": {
                 "size": 7321,
                 "hash": "sha1:f4775b1f33614c38f5c0a93f8ff568d169b4c562"
+            }
+        }
+    },
+    "js.min.gz": {
+        "Loader": {
+            "core": {
+                "size": 2537,
+                "hash": "sha1:c5038e119c08e8f9014bdcef573beb9658fdd910"
+            }
+        }
+    },
+    "js.min.br": {
+        "Loader": {
+            "core": {
+                "size": 2261,
+                "hash": "sha1:e1caa583e0cd7ff5716287fcc0e412500c2dda79"
             }
         }
     },
@@ -48,22 +64,6 @@
             "full": {
                 "size": 9461,
                 "hash": "sha1:e62340bcc53e95249295889dada4a19b2f737f68"
-            }
-        }
-    },
-    "js.min.gz": {
-        "Loader": {
-            "core": {
-                "size": 2537,
-                "hash": "sha1:c5038e119c08e8f9014bdcef573beb9658fdd910"
-            }
-        }
-    },
-    "js.min.br": {
-        "Loader": {
-            "core": {
-                "size": 2261,
-                "hash": "sha1:e1caa583e0cd7ff5716287fcc0e412500c2dda79"
             }
         }
     },
