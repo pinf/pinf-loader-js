@@ -21,7 +21,7 @@
 				}
 	
 				return wrap(function() {
-	
+
 					return new Promise(function (resolve, reject) {
 	
 						PINF.sandbox("../../features/" + name + ".js", {

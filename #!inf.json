@@ -7,6 +7,7 @@
         "sm.exports": "gi0.Sourcemint.org/exports.json"
     },
 
+
     ":build:": "browserify @ build/v0",
     ":copy:": "browserify @ copy/v0",
     ":strip-debug:": "browserify @ strip-debug/v0",
@@ -68,6 +69,20 @@
     },
 
 
+    "gi0.PINF.it/core/v0 @ # write() /workspace/.features.json": (javascript.method.run (LIB) >>>
+
+        const featuresBaseDir = LIB.PATH.join("%%%___PWD___%%%", "features");
+
+        const features = LIB.FS.readdirSync(featuresBaseDir).filter(function (filename) {
+            return LIB.FS.statSync(LIB.PATH.join(featuresBaseDir, filename)).isFile();
+        }).map(function (filename) {
+            return filename.replace(/\.js$/, "");
+        });
+
+        return JSON.stringify(features, null, 4);
+    <<<),
+
+
     "gi0.PINF.it/core/v0 @ # :exports: set() js/babel-regenerator-runtime": "/dist/babel-regenerator-runtime.js",
 
     "gi0.PINF.it/core/v0 @ # :exports: set() js/Loader/core": "/dist/loader-core.js",
@@ -86,5 +101,35 @@
     "gi0.PINF.it/core/v0 @ # :exports: set() js.browser/PINF/full": "/dist/loader-full.browser.js",
     "gi0.PINF.it/core/v0 @ # :exports: set() js.browser.min/PINF/full": "/dist/loader-full.browser.min.js",
 
-    "gi0.PINF.it/core/v0 @ # :exports: write() /exports.json": ""
+    "gi0.PINF.it/core/v0 @ # :exports: write() /exports.json": "",
+
+
+    "gi0.PINF.it/core/v0 @ # onOption() watch": (inf () >>>
+        {
+            "#": {
+                "server": "bash.origin.express",
+                "runner": "it.pinf.dev.pptr"
+            },
+            ":server:": "server @ server/v0",
+            ":runner:": "runner @ runner/v0",
+            "gi0.PINF.it/core/v0 @ # :server: set() config": {
+                "port": 8080,
+                "routes": {
+                    "^/": "."
+                }
+            },
+            "gi0.PINF.it/core/v0 @ # :server: run() start": "",
+            "gi0.PINF.it/core/v0 @ # :runner: set() config": {
+                "reloadOnWorkspaceChange": true
+            },
+            "gi0.PINF.it/core/v0 @ # :runner: run() start": "http://localhost:8080/workspace/index.html",
+
+
+            "gi0.PINF.it/core/v0 @ # waitForAnyKey()": "",
+
+
+            "gi0.PINF.it/core/v0 @ # :runner: run() stop": "",
+            "gi0.PINF.it/core/v0 @ # :server: run() stop": ""
+        }
+    <<<)
 }

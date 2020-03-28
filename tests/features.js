@@ -65,12 +65,8 @@ describe("Features", function () {
                             return done(err);
                         }
                     }, done);
-
                 });            
             });
-
         });
-
     });
-
 });
