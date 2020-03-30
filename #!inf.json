@@ -129,7 +129,9 @@
 
 
             "gi0.PINF.it/core/v0 @ # :runner: run() stop": "",
-            "gi0.PINF.it/core/v0 @ # :server: run() stop": ""
+            "gi0.PINF.it/core/v0 @ # :server: run() stop": "",
+
+            "gi0.PINF.it/core/v0 @ # unwatch()": ""
         }
     <<<)
 }

@@ -46,40 +46,40 @@
     "js.browser": {
         "PINF": {
             "core": {
-                "size": 28655,
-                "hash": "sha1:b27e69323c67227c7e84009acd4a8d768a0cbc56"
+                "size": 28654,
+                "hash": "sha1:0bdc0d11fc4281a26e46717d6f166a7e4bdc6e78"
             },
             "full": {
-                "size": 28655,
-                "hash": "sha1:b27e69323c67227c7e84009acd4a8d768a0cbc56"
+                "size": 28654,
+                "hash": "sha1:0bdc0d11fc4281a26e46717d6f166a7e4bdc6e78"
             }
         }
     },
     "js.browser.min": {
         "PINF": {
             "core": {
-                "size": 9462,
-                "hash": "sha1:d11a8139ae611a528bb088b8aa2d648973699935"
+                "size": 9461,
+                "hash": "sha1:e62340bcc53e95249295889dada4a19b2f737f68"
             },
             "full": {
-                "size": 9462,
-                "hash": "sha1:d11a8139ae611a528bb088b8aa2d648973699935"
+                "size": 9461,
+                "hash": "sha1:e62340bcc53e95249295889dada4a19b2f737f68"
             }
         }
     },
     "js.browser.min.gz": {
         "PINF": {
             "core": {
-                "size": 3951,
-                "hash": "sha1:2ee1a145b8b0ed5bd85c4b3fec8b61e6acd8aba3"
+                "size": 3950,
+                "hash": "sha1:8f3225afd94754c213db6fd03e8df499d5a59e87"
             }
         }
     },
     "js.browser.min.br": {
         "PINF": {
             "core": {
-                "size": 3472,
-                "hash": "sha1:7a1881295fb61b8dd2d07374fdd17131d2d38c23"
+                "size": 3471,
+                "hash": "sha1:5f7c98d4bc5ca9008fda62f9e1f65a1767e2910b"
             }
         }
     }
