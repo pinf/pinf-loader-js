@@ -1,37 +1,37 @@
 {
-    "uid": "github.com/pinf/pinf-loader-js",
-    "name": "pinf-loader-js",
-    "version": "1.1.0",
-    "pm": {
-        "publish": "npm"
-    },
-    "publish": true,
-    "main": "./loader.js",
-    "devDependencies": {
-        "colors": "^1.3.2",
-        "express": "^4.16.3",
-        "fs-extra": "~7.0.0",
-        "jsdom": "^12.0.0",
-        "karma": "^3.0.0",
-        "karma-chrome-launcher": "^2.2.0",
-        "karma-coverage": "^1.1.2",
-        "karma-firefox-launcher": "^1.1.0",
-        "karma-mocha": "^1.3.0",
-        "karma-safari-launcher": "^1.0.0",
-        "karma-sauce-launcher": "^1.2.0",
-        "mocha": "^5.2.0",
-        "nodemon": "^1.18.4",
-        "puppeteer": "^1.8.0",
-        "release-it": "^7.6.1",
-        "serve-static": "^1.13.2",
-        "regenerator-runtime": "^0.13.2"
-    },
-    "scripts": {
-        "test": "karma start tests/karma.conf.js",
-        "test-all": "BROWSERS=all karma start tests/karma.conf.js",
-        "dev": "pinf.it ./#!inf.json --watch",
-        "build": "pinf.it ./#!inf.json",
-        "release": "release-it",
-        "publish-www": "git checkout gh-pages; git merge master -m 'Merge branch master into gh-pages'; git push origin; git checkout master"
-    }
+  "uid": "github.com/pinf/pinf-loader-js",
+  "name": "pinf-loader-js",
+  "version": "1.1.0-pre.0",
+  "pm": {
+    "publish": "npm"
+  },
+  "publish": true,
+  "main": "./loader.js",
+  "devDependencies": {
+    "colors": "^1.3.2",
+    "express": "^4.16.3",
+    "fs-extra": "~7.0.0",
+    "jsdom": "^12.0.0",
+    "karma": "^3.0.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-coverage": "^1.1.2",
+    "karma-firefox-launcher": "^1.1.0",
+    "karma-mocha": "^1.3.0",
+    "karma-safari-launcher": "^1.0.0",
+    "karma-sauce-launcher": "^1.2.0",
+    "mocha": "^5.2.0",
+    "nodemon": "^1.18.4",
+    "puppeteer": "^1.8.0",
+    "release-it": "^7.6.1",
+    "serve-static": "^1.13.2",
+    "regenerator-runtime": "^0.13.2"
+  },
+  "scripts": {
+    "test": "karma start tests/karma.conf.js",
+    "test-all": "BROWSERS=all karma start tests/karma.conf.js",
+    "dev": "pinf.it ./#!inf.json --watch",
+    "build": "pinf.it ./#!inf.json",
+    "release": "release-it",
+    "publish-www": "git checkout gh-pages; git merge master -m 'Merge branch master into gh-pages'; git push origin; git checkout master"
+  }
 }
