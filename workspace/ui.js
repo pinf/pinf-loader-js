@@ -70,7 +70,7 @@
 	} else {
 		$(document).ready(function() {
 
-			$.get("../../exports.json", function (data) {
+			$.get("../../dist/exports.json", function (data) {
 
 				var meta = JSON.parse(data);
 

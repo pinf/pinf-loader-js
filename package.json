@@ -29,8 +29,8 @@
     "scripts": {
         "test": "karma start tests/karma.conf.js",
         "test-all": "BROWSERS=all karma start tests/karma.conf.js",
-        "dev": "pinf.it . --watch",
-        "build": "pinf.it .",
+        "dev": "pinf.it ./#!inf.json --watch",
+        "build": "pinf.it ./#!inf.json",
         "release": "release-it",
         "publish-www": "git checkout gh-pages; git merge master -m 'Merge branch master into gh-pages'; git push origin; git checkout master"
     }

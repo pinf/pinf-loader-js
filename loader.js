@@ -4,7 +4,7 @@
 **/
 
 (function (exports) {
- 
+
 // The global `require` for the 'external' (to the loader) environment.
 var Loader = function (global) {
 
@@ -51,7 +51,7 @@ var Loader = function (global) {
 	}
 
 	// @credit https://github.com/unscriptable/curl/blob/62caf808a8fd358ec782693399670be6806f1845/src/curl.js#L319-360
-	function loadInBrowser (uri, loadedCallback) {
+	function loadInBrowser (uri, loadedCallback, sandboxOptions) {
 		try {
 			// See if we are in a web worker.
 			if (typeof importScripts !== "undefined") {
@@ -79,7 +79,9 @@ var Loader = function (global) {
 				if (ev.type === "load" || readyStates[this.readyState]) {
 					this.onload = this.onreadystatechange = this.onerror = null;
 					loadedCallback(null, function () {
-						element.parentNode.removeChild(element);
+						if (!sandboxOptions || sandboxOptions.keepScriptTags !== true) {
+							element.parentNode.removeChild(element);
+						}
 					});
 				}
 			}
@@ -192,7 +194,8 @@ var Loader = function (global) {
 										cleanupCallback();
 									}
 								});
-							}
+							},
+							sandboxOptions
 						);
 					}
 				}
@@ -244,7 +247,8 @@ var Loader = function (global) {
 									function () {
 										pending -= 1;
 										finalize();
-									}
+									},
+									sandboxOptions
 								);
 							}
 						}
@@ -733,7 +737,7 @@ var Loader = function (global) {
 					loadedCallback(null);
 					return;
 				}
-				return fallbackLoad(uri, loadedCallback);
+				return fallbackLoad(uri, loadedCallback, options);
 			}
 			programIdentifier = bundle.uri || "#pinf:" + Math.random().toString(36).substr(2, 9);
 		}

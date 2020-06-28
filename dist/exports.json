@@ -1,0 +1,99 @@
+{
+    "js": {
+        "babel-regenerator-runtime": {
+            "path": "./dist/babel-regenerator-runtime.js",
+            "size": 16131,
+            "hash": "sha1:dd3426e220bb6a2b8d393243d94297b83a1a409c"
+        },
+        "Loader": {
+            "core": {
+                "path": "./dist/loader-core.js",
+                "size": 23058,
+                "hash": "sha1:d7633609f25d6ab9a2cbd6a1510b845a4d09f245"
+            },
+            "full": {
+                "path": "./dist/loader-full.js",
+                "size": 27762,
+                "hash": "sha1:a6631ba448aa4efcaa780c116b8aff9cb7889f69"
+            }
+        }
+    },
+    "js.min": {
+        "Loader": {
+            "core": {
+                "path": "./dist/loader-core.min.js",
+                "size": 5837,
+                "hash": "sha1:bc611fd5b62c545029e65a49f9ba203e62e74ba4"
+            },
+            "full": {
+                "path": "./dist/loader-full.min.js",
+                "size": 7342,
+                "hash": "sha1:ba6ad1ca4a0243a329d9d5f6d43815a2ce89c1d1"
+            }
+        }
+    },
+    "js.min.gz": {
+        "Loader": {
+            "core": {
+                "path": "./dist/loader-core.min.js.gz",
+                "size": 2557,
+                "hash": "sha1:331e44682ef9c83e070ef916ee9480ad65438a65"
+            }
+        }
+    },
+    "js.min.br": {
+        "Loader": {
+            "core": {
+                "path": "./dist/loader-core.min.js.br",
+                "size": 2280,
+                "hash": "sha1:7fe7633d86ee4d280e24e8adc333d444034ca24d"
+            }
+        }
+    },
+    "js.browser": {
+        "PINF": {
+            "core": {
+                "path": "./dist/loader-core.browser.js",
+                "size": 28808,
+                "hash": "sha1:7bbb16799cb8ab134aec9f7e76e13a9519ace90f"
+            },
+            "full": {
+                "path": "./dist/loader-full.browser.js",
+                "size": 28808,
+                "hash": "sha1:7bbb16799cb8ab134aec9f7e76e13a9519ace90f"
+            }
+        }
+    },
+    "js.browser.min": {
+        "PINF": {
+            "core": {
+                "path": "./dist/loader-core.browser.min.js",
+                "size": 9482,
+                "hash": "sha1:3f1255294a56eb08fb7d0775e39fa17ad801ade4"
+            },
+            "full": {
+                "path": "./dist/loader-full.browser.min.js",
+                "size": 9482,
+                "hash": "sha1:3f1255294a56eb08fb7d0775e39fa17ad801ade4"
+            }
+        }
+    },
+    "js.browser.min.gz": {
+        "PINF": {
+            "core": {
+                "path": "./dist/loader-core.browser.min.js.gz",
+                "size": 3978,
+                "hash": "sha1:d9ccf15afc2ee434700cb6d9a64404c8edf5b449"
+            }
+        }
+    },
+    "js.browser.min.br": {
+        "PINF": {
+            "core": {
+                "path": "./dist/loader-core.browser.min.js.br",
+                "size": 3505,
+                "hash": "sha1:01ee91fd507516816d1730105df685a5418391b3"
+            }
+        }
+    }
+}

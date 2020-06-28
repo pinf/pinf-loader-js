@@ -269,4 +269,6 @@ This will first build the `dist/` files (via `npm run build`) and then increment
 Provenance
 ==========
 
-Original source logic under [Zero-Clause BSD](https://opensource.org/licenses/0BSD) by [Christoph Dorn](http://christophdorn.com) since 2011.
+Copyright &copy; 2011 [Christoph Dorn](http://christophdorn.com).
+
+Licensed under [Zero-Clause BSD](https://opensource.org/licenses/0BSD).
