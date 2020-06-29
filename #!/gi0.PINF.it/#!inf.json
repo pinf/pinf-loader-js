@@ -3,7 +3,7 @@
 
     "#": {
         "browserify": "it.pinf.org.browserify",
-        "sm.exports": "gi0.Sourcemint.org/exports.json"
+        "sm.exports": "exports.json"
     },
 
     ":build:": "browserify @ build/v0",
